@@ -85,7 +85,7 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
   };
 
   const handleNotificationsClick = () => {
-    navigate('/notifications');
+    navigate('/Korespondensi/notifikasi');
   };
 
   const handleMobileSearchToggle = () => {
