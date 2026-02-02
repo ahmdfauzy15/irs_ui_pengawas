@@ -14,6 +14,7 @@ import Settings from './pages/Settings';
 import DownloadCenter from './components/dashboard/DownloadCenter';
 import AIAssistant from './components/common/AIAssistant';
 import Korespondensi from './pages/Korespondensi';
+import AntiGratificationBanner from './components/common/AntiGratificationBanner'; // Tambahkan import ini
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -44,6 +45,8 @@ function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <AntiGratificationBanner />
+        
         <div className="flex min-h-screen">
           {/* Sidebar */}
           <div className="flex-shrink-0">

@@ -160,8 +160,8 @@ export const recentActivityData = [
   {
     id: 1,
     type: 'compliance',
-    title: "Dana Pensiun ASDP - Laporan triwulanan Q4 2023 diverifikasi OJK",
-    description: "Laporan lengkap dengan compliance score 98/100, dikirim 5 hari sebelum deadline",
+    title: "Dana Pensiun ASDP ",
+    description: "Laporan lengkap, dikirim 5 hari sebelum deadline",
     time: 'Hari ini, 10:30',
     system: 'APOLO',
     status: 'success',
@@ -169,59 +169,8 @@ export const recentActivityData = [
     kategori: 'Program Pensiun Manfaat Pasti',
     compliance_score: 98,
     deadline_status: 'early'
-  },
-  {
-    id: 2,
-    type: 'deadline',
-    title: "Bank of America, N.A - Batas akhir laporan bulan Januari 2024",
-    description: "Deadline: 15 Feb 2024 (3 hari lagi), belum ada pengajuan",
-    time: 'Hari ini, 09:45',
-    system: 'E-REPORTING',
-    status: 'warning',
-    ljk: 'Bank of America, N.A',
-    kategori: 'EBUS',
-    compliance_score: 92,
-    deadline_status: 'approaching'
-  },
-  {
-    id: 3,
-    type: 'non_compliance',
-    title: "BANK KALSEL - Keterlambatan laporan bulan Desember 2023",
-    description: "Melewati batas waktu 7 hari, surat peringatan dikirim",
-    time: 'Kemarin, 16:20',
-    system: 'APOLO',
-    status: 'danger',
-    ljk: 'BANK KALSEL KANTOR PUSAT',
-    kategori: 'EBUS',
-    compliance_score: 85,
-    deadline_status: 'late'
-  },
-  {
-    id: 4,
-    type: 'review',
-    title: "CHARLIE SIMANJUNTAK SH - Laporan penilaian properti dalam review",
-    description: "Penilaian aset senilai Rp 45 Miliar, proses verifikasi OJK",
-    time: 'Kemarin, 14:15',
-    system: 'E-REPORTING',
-    status: 'info',
-    ljk: 'CHARLIE SIMANJUNTAK SH',
-    kategori: 'Jasa Penilai',
-    compliance_score: 95,
-    deadline_status: 'on_time'
-  },
-  {
-    id: 5,
-    type: 'compliance',
-    title: "Capital Global Ventura - Laporan kuartalan Q4 2023 approved",
-    description: "Semua dokumen lengkap, audit internal selesai, rating compliance: Excellent",
-    time: '2 hari lalu, 11:30',
-    system: 'APOLO',
-    status: 'success',
-    ljk: 'Capital Global Ventura',
-    kategori: 'Modal Ventura',
-    compliance_score: 96,
-    deadline_status: 'on_time'
   }
+  
 ];
 
 // Fungsi untuk mendapatkan statistik real-time

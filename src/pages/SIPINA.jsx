@@ -22,13 +22,11 @@ import {
   CalendarDays,
   ClockAlert,
   Calendar as CalendarIcon,
-  User,
-  ShieldAlert,
-  Umbrella,
-  Heart,
-  Building2,
-  TrendingUp,
-  FileWarning
+  Clock4,
+  CheckSquare,
+  Hourglass,
+  AlertOctagon,
+  User
 } from 'lucide-react';
 
 const SIPINA = () => {
@@ -42,26 +40,27 @@ const SIPINA = () => {
   const [currentDateTime, setCurrentDateTime] = useState(getCurrentWIBTime());
   const [reportsWithPeriod, setReportsWithPeriod] = useState([]);
   
-  // State untuk periode tanggal - default 2 tahun kebelakang hingga 1 tahun ke depan
+  // State untuk periode tanggal - default 1 tahun kebelakang hingga 1 tahun ke depan
   const [dateRange, setDateRange] = useState(() => {
     const currentDate = getCurrentWIBTime();
     const currentYear = currentDate.getFullYear();
     
     return {
-      startDate: `${currentYear - 2}-01-01`, // 2 tahun ke belakang
+      startDate: `${currentYear - 1}-01-01`, // 1 tahun ke belakang
       endDate: `${currentYear + 1}-12-31`    // 1 tahun ke depan
     };
   });
   
-  // State untuk filter
+  // State untuk filter dengan struktur baru untuk status review
   const [filters, setFilters] = useState({
     periodeStatus: 'aktif',
     subFilters: {
       statusDetail: 'all',
       jenisLJK: 'all',
       periode: 'all',
+      pengawas: 'all', // Filter untuk pengawas
       searchTerm: '',
-      namaLJK: 'all'
+      reviewStatus: 'all' // Status review untuk filter level 3
     }
   });
   
@@ -69,8 +68,17 @@ const SIPINA = () => {
   const [selectedReport, setSelectedReport] = useState(null);
   const [showSubFilters, setShowSubFilters] = useState(true);
 
-  // DATA NAMA LJK untuk SIPINA (LJK)
-  const namaLJKData = [
+  // Update waktu real-time WIB setiap detik
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentDateTime(getCurrentWIBTime());
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Data LJK dengan pengawas
+  const LJKData = [
     { nama: "PT Asuransi Jiwa Bersama Bumiputera", industri: "Asuransi Jiwa" },
     { nama: "PT Asuransi Jiwa Sinarmas MSIG", industri: "Asuransi Jiwa" },
     { nama: "PT Asuransi Jiwa Central Asia Raya", industri: "Asuransi Jiwa" },
@@ -93,74 +101,33 @@ const SIPINA = () => {
     { nama: "PT Asuransi Jasa Indonesia", industri: "Asuransi Umum" }
   ];
 
-  // Simpan mapping Nama LJK untuk setiap laporan
-  const [namaLJKMapping, setNamaLJKMapping] = useState({});
+  // Data pengawas untuk filter
+  const pengawasList = [
+    "Budi Santoso", "Siti Rahayu", "Ahmad Wijaya", "Rina Dewi", 
+    "Maya Sari", "Joko Susilo", "Dewi Lestari", "Eko Prasetyo", 
+    "Fitriani", "Agus Setiawan", "Linda Wati"
+  ];
 
-  // Update waktu real-time WIB setiap detik
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentDateTime(getCurrentWIBTime());
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
-  // Inisialisasi Nama LJK mapping
-  useEffect(() => {
-    const initialNamaLJKMapping = {};
-    initialReports.forEach(report => {
-      const randomNamaLJK = namaLJKData[Math.floor(Math.random() * namaLJKData.length)];
-      initialNamaLJKMapping[report.id] = randomNamaLJK;
-    });
-    setNamaLJKMapping(initialNamaLJKMapping);
-  }, []);
-
-  // Data reports SIPINA dengan tanggal real-time
+  // Data reports SIPINA dengan status review untuk periode terlambat
   const initialReports = useMemo(() => {
     const currentYear = currentDateTime.getFullYear();
-    const currentMonth = currentDateTime.getMonth() + 1;
     
-    const getSafeDate = (year, month, day) => {
-      let safeMonth = month;
-      let safeYear = year;
-      
-      if (safeMonth <= 0) {
-        safeMonth += 12;
-        safeYear -= 1;
-      } else if (safeMonth > 12) {
-        safeMonth -= 12;
-        safeYear += 1;
-      }
-      
-      const lastDayOfMonth = new Date(safeYear, safeMonth, 0).getDate();
-      const safeDay = Math.min(day, lastDayOfMonth);
-      
-      return { year: safeYear, month: safeMonth, day: safeDay };
+    // Fungsi untuk mendapatkan pengawas berdasarkan indeks
+    const getPengawas = (id) => {
+      const pengawasIndex = (id - 1) % pengawasList.length;
+      return pengawasList[pengawasIndex];
     };
-    
-    // Hitung tanggal yang aman
-    const prevMonth15 = getSafeDate(currentYear, currentMonth - 1, 15);
-    const prevMonth31 = getSafeDate(currentYear, currentMonth - 1, 31);
-    const prevMonth10 = getSafeDate(currentYear, currentMonth - 1, 10);
-    const prevMonth25 = getSafeDate(currentYear, currentMonth - 1, 25);
-    const prevMonth30 = getSafeDate(currentYear, currentMonth - 1, 30);
-    
-    const currentMonth5 = getSafeDate(currentYear, currentMonth, 5);
-    const currentMonth7 = getSafeDate(currentYear, currentMonth, 7);
-    const currentMonth10 = getSafeDate(currentYear, currentMonth, 10);
-    const currentMonth15 = getSafeDate(currentYear, currentMonth, 15);
-    const currentMonth20 = getSafeDate(currentYear, currentMonth, 20);
-    const currentMonth25 = getSafeDate(currentYear, currentMonth, 25);
-    const currentMonth28 = getSafeDate(currentYear, currentMonth, 28);
-    const currentMonth30 = getSafeDate(currentYear, currentMonth, 30);
-    
-    const nextMonth5 = getSafeDate(currentYear, currentMonth + 1, 5);
-    const nextMonth10 = getSafeDate(currentYear, currentMonth + 1, 10);
-    const nextMonth15 = getSafeDate(currentYear, currentMonth + 1, 15);
-    const nextMonth20 = getSafeDate(currentYear, currentMonth + 1, 20);
-    const nextMonth25 = getSafeDate(currentYear, currentMonth + 1, 25);
+
+    // Fungsi untuk mendapatkan LJK data berdasarkan indeks
+     const getLJKData = (id) => {
+    // Pastikan id tidak kurang dari 1 dan tidak lebih dari panjang array
+    const validId = Math.max(1, Math.min(id, LJKData.length));
+    const ljkIndex = (validId - 1) % LJKData.length;
+    return LJKData[ljkIndex] || LJKData[0]; // Fallback ke data pertama jika undefined
+  };
     
     return [
+
       {
         id: 1,
         aplikasi: "SIPINA",
@@ -168,283 +135,38 @@ const SIPINA = () => {
         namaLaporan: "Laporan Keuangan Tahunan (Audited) Asuransi Jiwa",
         periodeLaporan: "Tahunan",
         batasWaktu: "31 Maret tahun berikutnya",
-        deadlineDate: `${currentYear}-03-31T23:59:59`,
-        submissionDate: `${currentYear}-03-25T14:20:00`,
-        waktuSubmit: `${currentYear}-03-25T14:20:00`,
-        waktuDeadline: `${currentYear}-03-31T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 2,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Umum",
-        namaLaporan: "Laporan Keuangan Triwulan I Asuransi Umum",
-        periodeLaporan: "Triwulanan",
-        batasWaktu: "30 April tahun berjalan",
-        deadlineDate: `${currentYear}-04-30T23:59:59`,
-        submissionDate: `${currentYear}-04-28T09:45:00`,
-        waktuSubmit: `${currentYear}-04-28T09:45:00`,
-        waktuDeadline: `${currentYear}-04-30T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 3,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa",
-        namaLaporan: "Laporan Tahunan - Penyampaian Informasi Nasabah Asing",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "1 Juli s.d 1 Agustus Tahun berikutnya",
-        deadlineDate: `${currentYear}-08-01T23:59:59`,
-        submissionDate: `${currentYear}-07-15T14:30:00`,
-        waktuSubmit: `${currentYear}-07-15T14:30:00`,
-        waktuDeadline: `${currentYear}-08-01T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 4,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Umum",
-        namaLaporan: "Laporan Semester I - Solvabilitas Asuransi Umum",
-        periodeLaporan: "Semesteran",
-        batasWaktu: "31 Juli tahun berjalan",
-        deadlineDate: `${currentYear}-07-31T23:59:59`,
-        submissionDate: `${currentYear}-07-30T16:20:00`,
-        waktuSubmit: `${currentYear}-07-30T16:20:00`,
-        waktuDeadline: `${currentYear}-07-31T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 5,
-        aplikasi: "SIPINA",
-        jenisLJK: "Reasuransi",
-        namaLaporan: "Laporan Bulanan - Reasuransi",
-        periodeLaporan: "Bulanan",
-        batasWaktu: "15 hari bulan berikutnya",
-        deadlineDate: `${nextMonth15.year}-${String(nextMonth15.month).padStart(2, '0')}-${String(nextMonth15.day).padStart(2, '0')}T23:59:59`,
-        submissionDate: null,
-        waktuSubmit: null,
-        waktuDeadline: `${nextMonth15.year}-${String(nextMonth15.month).padStart(2, '0')}-${String(nextMonth15.day).padStart(2, '0')}T23:59:59`,
-        statusPengiriman: "Belum Lapor",
-        statusKetepatan: "Belum Submit"
-      },
-      {
-        id: 6,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa Syariah",
-        namaLaporan: "Laporan Tahunan - Asuransi Jiwa Syariah",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "31 Maret tahun berikutnya",
-        deadlineDate: `${currentYear + 1}-03-31T23:59:59`,
-        submissionDate: null,
-        waktuSubmit: null,
-        waktuDeadline: `${currentYear + 1}-03-31T23:59:59`,
-        statusPengiriman: "Belum Lapor",
-        statusKetepatan: "Belum Submit"
-      },
-      {
-        id: 7,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Umum",
-        namaLaporan: "Laporan Insidentil - Kejadian Luar Biasa",
-        periodeLaporan: "Insidentil",
-        batasWaktu: "24 jam setelah kejadian",
-        deadlineDate: `${currentMonth5.year}-${String(currentMonth5.month).padStart(2, '0')}-${String(currentMonth5.day).padStart(2, '0')}T23:59:59`,
-        submissionDate: `${currentMonth5.year}-${String(currentMonth5.month).padStart(2, '0')}-${String(currentMonth5.day).padStart(2, '0')}T18:30:00`,
-        waktuSubmit: `${currentMonth5.year}-${String(currentMonth5.month).padStart(2, '0')}-${String(currentMonth5.day).padStart(2, '0')}T18:30:00`,
-        waktuDeadline: `${currentMonth5.year}-${String(currentMonth5.month).padStart(2, '0')}-${String(currentMonth5.day).padStart(2, '0')}T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 8,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa",
-        namaLaporan: "Laporan Triwulan II - Asuransi Jiwa",
-        periodeLaporan: "Triwulanan",
-        batasWaktu: "31 Juli tahun berjalan",
-        deadlineDate: `${currentYear}-07-31T23:59:59`,
-        submissionDate: `${currentYear}-08-02T11:20:00`,
-        waktuSubmit: `${currentYear}-08-02T11:20:00`,
-        waktuDeadline: `${currentYear}-07-31T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Terlambat"
-      },
-      {
-        id: 9,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Umum",
-        namaLaporan: "Laporan Compliance APU-PPT Asuransi Umum",
-        periodeLaporan: "Semesteran",
-        batasWaktu: "30 Juni dan 31 Desember",
-        deadlineDate: `${currentYear}-06-30T23:59:59`,
-        submissionDate: `${currentYear}-06-30T14:00:00`,
-        waktuSubmit: `${currentYear}-06-30T14:00:00`,
-        waktuDeadline: `${currentYear}-06-30T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 10,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa",
-        namaLaporan: "Laporan Investasi Portofolio Asuransi Jiwa",
-        periodeLaporan: "Bulanan",
-        batasWaktu: "HK 10 bulan berikutnya",
-        deadlineDate: `${currentMonth10.year}-${String(currentMonth10.month).padStart(2, '0')}-${String(currentMonth10.day).padStart(2, '0')}T23:59:59`,
-        submissionDate: null,
-        waktuSubmit: null,
-        waktuDeadline: `${currentMonth10.year}-${String(currentMonth10.month).padStart(2, '0')}-${String(currentMonth10.day).padStart(2, '0')}T23:59:59`,
-        statusPengiriman: "Gagal",
-        statusKetepatan: "Terlambat"
-      },
-      {
-        id: 11,
-        aplikasi: "SIPINA",
-        jenisLJK: "Reasuransi",
-        namaLaporan: "Laporan Teknis Reasuransi",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "30 Juni tahun berikutnya",
-        deadlineDate: `${currentYear}-06-30T23:59:59`,
-        submissionDate: `${currentYear}-06-25T13:10:00`,
-        waktuSubmit: `${currentYear}-06-25T13:10:00`,
-        waktuDeadline: `${currentYear}-06-30T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 12,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Umum Syariah",
-        namaLaporan: "Laporan Keuangan Syariah Tahunan",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "31 Maret tahun berikutnya",
-        deadlineDate: `${currentYear}-03-31T23:59:59`,
-        submissionDate: `${currentYear}-03-25T16:20:00`,
-        waktuSubmit: `${currentYear}-03-25T16:20:00`,
-        waktuDeadline: `${currentYear}-03-31T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 13,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa",
-        namaLaporan: "Laporan Risk Based Capital (RBC) Asuransi Jiwa",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "30 April tahun berikutnya",
-        deadlineDate: `${currentYear}-04-30T23:59:59`,
-        submissionDate: `${currentYear}-04-15T09:25:00`,
-        waktuSubmit: `${currentYear}-04-15T09:25:00`,
-        waktuDeadline: `${currentYear}-04-30T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 14,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Umum",
-        namaLaporan: "Laporan Risk Based Capital (RBC) Asuransi Umum",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "30 April tahun berikutnya",
-        deadlineDate: `${currentYear}-04-30T23:59:59`,
-        submissionDate: `${currentYear}-04-28T14:10:00`,
-        waktuSubmit: `${currentYear}-04-28T14:10:00`,
-        waktuDeadline: `${currentYear}-04-30T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 15,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa, Asuransi Umum",
-        namaLaporan: "Laporan Corporate Governance Tahunan",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "15 Februari tahun berikutnya",
-        deadlineDate: `${currentYear}-02-15T23:59:59`,
-        submissionDate: `${currentYear}-02-10T08:45:00`,
-        waktuSubmit: `${currentYear}-02-10T08:45:00`,
-        waktuDeadline: `${currentYear}-02-15T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 16,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa",
-        namaLaporan: "Laporan Aktuaria Asuransi Jiwa",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "30 Juni tahun berikutnya",
-        deadlineDate: `${currentYear}-06-30T23:59:59`,
-        submissionDate: `${currentYear}-06-25T10:15:00`,
-        waktuSubmit: `${currentYear}-06-25T10:15:00`,
-        waktuDeadline: `${currentYear}-06-30T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 17,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Kredit",
-        namaLaporan: "Laporan Kinerja Kredit",
-        periodeLaporan: "Bulanan",
-        batasWaktu: "HK 12 bulan berikutnya",
-        deadlineDate: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day).padStart(2, '0')}T23:59:59`,
-        submissionDate: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day - 5).padStart(2, '0')}T09:15:00`,
-        waktuSubmit: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day - 5).padStart(2, '0')}T09:15:00`,
-        waktuDeadline: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day).padStart(2, '0')}T23:59:59`,
-        statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      },
-      {
-        id: 18,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa, Asuransi Umum",
-        namaLaporan: "Laporan Internal Audit Tahunan",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "31 Maret tahun berikutnya",
-        deadlineDate: `${currentYear}-03-31T23:59:59`,
-        submissionDate: `${currentYear}-03-31T16:45:00`,
-        waktuSubmit: `${currentYear}-03-31T16:45:00`,
-        waktuDeadline: `${currentYear}-03-31T23:59:59`,
-        statusPengiriman: "Gagal",
-        statusKetepatan: "Gagal Kirim"
-      },
-      {
-        id: 19,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Umum",
-        namaLaporan: "Laporan Klaim Asuransi Kendaraan Bermotor",
-        periodeLaporan: "Bulanan",
-        batasWaktu: "HK 15 bulan berikutnya",
-        deadlineDate: `${nextMonth15.year}-${String(nextMonth15.month).padStart(2, '0')}-${String(nextMonth15.day).padStart(2, '0')}T23:59:59`,
-        submissionDate: null,
-        waktuSubmit: null,
-        waktuDeadline: `${nextMonth15.year}-${String(nextMonth15.month).padStart(2, '0')}-${String(nextMonth15.day).padStart(2, '0')}T23:59:59`,
-        statusPengiriman: "Belum Lapor",
-        statusKetepatan: "Belum Submit"
-      },
-      {
-        id: 20,
-        aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa Syariah",
-        namaLaporan: "Laporan Dana Tabarru' dan Investasi Syariah",
-        periodeLaporan: "Semesteran",
-        batasWaktu: "30 September dan 31 Maret",
-        deadlineDate: `${currentYear}-09-30T23:59:59`,
-        submissionDate: `${currentYear}-09-15T11:45:00`,
-        waktuSubmit: `${currentYear}-09-15T11:45:00`,
-        waktuDeadline: `${currentYear}-09-30T23:59:59`,
+        deadlineDate: "2026-03-31T23:59:59", 
+        submissionDate: "2026-03-25T14:20:00",
+        waktuSubmit: "2026-03-25T14:20:00",
+        waktuDeadline: "2026-03-31T23:59:59",
         statusPengiriman: "Berhasil",
         statusKetepatan: "Tepat Waktu"
       }
+      
+ 
+
+
     ];
   }, [currentDateTime]);
 
-  // Proses data reports dengan tanggal dan hitung status - TAMBAHKAN Nama LJK dari mapping
+  // Fungsi untuk menghitung hari terlambat
+  const calculateLateDays = (deadlineDate, submissionDate) => {
+    if (!submissionDate) return null;
+    
+    const deadline = new Date(deadlineDate);
+    const submission = new Date(submissionDate);
+    
+    if (isNaN(deadline.getTime()) || isNaN(submission.getTime())) {
+      return null;
+    }
+    
+    const diffMs = submission - deadline;
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    
+    return diffDays > 0 ? diffDays : 0;
+  };
+
+  // Proses data reports dengan tanggal dan hitung status
   useEffect(() => {
     const startDate = new Date(dateRange.startDate);
     startDate.setHours(0, 0, 0, 0);
@@ -465,31 +187,54 @@ const SIPINA = () => {
         return null;
       }
       
-      // Ambil Nama LJK dari mapping
-      const namaLJKInfo = namaLJKMapping[report.id] || { nama: 'Belum ditetapkan', industri: 'Tidak tersedia' };
+      // Hitung hari terlambat jika ada submission
+      const lateDays = calculateLateDays(report.deadlineDate, report.submissionDate);
       
-      // Hitung apakah deadline sudah lewat
-      const isDeadlinePassed = deadlineDate < now;
-      
-      // Tentukan periodeStatus
+      // Tentukan periodeStatus berdasarkan aturan
       let periodeStatus = '';
+      let isDeadlinePassed = false;
+      let hoursRemaining = 0;
+      let hoursLate = 0;
       
       if (submissionDate) {
-        if (report.statusPengiriman === 'Gagal' || report.id === 18) {
+        // Sudah ada submission
+        const daysLate = lateDays || 0;
+        
+        if (report.statusPengiriman === 'Gagal') {
           periodeStatus = 'aktif';
-        } else {
-          const isSubmittedOnTime = submissionDate <= deadlineDate;
-          if (isSubmittedOnTime) {
-            periodeStatus = 'aktif';
+          const timeDiffMs = deadlineDate - now;
+          if (timeDiffMs > 0) {
+            hoursRemaining = Math.floor(timeDiffMs / (1000 * 60 * 60));
           } else {
+            hoursLate = Math.floor(Math.abs(timeDiffMs) / (1000 * 60 * 60));
+            isDeadlinePassed = true;
+          }
+        } else {
+          if (daysLate > 0) {
             periodeStatus = 'terlambat';
+            hoursLate = daysLate * 24;
+            isDeadlinePassed = true;
+          } else {
+            periodeStatus = 'aktif';
+            const timeDiffMs = deadlineDate - now;
+            if (timeDiffMs > 0) {
+              hoursRemaining = Math.floor(timeDiffMs / (1000 * 60 * 60));
+            } else {
+              hoursLate = Math.floor(Math.abs(timeDiffMs) / (1000 * 60 * 60));
+              isDeadlinePassed = true;
+            }
           }
         }
       } else {
-        if (isDeadlinePassed) {
-          periodeStatus = 'terlambat';
-        } else {
+        // Belum submit
+        const timeDiffMs = deadlineDate - now;
+        if (timeDiffMs > 0) {
           periodeStatus = 'aktif';
+          hoursRemaining = Math.floor(timeDiffMs / (1000 * 60 * 60));
+        } else {
+          periodeStatus = 'terlambat';
+          hoursLate = Math.floor(Math.abs(timeDiffMs) / (1000 * 60 * 60));
+          isDeadlinePassed = true;
         }
       }
       
@@ -499,34 +244,39 @@ const SIPINA = () => {
       let statusKetepatanWaktu = 'Belum Submit';
       
       if (submissionDate) {
-        const isSubmittedOnTime = submissionDate <= deadlineDate;
+        const isSubmittedOnTime = lateDays === 0 || lateDays === null;
         
-        if (report.statusPengiriman === 'Gagal' || report.id === 18) {
+        if (report.statusPengiriman === 'Gagal') {
           status = 'gagal';
           statusPengiriman = 'Gagal';
           statusKetepatanWaktu = 'Gagal Kirim';
         } else {
           status = 'berhasil';
           statusPengiriman = 'Berhasil';
-          statusKetepatanWaktu = isSubmittedOnTime ? 'Tepat Waktu' : 'Terlambat';
+          
+          // Jika periode terlambat, tambahkan status review
+          if (periodeStatus === 'terlambat') {
+            // Tentukan status review berdasarkan ID
+            const reviewStatuses = ['belum-review', 'sedang-review', 'sudah-review'];
+            const reviewStatus = reviewStatuses[report.id % 3];
+            const reviewStatusMap = {
+              'sedang-review': 'Sedang Direview',
+              'sudah-review': 'Sudah Direview',
+              'belum-review': 'Belum Direview'
+            };
+            statusPengiriman = `Berhasil - ${reviewStatusMap[reviewStatus]}`;
+          }
+          
+          statusKetepatanWaktu = isSubmittedOnTime ? 'Tepat Waktu' : `${lateDays} Hari Terlambat`;
         }
       } else {
+        // Belum submit
         if (isDeadlinePassed) {
-          statusKetepatanWaktu = 'Terlambat';
+          const daysLate = Math.ceil(hoursLate / 24);
+          statusKetepatanWaktu = `${daysLate} Hari Terlambat`;
         } else {
           statusKetepatanWaktu = 'Belum Submit';
         }
-      }
-      
-      // Hitung waktu remaining atau terlambat
-      const timeDiffMs = deadlineDate - now;
-      let hoursRemaining = 0;
-      let hoursLate = 0;
-      
-      if (timeDiffMs > 0) {
-        hoursRemaining = Math.floor(timeDiffMs / (1000 * 60 * 60));
-      } else {
-        hoursLate = Math.floor(Math.abs(timeDiffMs) / (1000 * 60 * 60));
       }
       
       // Format tanggal untuk display
@@ -539,12 +289,15 @@ const SIPINA = () => {
         });
       };
       
+      const safeDateToISO = (date) => {
+        if (!date || isNaN(date.getTime())) return null;
+        return date.toISOString();
+      };
+      
       return {
         ...report,
-        namaLJK: namaLJKInfo.nama,
-        industriLJK: namaLJKInfo.industri,
-        deadlineDate: deadlineDate.toISOString(),
-        submissionDate: submissionDate ? submissionDate.toISOString() : null,
+        deadlineDate: safeDateToISO(deadlineDate),
+        submissionDate: safeDateToISO(submissionDate),
         status,
         statusPengiriman,
         statusKetepatanWaktu,
@@ -552,53 +305,96 @@ const SIPINA = () => {
         isDeadlinePassed,
         hoursRemaining,
         hoursLate,
+        lateDays: lateDays || 0,
         displayDeadline: formatDateOnly(deadlineDate),
         displaySubmit: submissionDate ? formatDateOnly(submissionDate) : 'Belum submit',
         deadlineObj: deadlineDate,
         submitObj: submissionDate,
-        waktuSubmit: submissionDate ? submissionDate.toISOString() : null,
-        waktuDeadline: deadlineDate.toISOString()
+        waktuSubmit: safeDateToISO(submissionDate),
+        waktuDeadline: safeDateToISO(deadlineDate)
       };
     }).filter(report => report !== null);
     
     setReportsWithPeriod(updatedReports);
-  }, [dateRange, initialReports, currentDateTime, namaLJKMapping]);
+  }, [dateRange, initialReports, currentDateTime]);
 
-  // Get unique Nama LJK untuk filter
-  const uniqueNamaLJK = useMemo(() => {
-    const namaLJK = [...new Set(reportsWithPeriod.map(report => report.namaLJK))];
-    return namaLJK.map(n => ({
-      value: n,
-      label: n
-    }));
-  }, [reportsWithPeriod]);
+  // Sub-filter options
+  const getSubFilterOptions = () => {
+    if (filters.periodeStatus === 'aktif') {
+      return [
+        { value: 'all', label: 'Semua Status' },
+        { value: 'berhasil-sesuai-waktu', label: 'Berhasil Sesuai Waktu' },
+        { value: 'belum-lapor', label: 'Belum Lapor' },
+        { value: 'gagal', label: 'Gagal' }
+      ];
+    } else if (filters.periodeStatus === 'terlambat') {
+      return [
+        { value: 'all', label: 'Semua Status' },
+        { value: 'sudah-lapor', label: 'Sudah Lapor' },
+        { value: 'belum-lapor-terlambat', label: 'Belum Lapor' }
+      ];
+    }
+    return [];
+  };
 
-  // Get unique industri LJK
-  const uniqueIndustriLJK = useMemo(() => {
-    const industri = [...new Set(reportsWithPeriod.map(report => report.industriLJK))];
-    return industri.map(i => ({
-      value: i,
-      label: i
-    }));
-  }, [reportsWithPeriod]);
+  // Status review options untuk filter level 3
+  const getReviewStatusOptions = () => {
+    if (filters.subFilters.statusDetail === 'sudah-lapor') {
+      return [
+        { value: 'all', label: 'Semua Status Review' },
+        { value: 'belum-direview', label: 'Belum Direview' },
+        { value: 'sedang-direview', label: 'Sedang Direview' },
+        { value: 'sudah-direview', label: 'Sudah Direview' }
+      ];
+    }
+    return [];
+  };
+
+  // Handle sub filter change
+  const handleSubFilterChange = (key, value) => {
+    setFilters(prev => {
+      // Jika mengubah statusDetail, reset reviewStatus ke 'all'
+      if (key === 'statusDetail') {
+        return {
+          ...prev,
+          subFilters: {
+            ...prev.subFilters,
+            [key]: value,
+            reviewStatus: value === 'sudah-lapor' ? 'all' : ''
+          }
+        };
+      }
+      
+      return {
+        ...prev,
+        subFilters: {
+          ...prev.subFilters,
+          [key]: value
+        }
+      };
+    });
+  };
 
   // Hitung filteredReports berdasarkan filter
   const filteredReports = useMemo(() => {
     let filtered = [...reportsWithPeriod];
 
+    // Filter berdasarkan periode status
     if (filters.periodeStatus !== 'all') {
       filtered = filtered.filter(report => report.periodeStatus === filters.periodeStatus);
     }
     
+    // Filter sub-filters
     if (filters.subFilters.statusDetail !== 'all') {
       filtered = filtered.filter(report => {
         switch(filters.subFilters.statusDetail) {
           case 'berhasil-sesuai-waktu':
             return report.status === 'berhasil' && report.statusKetepatanWaktu === 'Tepat Waktu';
           case 'belum-lapor':
-            return report.status === 'belum-lapor' && report.periodeStatus === 'aktif';
+            return report.status === 'belum-lapor';
           case 'gagal':
-            return report.status === 'gagal' && report.periodeStatus === 'aktif';
+            return report.status === 'gagal';
+          // Filter untuk periode terlambat
           case 'sudah-lapor':
             return report.status === 'berhasil' && report.periodeStatus === 'terlambat';
           case 'belum-lapor-terlambat':
@@ -607,6 +403,18 @@ const SIPINA = () => {
             return true;
         }
       });
+
+      // Filter tambahan untuk review status jika memilih "Sudah Lapor"
+      if (filters.subFilters.statusDetail === 'sudah-lapor' && filters.subFilters.reviewStatus && filters.subFilters.reviewStatus !== 'all') {
+        filtered = filtered.filter(report => {
+          const reviewMap = {
+            'belum-direview': 'Berhasil - Belum Direview',
+            'sedang-direview': 'Berhasil - Sedang Direview',
+            'sudah-direview': 'Berhasil - Sudah Direview'
+          };
+          return report.statusPengiriman === reviewMap[filters.subFilters.reviewStatus];
+        });
+      }
     }
 
     if (filters.subFilters.jenisLJK !== 'all') {
@@ -621,9 +429,9 @@ const SIPINA = () => {
       });
     }
 
-    // Filter berdasarkan Nama LJK
-    if (filters.subFilters.namaLJK !== 'all') {
-      filtered = filtered.filter(report => report.namaLJK === filters.subFilters.namaLJK);
+    // Filter berdasarkan pengawas
+    if (filters.subFilters.pengawas !== 'all') {
+      filtered = filtered.filter(report => report.pengawas === filters.subFilters.pengawas);
     }
 
     // Apply search term
@@ -634,8 +442,9 @@ const SIPINA = () => {
         report.jenisLJK.toLowerCase().includes(term) ||
         report.periodeLaporan.toLowerCase().includes(term) ||
         report.batasWaktu.toLowerCase().includes(term) ||
-        report.namaLJK.toLowerCase().includes(term) ||
-        report.industriLJK.toLowerCase().includes(term)
+        report.LJK.toLowerCase().includes(term) ||
+        report.bidangLJK.toLowerCase().includes(term) ||
+        report.pengawas.toLowerCase().includes(term)
       );
     }
 
@@ -660,20 +469,46 @@ const SIPINA = () => {
     }));
   }, [reportsWithPeriod]);
 
+  // Get unique pengawas
+  const uniquePengawas = useMemo(() => {
+    const pengawas = [...new Set(reportsWithPeriod.map(report => report.pengawas))];
+    return pengawas.map(p => ({
+      value: p,
+      label: p
+    }));
+  }, [reportsWithPeriod]);
+
   // Hitung stats
   const stats = useMemo(() => {
     const activeReports = reportsWithPeriod.filter(r => r.periodeStatus === 'aktif');
     const lateReports = reportsWithPeriod.filter(r => r.periodeStatus === 'terlambat');
+    
+    // Hitung status review untuk periode terlambat
+    const sedangReviewTerlambat = lateReports.filter(r => 
+      r.status === 'berhasil' && r.statusPengiriman === 'Berhasil - Sedang Direview'
+    ).length;
+    
+    const sudahReviewTerlambat = lateReports.filter(r => 
+      r.status === 'berhasil' && r.statusPengiriman === 'Berhasil - Sudah Direview'
+    ).length;
+    
+    const belumReviewTerlambat = lateReports.filter(r => 
+      r.status === 'berhasil' && r.statusPengiriman === 'Berhasil - Belum Direview'
+    ).length;
     
     return {
       total: reportsWithPeriod.length,
       aktif: activeReports.length,
       terlambat: lateReports.length,
       berhasilTepatWaktu: activeReports.filter(r => r.status === 'berhasil' && r.statusKetepatanWaktu === 'Tepat Waktu').length,
-      berhasilTerlambat: lateReports.filter(r => r.status === 'berhasil' && r.statusKetepatanWaktu === 'Terlambat').length,
       belumLaporAktif: activeReports.filter(r => r.status === 'belum-lapor').length,
-      belumLaporTerlambat: lateReports.filter(r => r.status === 'belum-lapor').length,
       gagal: activeReports.filter(r => r.status === 'gagal').length,
+      // Statistik untuk periode terlambat
+      berhasilSedangReviewTerlambat: sedangReviewTerlambat,
+      berhasilSudahReviewTerlambat: sudahReviewTerlambat,
+      berhasilBelumReviewTerlambat: belumReviewTerlambat,
+      belumLaporTerlambat: lateReports.filter(r => r.status === 'belum-lapor').length,
+      totalLJK: LJKData.length
     };
   }, [reportsWithPeriod]);
 
@@ -689,60 +524,11 @@ const SIPINA = () => {
     return summary;
   }, [reportsWithPeriod]);
 
-  // Get date suggestions untuk 1 tahun kebelakang dan bulan realtime saat ini
-  const getDateSuggestions = () => {
-    const currentYear = currentDateTime.getFullYear();
-    const currentMonth = currentDateTime.getMonth() + 1;
-    
-    const suggestions = [];
-    
-    for (let year = currentYear - 1; year <= currentYear; year++) {
-      const startMonth = year === currentYear - 1 ? 1 : 1;
-      const endMonth = year === currentYear - 1 ? 12 : currentMonth;
-      
-      for (let month = startMonth; month <= endMonth; month++) {
-        const monthNames = [
-          'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-        ];
-        
-        const lastDay = new Date(year, month, 0).getDate();
-        
-        suggestions.push({
-          label: `${monthNames[month - 1]} ${year}`,
-          start: `${year}-${String(month).padStart(2, '0')}-01`,
-          end: `${year}-${String(month).padStart(2, '0')}-${lastDay}`
-        });
-      }
-    }
-    
-    return suggestions;
-  };
-
-  // Sub-filter options
-  const getSubFilterOptions = () => {
-    if (filters.periodeStatus === 'aktif') {
-      return [
-        { value: 'all', label: 'Semua Status' },
-        { value: 'berhasil-sesuai-waktu', label: 'Berhasil Sesuai Waktu' },
-        { value: 'belum-lapor', label: 'Belum Lapor' },
-        { value: 'gagal', label: 'Gagal' }
-      ];
-    } else if (filters.periodeStatus === 'terlambat') {
-      return [
-        { value: 'all', label: 'Semua Status' },
-        { value: 'sudah-lapor', label: 'Sudah Lapor' },
-        { value: 'belum-lapor-terlambat', label: 'Belum Lapor' }
-      ];
-    }
-    return [];
-  };
-
   const resetFilters = () => {
     const currentYear = currentDateTime.getFullYear();
     
     setDateRange({
-      startDate: `${currentYear - 2}-01-01`,
+      startDate: `${currentYear - 1}-01-01`,
       endDate: `${currentYear + 1}-12-31`
     });
     
@@ -752,8 +538,9 @@ const SIPINA = () => {
         statusDetail: 'all',
         jenisLJK: 'all',
         periode: 'all',
+        pengawas: 'all',
         searchTerm: '',
-        namaLJK: 'all'
+        reviewStatus: 'all'
       }
     });
     setSearchTerm('');
@@ -768,48 +555,39 @@ const SIPINA = () => {
         statusDetail: 'all',
         jenisLJK: 'all',
         periode: 'all',
+        pengawas: 'all',
         searchTerm: '',
-        namaLJK: 'all'
+        reviewStatus: 'all'
       }
     }));
     
     setShowSubFilters(true);
   };
 
-  const handleSubFilterChange = (key, value) => {
-    setFilters(prev => ({
-      ...prev,
-      subFilters: {
-        ...prev.subFilters,
-        [key]: value
+  const getStatusBadge = (status, statusPengiriman) => {
+    // Custom styling untuk status Berhasil dengan review pada periode terlambat
+    if (statusPengiriman) {
+      if (statusPengiriman.includes('Sedang Direview')) {
+        return (
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+            {statusPengiriman}
+          </span>
+        );
+      } else if (statusPengiriman.includes('Sudah Direview')) {
+        return (
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+            {statusPengiriman}
+          </span>
+        );
+      } else if (statusPengiriman.includes('Belum Direview')) {
+        return (
+          <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200">
+            {statusPengiriman}
+          </span>
+        );
       }
-    }));
-  };
+    }
 
-  const handleDateSuggestion = (suggestion) => {
-    setDateRange({
-      startDate: suggestion.start,
-      endDate: suggestion.end
-    });
-  };
-
-  // Function untuk badge Nama LJK - DESIGN MERAH SAMA
-  const getNamaLJKBadge = (nama, industri) => {
-    return (
-      <div className="space-y-1">
-        <div className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-          <User className="w-3 h-3 inline mr-1" />
-          {nama}
-        </div>
-        <div className="text-xs text-gray-500 pl-1">
-          {industri}
-        </div>
-      </div>
-    );
-  };
-
-  // Function untuk badge status pengiriman
-  const getStatusBadge = (status) => {
     const styles = {
       'berhasil': 'bg-green-100 text-green-800 border-green-200',
       'belum-lapor': 'bg-yellow-100 text-yellow-800 border-yellow-200',
@@ -817,7 +595,7 @@ const SIPINA = () => {
     };
 
     const labels = {
-      'berhasil': 'Berhasil',
+      'berhasil': statusPengiriman || 'Berhasil',
       'belum-lapor': 'Belum Lapor',
       'gagal': 'Gagal',
     };
@@ -829,12 +607,12 @@ const SIPINA = () => {
     );
   };
 
-  // Function untuk badge ketepatan waktu
   const getKetepatanBadge = (status) => {
     if (status === 'Tepat Waktu') {
       return <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">Tepat Waktu</span>;
-    } else if (status === 'Terlambat') {
-      return <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">Terlambat</span>;
+    } else if (status.includes('Hari Terlambat')) {
+      const days = status.split(' ')[0];
+      return <span className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">{status}</span>;
     } else if (status === 'Gagal Kirim') {
       return <span className="px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 border border-orange-200">Gagal Kirim</span>;
     } else {
@@ -842,7 +620,6 @@ const SIPINA = () => {
     }
   };
 
-  // Function untuk badge periode status
   const getPeriodeStatusBadge = (status) => {
     const styles = {
       'aktif': 'bg-green-100 text-green-800 border-green-200',
@@ -861,7 +638,6 @@ const SIPINA = () => {
     );
   };
 
-  // Function untuk badge jenis LJK SIPINA
   const getJenisLKJBadge = (jenis) => {
     const colorMap = {
       'Asuransi Jiwa': 'bg-red-100 text-red-800 border-red-200',
@@ -883,7 +659,17 @@ const SIPINA = () => {
     );
   };
 
-  // Tampilkan sisa waktu untuk laporan aktif yang Gagal dan Belum Lapor dalam HARI
+  const getPengawasBadge = (pengawas) => {
+    return (
+      <div className="space-y-1">
+        <div className="px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 border border-indigo-200">
+          <User className="w-3 h-3 inline mr-1" />
+          {pengawas}
+        </div>
+      </div>
+    );
+  };
+
   const getTimeDisplay = (report) => {
     if (report.periodeStatus === 'aktif') {
       const daysRemaining = Math.floor(report.hoursRemaining / 24);
@@ -917,6 +703,7 @@ const SIPINA = () => {
           </div>
         );
       } else {
+        // Belum lapor
         return (
           <div className="space-y-1">
             <div className="text-xs text-blue-600">
@@ -935,24 +722,30 @@ const SIPINA = () => {
         );
       }
     } else {
-      const daysLate = Math.floor(Math.abs(report.hoursLate) / 24);
+      // Terlambat
+      const daysLate = Math.ceil(report.hoursLate / 24);
       
       return (
         <div className="space-y-1">
-          {report.status === 'berhasil' ? (
-            <div className="text-xs text-green-600">
-              <span>Submit: {report.displaySubmit}</span>
-            </div>
-          ) : (
-            <div className="text-xs text-yellow-600">
-              <span>Belum submit</span>
+          <div className="text-xs text-blue-600">
+            {report.status === 'berhasil' && report.displaySubmit !== 'Belum submit' && (
+              <div>
+                <span>Submit: {report.displaySubmit}</span>
+              </div>
+            )}
+            {report.status === 'belum-lapor' && (
+              <div className="text-yellow-600">
+                <span>Belum submit</span>
+              </div>
+            )}
+          </div>
+          {report.lateDays > 0 && (
+            <div className="text-xs text-red-600">
+              Terlambat: {report.lateDays} hari
             </div>
           )}
           <div className="text-xs text-red-600">
             <span>Deadline: {report.displayDeadline}</span>
-          </div>
-          <div className="text-xs text-red-500">
-            Terlambat: {daysLate > 0 ? `${daysLate} hari` : 'Kurang dari 1 hari'}
           </div>
         </div>
       );
@@ -966,22 +759,16 @@ const SIPINA = () => {
   const handleExportData = () => {
     const exportData = filteredReports.map(report => ({
       'No': report.id,
-      'Nama LJK': report.namaLJK,
-      'Industri LJK': report.industriLJK,
-      'Jenis LJK': report.jenisLJK,
+      'Nama LJK': report.LJK,
+      'Bidang LJK': report.bidangLJK,
+      'Pengawas': report.pengawas,
       'Nama Laporan': report.namaLaporan,
       'Deadline': report.displayDeadline,
       'Submit': report.displaySubmit,
       'Status Periode': report.periodeStatus === 'aktif' ? 'Periode Aktif' : 'Terlambat',
       'Status Pengiriman': report.statusPengiriman,
       'Status Ketepatan Waktu': report.statusKetepatanWaktu,
-      'Sisa Waktu': report.periodeStatus === 'aktif' ? 
-        (report.hoursRemaining > 0 ? 
-          `${Math.floor(report.hoursRemaining / 24)} hari` : 
-          'Segera!') : 
-        (report.hoursLate > 0 ? 
-          `Terlambat ${Math.floor(report.hoursLate / 24)} hari` : 
-          'Terlambat')
+      'Hari Terlambat': report.lateDays > 0 ? report.lateDays : 0
     }));
 
     const csv = convertToCSV(exportData);
@@ -989,7 +776,7 @@ const SIPINA = () => {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `sipina-namaljk-reports-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `SIPINA-LJK-reports-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
   };
 
@@ -1033,17 +820,18 @@ const SIPINA = () => {
     });
   };
 
+  // PERBAIKAN: Tambahkan kolom Pengawas ke tabel dan filter
   return (
     <div className="space-y-6 animate-fade-in bg-gradient-to-br from-blue-50/20 to-white min-h-screen">
-      {/* Page Header - DESIGN MERAH SAMA */}
+      {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6">
         <div className="flex items-center space-x-4">
           <div className="p-3 bg-gradient-to-br from-red-600 via-red-500 to-red-700 rounded-xl shadow-lg">
-            <ShieldAlert className="w-7 h-7 text-white" />
+            <BarChart3 className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Sistem SIPINA {currentDateTime.getFullYear()}</h1>
-            <p className="text-gray-600 mt-1">Monitoring Laporan LJK SIPINA - Total {stats.total} Laporan • {namaLJKData.length} LJK</p>
+            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Sistem Pengawasan LJK SIPINA {currentDateTime.getFullYear()}</h1>
+            <p className="text-gray-600 mt-1">Monitoring Pengawasan LJK Laporan SIPINA - Total {stats.total} Laporan • {stats.totalLJK} LJK</p>
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Clock className="w-3 h-3 inline mr-1" />
@@ -1053,10 +841,7 @@ const SIPINA = () => {
                 <Calendar className="w-3 h-3 inline mr-1" />
                 {getCurrentDateDisplay()}
               </p>
-              <p className="text-sm font-medium text-red-700 bg-red-50 px-3 py-1 rounded-lg shadow-sm border border-red-200">
-                <User className="w-3 h-3 inline mr-1" />
-                {namaLJKData.length} LJK
-              </p>
+             
             </div>
           </div>
         </div>
@@ -1077,7 +862,7 @@ const SIPINA = () => {
         </div>
       </div>
 
-      {/* Filter Section - DESIGN MERAH SAMA */}
+      {/* Filter Section */}
       <div className="px-6">
         <div className="bg-gradient-to-br from-white to-red-50/30 rounded-xl shadow-lg border border-red-100 overflow-hidden">
           <div className="p-6 border-b border-red-100 bg-gradient-to-r from-red-50 to-white">
@@ -1088,7 +873,7 @@ const SIPINA = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-red-900">Filter Periode Laporan {currentDateTime.getFullYear()}</h3>
-                  <p className="text-sm text-gray-600">Pilih rentang tanggal deadline terlebih dahulu</p>
+                  <p className="text-sm text-gray-600">Pilih rentang tanggal deadline terlebih dahulu (Maksimal 1 Tahun: {currentDateTime.getFullYear() - 1} - {currentDateTime.getFullYear() + 1})</p>
                 </div>
               </div>
               <button
@@ -1104,43 +889,21 @@ const SIPINA = () => {
             {/* Level 0: Periode Tanggal Filter */}
             <div className="mb-6">
               <h4 className="text-sm font-medium text-gray-700 mb-4">
-                Level 0: Pilih Rentang Tanggal Deadline ({currentDateTime.getFullYear() - 2} - {currentDateTime.getFullYear() + 1})
+                Level 0: Pilih Rentang Tanggal Deadline ({currentDateTime.getFullYear() - 1} - {currentDateTime.getFullYear() + 1})
               </h4>
-              
-              {/* Quick Date Suggestions */}
-              <div className="mb-4">
-                <div className="text-xs text-gray-600 mb-2">
-                  Pilihan Cepat Periode {currentDateTime.getFullYear() - 1} - {currentDateTime.getFullYear()} (Bulanan):
-                </div>
-                <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-2 border border-gray-200 rounded-lg">
-                  {getDateSuggestions().map((suggestion, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleDateSuggestion(suggestion)}
-                      className={`px-3 py-1.5 text-xs rounded-lg border transition-colors flex-shrink-0 ${
-                        dateRange.startDate === suggestion.start && dateRange.endDate === suggestion.end
-                          ? 'bg-blue-100 text-blue-700 border-blue-300'
-                          : 'bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200'
-                      }`}
-                    >
-                      {suggestion.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Calendar className="w-4 h-4 inline mr-2" />
-                    Tanggal Mulai ({currentDateTime.getFullYear() - 2})
+                    Tanggal Mulai ({currentDateTime.getFullYear() - 1})
                   </label>
                   <input
                     type="date"
                     value={dateRange.startDate}
                     onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
-                    min={`${currentDateTime.getFullYear() - 2}-01-01`}
+                    min={`${currentDateTime.getFullYear() - 1}-01-01`}
                     max={`${currentDateTime.getFullYear() + 1}-12-31`}
                   />
                 </div>
@@ -1155,7 +918,7 @@ const SIPINA = () => {
                     value={dateRange.endDate}
                     onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
-                    min={`${currentDateTime.getFullYear() - 2}-01-01`}
+                    min={`${currentDateTime.getFullYear() - 1}-01-01`}
                     max={`${currentDateTime.getFullYear() + 1}-12-31`}
                   />
                 </div>
@@ -1163,18 +926,17 @@ const SIPINA = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <User className="w-4 h-4 inline mr-2" />
-                    Info Periode & LJK
+                    Periode Terpilih & LJK
                   </label>
                   <div className="p-3 bg-red-50 rounded-xl border border-red-200">
                     <div className="text-sm font-medium text-red-900">
                       {formatDateDisplay(dateRange.startDate)} - {formatDateDisplay(dateRange.endDate)}
                     </div>
                     <div className="text-xs text-red-700 mt-1">
-                      {stats.total} laporan • {namaLJKData.length} LJK
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
+                      {stats.total} laporan ditemukan • 
                       Aktif: {stats.aktif} • Terlambat: {stats.terlambat}
                     </div>
+                 
                   </div>
                 </div>
               </div>
@@ -1200,7 +962,7 @@ const SIPINA = () => {
                       <div className="font-bold text-gray-900">Periode Aktif</div>
                       <div className="text-sm text-gray-600">{periodeStatusSummary.aktif || 0} laporan</div>
                       <div className="text-xs text-green-600">
-                        Status: Berhasil, Belum Lapor, Gagal
+                        Status: Berhasil Tepat Waktu, Belum Lapor, Gagal
                       </div>
                     </div>
                   </div>
@@ -1223,37 +985,22 @@ const SIPINA = () => {
                       <div className="font-bold text-gray-900">Terlambat</div>
                       <div className="text-sm text-gray-600">{periodeStatusSummary.terlambat || 0} laporan</div>
                       <div className="text-xs text-red-600">
-                        Status: Sudah Lapor, Belum Lapor
+                        Status: Sudah Lapor atau Belum Lapor
                       </div>
                     </div>
                   </div>
                   {filters.periodeStatus === 'terlambat' && <ChevronDown className="w-5 h-5 text-red-500" />}
                 </button>
 
-                <div className="p-4 rounded-xl border-2 border-gray-200 bg-gradient-to-r from-red-50 to-white">
-                  <div className="flex items-center space-x-3">
-                    <div className="p-2 bg-red-100 rounded-lg">
-                      <User className="w-5 h-5 text-red-600" />
-                    </div>
-                    <div className="text-left">
-                      <div className="font-bold text-gray-900">Info LJK</div>
-                      <div className="text-sm text-red-700 font-medium">
-                        {namaLJKData.length} LJK Terdaftar
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        Tahun {currentDateTime.getFullYear()} • {uniqueNamaLJK.length} aktif
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                
               </div>
             </div>
 
-            {/* Level 2: Sub Filters - DENGAN FILTER NAMA LJK */}
+            {/* Level 2: Sub Filters */}
             {(filters.periodeStatus !== 'all' || showSubFilters) && (
               <div className="mb-6 animate-slide-down">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-sm font-medium text-gray-700">Level 2: Filter Detail Status & LJK</h4>
+                  <h4 className="text-sm font-medium text-gray-700">Level 2: Filter Detail Status</h4>
                   <button
                     onClick={() => setShowSubFilters(!showSubFilters)}
                     className="text-sm text-gray-600 hover:text-gray-800 flex items-center space-x-1"
@@ -1275,68 +1022,115 @@ const SIPINA = () => {
                 {showSubFilters && (
                   <div className="space-y-6">
                     {/* Status Detail Filter */}
-                    <div className="bg-gradient-to-br from-red-50 to-blue-50 p-4 rounded-xl border border-red-200">
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
                       <div className="flex items-center mb-3">
-                        <div className="p-2 bg-red-100 rounded-lg mr-3">
-                          <Filter className="w-4 h-4 text-red-600" />
+                        <div className="p-2 bg-blue-100 rounded-lg mr-3">
+                          <Filter className="w-4 h-4 text-blue-600" />
                         </div>
                         <div>
-                          <h5 className="font-medium text-red-900">Detail Status dalam {filters.periodeStatus === 'aktif' ? 'Periode Aktif' : 'Terlambat'}</h5>
-                          <p className="text-sm text-red-700">
-                            Pilih status detail untuk memfilter lebih spesifik
+                          <h5 className="font-medium text-blue-900">Detail Status dalam {filters.periodeStatus === 'aktif' ? 'Periode Aktif' : 'Terlambat'}</h5>
+                          <p className="text-sm text-blue-700">
+                            {filters.periodeStatus === 'terlambat' 
+                              ? 'Pilih status laporan yang terlambat' 
+                              : 'Pilih status detail untuk memfilter lebih spesifik'}
                           </p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                         {getSubFilterOptions().map((option) => (
                           <button
                             key={option.value}
                             onClick={() => handleSubFilterChange('statusDetail', option.value)}
                             className={`p-3 rounded-lg border-2 text-left transition-all duration-200 ${
                               filters.subFilters.statusDetail === option.value
-                                ? 'border-red-500 bg-red-50 shadow-sm'
+                                ? 'border-blue-500 bg-blue-50 shadow-sm'
                                 : 'border-gray-200 bg-white hover:border-gray-300'
                             }`}
                           >
-                            <div className="font-medium text-gray-900">{option.label}</div>
+                            <div className="font-medium text-gray-900">
+                              {option.label}
+                            </div>
                             <div className="text-xs text-gray-500 mt-1">
                               {option.value === 'all' 
                                 ? 'Tampilkan semua' 
                                 : option.value === 'berhasil-sesuai-waktu'
-                                ? 'Laporan berhasil sesuai deadline'
+                                ? 'Laporan berhasil submit tepat waktu'
                                 : option.value === 'belum-lapor'
                                 ? 'Belum melakukan pelaporan'
                                 : option.value === 'gagal'
-                                ? 'Gagal dalam pelaporan (tampilkan sisa waktu)'
+                                ? 'Gagal dalam pelaporan'
                                 : option.value === 'sudah-lapor'
-                                ? 'Sudah lapor tapi terlambat'
+                                ? 'Sudah melakukan pelaporan namun terlambat'
                                 : 'Belum lapor dan terlambat'}
                             </div>
                           </button>
                         ))}
                       </div>
+
+                      {/* Level 3: Review Status Filter (hanya muncul jika memilih Sudah Lapor pada periode terlambat) */}
+                      {filters.periodeStatus === 'terlambat' && filters.subFilters.statusDetail === 'sudah-lapor' && (
+                        <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+                          <div className="flex items-center mb-3">
+                            <div className="p-2 bg-purple-100 rounded-lg mr-3">
+                              <FileCheck className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <h5 className="font-medium text-blue-900">Level 3: Status Review</h5>
+                              <p className="text-sm text-blue-700">
+                                Pilih status review untuk laporan yang sudah submit tapi terlambat
+                              </p>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                            {getReviewStatusOptions().map((option) => (
+                              <button
+                                key={option.value}
+                                onClick={() => handleSubFilterChange('reviewStatus', option.value)}
+                                className={`p-3 rounded-lg border-2 text-left transition-all duration-200 ${
+                                  filters.subFilters.reviewStatus === option.value
+                                    ? 'border-blue-500 bg-blue-50 shadow-sm'
+                                    : 'border-gray-200 bg-white hover:border-gray-300'
+                                }`}
+                              >
+                                <div className="font-medium text-gray-900">
+                                  {option.label}
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">
+                                  {option.value === 'all' 
+                                    ? 'Semua status review' 
+                                    : option.value === 'belum-direview'
+                                    ? 'Laporan terlambat belum direview'
+                                    : option.value === 'sedang-direview'
+                                    ? 'Laporan terlambat sedang direview'
+                                    : 'Laporan terlambat sudah direview'}
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
-                    {/* Additional Filters - DENGAN FILTER NAMA LJK */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Additional Filters */}
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           <User className="w-4 h-4 inline mr-2" />
-                          Nama LJK
+                          Pengawas
                           <span className="ml-1 text-xs text-gray-500">
-                            ({uniqueNamaLJK.length} tersedia)
+                            ({uniquePengawas.length} tersedia)
                           </span>
                         </label>
                         <select
-                          value={filters.subFilters.namaLJK}
-                          onChange={(e) => handleSubFilterChange('namaLJK', e.target.value)}
-                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white shadow-sm"
-                          disabled={uniqueNamaLJK.length === 0}
+                          value={filters.subFilters.pengawas}
+                          onChange={(e) => handleSubFilterChange('pengawas', e.target.value)}
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
+                          disabled={uniquePengawas.length === 0}
                         >
                           <option value="all">
-                            {uniqueNamaLJK.length === 0 ? 'Tidak tersedia' : 'Semua LJK'}
+                            {uniquePengawas.length === 0 ? 'Tidak tersedia' : 'Semua Pengawas'}
                           </option>
-                          {uniqueNamaLJK.map((item) => (
+                          {uniquePengawas.map((item) => (
                             <option key={item.value} value={item.value}>
                               {item.label}
                             </option>
@@ -1355,11 +1149,11 @@ const SIPINA = () => {
                         <select
                           value={filters.subFilters.jenisLJK}
                           onChange={(e) => handleSubFilterChange('jenisLJK', e.target.value)}
-                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white shadow-sm"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                           disabled={uniqueJenisLJK.length === 0}
                         >
                           <option value="all">
-                            {uniqueJenisLJK.length === 0 ? 'Tidak tersedia' : 'Semua Jenis'}
+                            {uniqueJenisLJK.length === 0 ? 'Tidak tersedia' : 'Semua Jenis LJK'}
                           </option>
                           {uniqueJenisLJK.map((item) => (
                             <option key={item.value} value={item.value}>
@@ -1380,7 +1174,7 @@ const SIPINA = () => {
                         <select
                           value={filters.subFilters.periode}
                           onChange={(e) => handleSubFilterChange('periode', e.target.value)}
-                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white shadow-sm"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                           disabled={uniquePeriode.length === 0}
                         >
                           <option value="all">
@@ -1394,10 +1188,10 @@ const SIPINA = () => {
                         </select>
                       </div>
 
-                      <div className="md:col-span-3">
+                      <div className="md:col-span-4">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           <Search className="w-4 h-4 inline mr-2" />
-                          Cari Laporan / Nama LJK
+                          Cari Laporan / LJK / Pengawas
                         </label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -1405,8 +1199,8 @@ const SIPINA = () => {
                           </div>
                           <input
                             type="text"
-                            placeholder="Cari nama laporan, nama LJK..."
-                            className="pl-10 pr-4 py-2.5 w-full border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent bg-white shadow-sm"
+                            placeholder="Cari nama laporan, LJK, pengawas, atau bidang..."
+                            className="pl-10 pr-4 py-2.5 w-full border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                           />
@@ -1419,38 +1213,63 @@ const SIPINA = () => {
             )}
 
             {/* Filter Info Summary */}
-            <div className="bg-gradient-to-r from-red-50 to-blue-50 p-4 rounded-xl border border-red-200">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-red-100 rounded-lg">
-                    <Filter className="w-4 h-4 text-red-600" />
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Filter className="w-4 h-4 text-blue-600" />
                   </div>
                   <div>
-                    <h5 className="font-medium text-red-900">Filter Aktif Tahun {currentDateTime.getFullYear()}:</h5>
+                    <h5 className="font-medium text-blue-900">Filter Aktif Tahun {currentDateTime.getFullYear()}:</h5>
                     <div className="flex flex-wrap gap-2 mt-1">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 border border-purple-200">
                         Periode: {formatDateDisplay(dateRange.startDate)} - {formatDateDisplay(dateRange.endDate)}
                       </span>
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
+                        filters.periodeStatus === 'aktif' 
+                          ? 'bg-green-100 text-green-800 border-green-200' 
+                          : 'bg-red-100 text-red-800 border-red-200'
+                      }`}>
                         {filters.periodeStatus === 'aktif' ? 'Periode Aktif' : 'Terlambat'}
                       </span>
                       {filters.subFilters.statusDetail !== 'all' && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
+                          filters.subFilters.statusDetail === 'sudah-lapor'
+                            ? 'bg-blue-100 text-blue-800 border-blue-200'
+                            : filters.subFilters.statusDetail === 'berhasil-sesuai-waktu'
+                            ? 'bg-blue-100 text-blue-800 border-blue-200'
+                            : filters.subFilters.statusDetail === 'belum-lapor' || filters.subFilters.statusDetail === 'belum-lapor-terlambat'
+                            ? 'bg-blue-100 text-blue-800 border-blue-200'
+                            : filters.subFilters.statusDetail === 'gagal'
+                            ? 'bg-red-100 text-red-800 border-red-200'
+                            : 'bg-blue-100 text-blue-800 border-blue-200'
+                        }`}>
                           Detail: {getSubFilterOptions().find(opt => opt.value === filters.subFilters.statusDetail)?.label}
                           <button 
                             onClick={() => handleSubFilterChange('statusDetail', 'all')}
-                            className="ml-2 text-red-600 hover:text-red-800"
+                            className="ml-2 text-blue-600 hover:text-blue-800"
                           >
                             ×
                           </button>
                         </span>
                       )}
-                      {filters.subFilters.namaLJK !== 'all' && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                          Perusahaan: {filters.subFilters.namaLJK}
+                      {filters.periodeStatus === 'terlambat' && filters.subFilters.statusDetail === 'sudah-lapor' && filters.subFilters.reviewStatus !== 'all' && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 border border-indigo-200">
+                          Review: {getReviewStatusOptions().find(opt => opt.value === filters.subFilters.reviewStatus)?.label}
                           <button 
-                            onClick={() => handleSubFilterChange('namaLJK', 'all')}
-                            className="ml-2 text-red-600 hover:text-red-800"
+                            onClick={() => handleSubFilterChange('reviewStatus', 'all')}
+                            className="ml-2 text-indigo-600 hover:text-indigo-800"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      )}
+                      {filters.subFilters.pengawas !== 'all' && (
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 border border-indigo-200">
+                          Pengawas: {filters.subFilters.pengawas}
+                          <button 
+                            onClick={() => handleSubFilterChange('pengawas', 'all')}
+                            className="ml-2 text-indigo-600 hover:text-indigo-800"
                           >
                             ×
                           </button>
@@ -1458,7 +1277,7 @@ const SIPINA = () => {
                       )}
                       {filters.subFilters.jenisLJK !== 'all' && (
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 border border-green-200">
-                          Asuransi: {filters.subFilters.jenisLJK}
+                          LJK: {filters.subFilters.jenisLJK}
                           <button 
                             onClick={() => handleSubFilterChange('jenisLJK', 'all')}
                             className="ml-2 text-green-600 hover:text-green-800"
@@ -1492,8 +1311,13 @@ const SIPINA = () => {
                     </div>
                   </div>
                 </div>
-                <div className="text-sm font-medium text-red-700">
+                <div className="text-sm font-medium text-blue-700">
                   {filteredReports.length} laporan ditemukan
+                  {filters.periodeStatus === 'terlambat' && filters.subFilters.statusDetail === 'sudah-lapor' && filters.subFilters.reviewStatus !== 'all' && (
+                    <span className="ml-2">
+                      • {getReviewStatusOptions().find(opt => opt.value === filters.subFilters.reviewStatus)?.label}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -1501,7 +1325,7 @@ const SIPINA = () => {
         </div>
       </div>
 
-      {/* Reports Table - DENGAN KOLOM NAMA LJK */}
+      {/* Reports Table */}
       <div className="px-6 pb-6">
         <div className="bg-gradient-to-br from-white to-red-50/30 rounded-xl shadow-lg border border-red-100 overflow-hidden">
           <div className="p-6 border-b border-red-100 bg-gradient-to-r from-red-50 to-white">
@@ -1510,13 +1334,29 @@ const SIPINA = () => {
                 <div className="p-2 bg-gradient-to-r from-red-100 to-red-200 rounded-lg shadow-sm">
                   <FileText className="w-5 h-5 text-red-600" />
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-red-900">Daftar Laporan SIPINA {currentDateTime.getFullYear()}</h3>
-                  <p className="text-sm text-gray-600">
-                    Periode: {formatDateDisplay(dateRange.startDate)} - {formatDateDisplay(dateRange.endDate)} • 
-                    Tanggal: {getCurrentDateDisplay()} • {namaLJKData.length} LJK
+                  <div className="min-w-0 flex-1">
+              <h3 className="text-lg font-bold text-red-900 truncate">
+                Daftar Laporan LJK SIPINA {currentDateTime.getFullYear()}
+              </h3>
+              <div className="mt-2 space-y-1">
+                {/* Baris 1: Informasi periode */}
+                <p className="text-sm text-gray-600 truncate">
+                  Periode: <span className="font-medium">{formatDateDisplay(dateRange.startDate)}</span> - <span className="font-medium">{formatDateDisplay(dateRange.endDate)}</span>
+                </p>
+                {/* Baris 2: Informasi tanggal dan tahun data */}
+                <div className="flex flex-wrap gap-x-3 gap-y-1">
+                  <p className="text-xs text-gray-500">
+                    <span className="font-medium">Tanggal:</span> {getCurrentDateDisplay()}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    <span className="font-medium">Data:</span> {currentDateTime.getFullYear() - 1} - {currentDateTime.getFullYear() + 1}
+                  </p>
+                  <p className="text-xs text-gray-500 font-medium">
+                    {filteredReports.length} dari {stats.total} laporan
                   </p>
                 </div>
+              </div>
+            </div>
               </div>
               <div className="text-sm text-gray-600 font-medium">
                 Menampilkan {filteredReports.length} dari {stats.total} laporan
@@ -1529,7 +1369,8 @@ const SIPINA = () => {
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">LJK</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama LJK</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Pengawas</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status Periode</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jenis LJK</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Laporan</th>
@@ -1541,12 +1382,23 @@ const SIPINA = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredReports.map((report) => (
-                  <tr key={report.id} className={`hover:bg-red-50/50 transition-colors duration-200 ${
+                  <tr key={report.id} className={`hover:bg-blue-50/50 transition-colors duration-200 ${
                     report.periodeStatus === 'terlambat' ? 'bg-red-50/30' : ''
                   }`}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{report.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {getNamaLJKBadge(report.namaLJK, report.industriLJK)}
+                      <div className="space-y-1">
+                        <div className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
+                          <Building className="w-3 h-3 inline mr-1" />
+                          {report.LJK}
+                        </div>
+                        <div className="text-xs text-gray-500 pl-1">
+                          {report.bidangLJK}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {getPengawasBadge(report.pengawas)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getPeriodeStatusBadge(report.periodeStatus)}
@@ -1560,7 +1412,7 @@ const SIPINA = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(report.status)}
+                      {getStatusBadge(report.status, report.statusPengiriman)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getKetepatanBadge(report.statusKetepatanWaktu)}
@@ -1574,7 +1426,7 @@ const SIPINA = () => {
                       <div className="flex items-center space-x-2">
                         <button
                           onClick={() => handleViewDetails(report)}
-                          className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Lihat detail"
                         >
                           <Eye className="w-4 h-4" />
@@ -1589,14 +1441,14 @@ const SIPINA = () => {
 
           {filteredReports.length === 0 && (
             <div className="p-12 text-center">
-              <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertCircle className="w-8 h-8 text-red-400" />
+              <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <AlertCircle className="w-8 h-8 text-blue-400" />
               </div>
               <h3 className="text-lg font-bold text-gray-900 mb-2">Tidak ada laporan ditemukan</h3>
               <p className="text-gray-600">Tidak ada laporan yang sesuai dengan kriteria pencarian atau filter</p>
               <button
                 onClick={resetFilters}
-                className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 Reset Filter
               </button>
@@ -1609,7 +1461,7 @@ const SIPINA = () => {
               <div className="text-sm text-gray-600">
                 Data diperbarui berdasarkan waktu real-time • 
                 Periode: {formatDateDisplay(dateRange.startDate)} - {formatDateDisplay(dateRange.endDate)} • 
-                {namaLJKData.length} LJK
+                {stats.totalLJK} LJK • {uniquePengawas.length} Pengawas
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">
@@ -1621,22 +1473,37 @@ const SIPINA = () => {
         </div>
       </div>
 
-      {/* Detail Modal - DENGAN INFO NAMA LJK */}
+      {/* Detail Modal */}
       {selectedReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-red-50 to-white">
+            <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-gradient-to-r from-red-100 to-red-200 rounded-lg">
-                    <FileText className="w-6 h-6 text-red-600" />
+                  <div className="p-2 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg">
+                    <FileText className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-red-900">Detail Laporan SIPINA {currentDateTime.getFullYear()}</h3>
+                    <h3 className="text-xl font-bold text-blue-900">Detail Laporan LJK SIPINA {currentDateTime.getFullYear()}</h3>
                     <div className="flex items-center space-x-2 mt-1">
                       {getPeriodeStatusBadge(selectedReport.periodeStatus)}
+                      {selectedReport.statusPengiriman && selectedReport.statusPengiriman.includes('Direview') && (
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                          selectedReport.statusPengiriman.includes('Sedang') 
+                            ? 'bg-blue-100 text-blue-800 border-blue-200'
+                            : selectedReport.statusPengiriman.includes('Sudah')
+                            ? 'bg-green-100 text-green-800 border-green-200'
+                            : 'bg-purple-100 text-purple-800 border-purple-200'
+                        }`}>
+                          {selectedReport.statusPengiriman}
+                        </span>
+                      )}
                       <span className="text-gray-600">• ID: {selectedReport.id}</span>
-                      <span className="text-red-600">• Perusahaan: {selectedReport.namaLJK}</span>
+                      {selectedReport.lateDays > 0 && (
+                        <span className="text-red-600 font-medium">
+                          • Terlambat: {selectedReport.lateDays} hari
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1652,15 +1519,19 @@ const SIPINA = () => {
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">LJK</h4>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Nama LJK</h4>
                   <div className="p-3 bg-red-50 rounded-lg">
                     <p className="text-lg font-medium text-red-900">
-                      {selectedReport.namaLJK}
+                      {selectedReport.LJK}
                     </p>
                     <p className="text-sm text-red-700">
-                      {selectedReport.industriLJK}
+                      {selectedReport.bidangLJK}
                     </p>
                   </div>
+                </div>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-500 mb-2">Pengawas</h4>
+                  {getPengawasBadge(selectedReport.pengawas)}
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Jenis LJK</h4>
@@ -1695,15 +1566,33 @@ const SIPINA = () => {
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Waktu Submit</h4>
                   <div className={`p-3 rounded-lg ${
-                    selectedReport.status === 'berhasil' ? 'bg-green-50' : 
-                    selectedReport.status === 'belum-lapor' ? 'bg-yellow-50' : 'bg-red-50'
+                    selectedReport.status === 'berhasil' 
+                      ? selectedReport.statusPengiriman?.includes('Sudah') 
+                        ? 'bg-green-50' 
+                        : selectedReport.statusPengiriman?.includes('Sedang')
+                        ? 'bg-blue-50'
+                        : selectedReport.statusPengiriman?.includes('Belum')
+                        ? 'bg-purple-50'
+                        : 'bg-green-50'
+                      : selectedReport.status === 'belum-lapor' 
+                      ? 'bg-yellow-50' 
+                      : 'bg-red-50'
                   }`}>
                     <p className="text-lg font-medium text-gray-900">
                       {selectedReport.displaySubmit}
                     </p>
                     <div className="mt-2 text-sm text-gray-600">
-                      {selectedReport.status === 'berhasil' ? '✅ Berhasil submit' : 
-                       selectedReport.status === 'belum-lapor' ? '⏳ Belum submit' : '❌ Gagal submit'}
+                      {selectedReport.status === 'berhasil' 
+                        ? selectedReport.statusPengiriman?.includes('Sudah') 
+                          ? '✅ Sudah direview' 
+                          : selectedReport.statusPengiriman?.includes('Sedang')
+                          ? '🔄 Sedang direview'
+                          : selectedReport.statusPengiriman?.includes('Belum')
+                          ? '⏳ Belum direview'
+                          : '✅ Berhasil submit'
+                        : selectedReport.status === 'belum-lapor' 
+                        ? '⏳ Belum submit' 
+                        : '❌ Gagal submit'}
                     </div>
                   </div>
                 </div>
@@ -1714,27 +1603,41 @@ const SIPINA = () => {
                     {selectedReport.periodeStatus === 'aktif' ? (
                       selectedReport.status === 'berhasil' ? (
                         <div className="text-green-600">
-                          ✅ Submit: {selectedReport.displaySubmit}
+                          Submit: {selectedReport.displaySubmit}
                         </div>
                       ) : (
                         <div className="text-blue-600">
-                          ⏳ Sisa waktu: {selectedReport.hoursRemaining > 0 ? 
+                          Sisa waktu: {selectedReport.hoursRemaining > 0 ? 
                             `${Math.floor(selectedReport.hoursRemaining / 24)} hari` : 
                             'Segera!'}
                         </div>
                       )
                     ) : (
                       <div className="text-red-600">
+                        Terlambat: {selectedReport.lateDays > 0 ? `${selectedReport.lateDays} hari` : '0 hari'}
+                        {selectedReport.statusPengiriman && selectedReport.statusPengiriman.includes('Direview') && (
+                          <div className={`mt-1 ${
+                            selectedReport.statusPengiriman.includes('Sedang') 
+                              ? 'text-blue-600'
+                              : selectedReport.statusPengiriman.includes('Sudah')
+                              ? 'text-green-600'
+                              : 'text-purple-600'
+                          }`}>
+                            {selectedReport.statusPengiriman}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Status Pengiriman</h4>
-                  {getStatusBadge(selectedReport.status)}
+                  {getStatusBadge(selectedReport.status, selectedReport.statusPengiriman)}
                   <p className="text-sm text-gray-600 mt-1">
                     {selectedReport.status === 'berhasil' 
-                      ? 'Laporan berhasil dikirim' 
+                      ? selectedReport.statusPengiriman?.includes('Direview')
+                        ? 'Laporan terlambat dengan status review'
+                        : 'Laporan berhasil dikirim'
                       : selectedReport.status === 'belum-lapor'
                       ? 'Belum melakukan pengiriman'
                       : 'Gagal dalam pengiriman'}

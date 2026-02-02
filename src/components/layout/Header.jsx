@@ -248,16 +248,7 @@ const Header = ({ toggleSidebar, sidebarOpen }) => {
                         <User className="w-4 h-4 mr-3 text-red-600" />
                         <span>Profil Saya</span>
                       </button>
-                      <button 
-                        onClick={() => {
-                          navigate('/settings');
-                          setShowUserMenu(false);
-                        }}
-                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 transition-colors"
-                      >
-                        <Settings className="w-4 h-4 mr-3 text-red-600" />
-                        <span>Pengaturan</span>
-                      </button>
+                  
                       <div className="border-t border-red-100">
                         <button 
                           onClick={() => {
