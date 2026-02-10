@@ -11,15 +11,7 @@ const WelcomeBanner = () => {
             <p className="text-blue-100 mb-6">
               Kelola dan pantau semua laporan APOLO, E-Reporting, dan SIPINA dalam satu dashboard yang terintegrasi
             </p>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-                <TrendingUp className="w-5 h-5" />
-                <span className="font-medium">Dashboard Real-time</span>
-              </div>
-              <div className="hidden sm:flex items-center space-x-2 bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2">
-                <span className="font-medium">24/7 Monitoring</span>
-              </div>
-            </div>
+      
           </div>
           <div className="flex-shrink-0">
             <div className="w-24 h-24 md:w-32 md:h-32 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
