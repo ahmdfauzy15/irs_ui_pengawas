@@ -78,16 +78,16 @@ const ApoloReports = () => {
 
   // Data LJK LJK
   const LJKData = [
-    { nama: "Bank ABC", bidang: "Jasa Penilai" },
-    { nama: "Bank DEF", bidang: "Jasa Penilai" },
+    { nama: "Bank ABC", bidang: "Bank Umum Konvensional" },
+    { nama: "Bank DEF", bidang: "Bank Umum Konvensional" },
     { nama: "PT ABC", bidang: "Konsultan Aktuaria" },
-    { nama: "PT DEF", bidang: "Jasa Penilai" },
-    { nama: "PT BAIK", bidang: "Ahli Syariah Pasar Modal" },
-    { nama: "BANK BSE", bidang: "Ahli Syariah Pasar Modal" },
-    { nama: "PT BCC", bidang: "Ahli Syariah Pasar Modal" },
-    { nama: "PT BBB", bidang: "Jasa Penilai" },
-    { nama: "BANK AAA", bidang: "Jasa Penilai" },
-    { nama: "BANK ZXC", bidang: "Ahli Syariah Pasar Modal" },
+    { nama: "PT DEF", bidang: "Bank Umum Konvensional" },
+    { nama: "PT BAIK", bidang: "Bank Umum Syariah" },
+    { nama: "BANK BSE", bidang: "Bank Umum Syariah" },
+    { nama: "PT BCC", bidang: "Bank Umum Syariah" },
+    { nama: "PT BBB", bidang: "Bank Umum Konvensional" },
+    { nama: "BANK AAA", bidang: "Bank Umum Konvensional" },
+    { nama: "BANK ZXC", bidang: "Bank Umum Syariah" },
   ];
 
   // Data reports APOLO dengan status review untuk periode terlambat
@@ -157,7 +157,7 @@ const ApoloReports = () => {
         statusKetepatan: "Tepat Waktu",
         statusReview: "belum-review",
         LJK: "Bank ABC",
-        bidangLJK: "Jasa Penilai"
+        bidangLJK: "Bank Umum Konvensional"
       },
       {
         id: 2,
@@ -174,7 +174,7 @@ const ApoloReports = () => {
         statusKetepatan: "Tepat Waktu",
         statusReview: "belum-review",
         LJK: "Bank DEF",
-        bidangLJK: "Jasa Penilai"
+        bidangLJK: "Bank Umum Konvensional"
       },
       {
         id: 3,
@@ -208,7 +208,7 @@ const ApoloReports = () => {
         statusKetepatan: "Tepat Waktu",
         statusReview: "sedang-review",
         LJK: "PT DEF",
-        bidangLJK: "Jasa Penilai"
+        bidangLJK: "Bank Umum Konvensional"
       },
       {
         id: 5,
@@ -225,7 +225,7 @@ const ApoloReports = () => {
         statusKetepatan: "Belum Submit",
         statusReview: null,
         LJK: "PT BAIK",
-        bidangLJK: "Ahli Syariah Pasar Modal"
+        bidangLJK: "Bank Umum Syariah"
       },
       // Data terlambat dengan status review
       {
@@ -243,7 +243,7 @@ const ApoloReports = () => {
         statusKetepatan: "Terlambat",
         statusReview: "sedang-review",
         LJK: "BANK BSE",
-        bidangLJK: "Ahli Syariah Pasar Modal"
+        bidangLJK: "Bank Umum Syariah"
       },
       {
         id: 7,
@@ -260,7 +260,7 @@ const ApoloReports = () => {
         statusKetepatan: "Terlambat",
         statusReview: "sudah-review",
         LJK: "PT BCC",
-        bidangLJK: "Ahli Syariah Pasar Modal"
+        bidangLJK: "Bank Umum Syariah"
       },
       {
         id: 8,
@@ -277,7 +277,7 @@ const ApoloReports = () => {
         statusKetepatan: "Terlambat",
         statusReview: "belum-review",
         LJK: "PT BBB",
-        bidangLJK: "Jasa Penilai"
+        bidangLJK: "Bank Umum Konvensional"
       },
       {
         id: 9,
@@ -294,7 +294,7 @@ const ApoloReports = () => {
         statusKetepatan: "Terlambat",
         statusReview: "sedang-review",
         LJK: "BANK AAA",
-        bidangLJK: "Jasa Penilai"
+        bidangLJK: "Bank Umum Konvensional"
       },
       {
         id: 10,
@@ -311,7 +311,7 @@ const ApoloReports = () => {
         statusKetepatan: "Tepat Waktu",
         statusReview: "sudah-review",
         LJK: "BANK ZXC",
-        bidangLJK: "Ahli Syariah Pasar Modal"
+        bidangLJK: "Bank Umum Syariah"
       }
     ];
   }, [currentDateTime]);
