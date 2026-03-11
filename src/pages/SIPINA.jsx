@@ -40,13 +40,13 @@ const SIPINA = () => {
   const [currentDateTime, setCurrentDateTime] = useState(getCurrentWIBTime());
   const [reportsWithPeriod, setReportsWithPeriod] = useState([]);
   
-  // State untuk periode tanggal - default 1 tahun kebelakang hingga 1 tahun ke depan
+  // State untuk periode tanggal - default 2 tahun kebelakang hingga 1 tahun ke depan
   const [dateRange, setDateRange] = useState(() => {
     const currentDate = getCurrentWIBTime();
     const currentYear = currentDate.getFullYear();
     
     return {
-      startDate: `${currentYear - 1}-01-01`, // 1 tahun ke belakang
+      startDate: `${currentYear - 2}-01-01`, // 2 tahun ke belakang
       endDate: `${currentYear + 1}-12-31`    // 1 tahun ke depan
     };
   });
@@ -58,7 +58,6 @@ const SIPINA = () => {
       statusDetail: 'all',
       jenisLJK: 'all',
       periode: 'all',
-      pengawas: 'all', // Filter untuk pengawas
       searchTerm: '',
       reviewStatus: 'all' // Status review untuk filter level 3
     }
@@ -77,75 +76,243 @@ const SIPINA = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Data LJK dengan pengawas
+  // Data LJK LJK
   const LJKData = [
-    { nama: "PT Asuransi Jiwa Bersama Bumiputera", industri: "Asuransi Jiwa" },
-    { nama: "PT Asuransi Jiwa Sinarmas MSIG", industri: "Asuransi Jiwa" },
-    { nama: "PT Asuransi Jiwa Central Asia Raya", industri: "Asuransi Jiwa" },
-    { nama: "PT Asuransi Allianz Life Indonesia", industri: "Asuransi Jiwa" },
-    { nama: "PT Prudential Life Assurance", industri: "Asuransi Jiwa" },
-    { nama: "PT Asuransi Jiwa Manulife Indonesia", industri: "Asuransi Jiwa" },
-    { nama: "PT Asuransi Jiwa Sequis Life", industri: "Asuransi Jiwa" },
-    { nama: "PT Asuransi Umum Bumiputera Muda 1967", industri: "Asuransi Umum" },
-    { nama: "PT Asuransi Adira Dinamika", industri: "Asuransi Umum" },
-    { nama: "PT Asuransi Astra Buana", industri: "Asuransi Umum" },
-    { nama: "PT Asuransi Sinar Mas", industri: "Asuransi Umum" },
-    { nama: "PT Asuransi Harta Aman Pratama", industri: "Asuransi Umum" },
-    { nama: "PT Reasuransi Indonesia Utama", industri: "Reasuransi" },
-    { nama: "PT Asuransi Jiwa Syariah Al-Amin", industri: "Asuransi Jiwa Syariah" },
-    { nama: "PT Asuransi Umum Syariah Mubarakah", industri: "Asuransi Umum Syariah" },
-    { nama: "PT Asuransi Tugu Pratama Indonesia", industri: "Asuransi Umum" },
-    { nama: "PT Asuransi Kredit Indonesia", industri: "Asuransi Kredit" },
-    { nama: "PT Asuransi Wahana Tata", industri: "Asuransi Umum" },
-    { nama: "PT Asuransi Bina Dana Arta", industri: "Asuransi Umum" },
-    { nama: "PT Asuransi Jasa Indonesia", industri: "Asuransi Umum" }
-  ];
-
-  // Data pengawas untuk filter
-  const pengawasList = [
-    "Budi Santoso", "Siti Rahayu", "Ahmad Wijaya", "Rina Dewi", 
-    "Maya Sari", "Joko Susilo", "Dewi Lestari", "Eko Prasetyo", 
-    "Fitriani", "Agus Setiawan", "Linda Wati"
+    { nama: "Bank ABC", bidang: "Bank Umum Konvensional" },
+    { nama: "Bank DEF", bidang: "Bank Umum Konvensional" },
+    { nama: "PT ABC", bidang: "Konsultan Aktuaria" },
+    { nama: "PT DEF", bidang: "Bank Umum Konvensional" },
+    { nama: "PT BAIK", bidang: "Bank Umum Syariah" },
+    { nama: "BANK BSE", bidang: "Bank Umum Syariah" },
+    { nama: "PT BCC", bidang: "Bank Umum Syariah" },
+    { nama: "PT BBB", bidang: "Bank Umum Konvensional" },
+    { nama: "BANK AAA", bidang: "Bank Umum Konvensional" },
+    { nama: "BANK ZXC", bidang: "Bank Umum Syariah" },
   ];
 
   // Data reports SIPINA dengan status review untuk periode terlambat
   const initialReports = useMemo(() => {
     const currentYear = currentDateTime.getFullYear();
+    const currentMonth = currentDateTime.getMonth() + 1;
+    const currentDay = currentDateTime.getDate();
     
-    // Fungsi untuk mendapatkan pengawas berdasarkan indeks
-    const getPengawas = (id) => {
-      const pengawasIndex = (id - 1) % pengawasList.length;
-      return pengawasList[pengawasIndex];
+    // Fungsi untuk mendapatkan tanggal yang aman
+    const getSafeDate = (year, month, day) => {
+      let safeMonth = month;
+      let safeYear = year;
+      
+      if (safeMonth <= 0) {
+        safeMonth += 12;
+        safeYear -= 1;
+      } else if (safeMonth > 12) {
+        safeMonth -= 12;
+        safeYear += 1;
+      }
+      
+      const lastDayOfMonth = new Date(safeYear, safeMonth, 0).getDate();
+      const safeDay = Math.min(day, lastDayOfMonth);
+      
+      return { year: safeYear, month: safeMonth, day: safeDay };
     };
-
-    // Fungsi untuk mendapatkan LJK data berdasarkan indeks
-     const getLJKData = (id) => {
-    // Pastikan id tidak kurang dari 1 dan tidak lebih dari panjang array
-    const validId = Math.max(1, Math.min(id, LJKData.length));
-    const ljkIndex = (validId - 1) % LJKData.length;
-    return LJKData[ljkIndex] || LJKData[0]; // Fallback ke data pertama jika undefined
-  };
+    
+    // Hitung tanggal yang aman
+    const prevMonth5 = getSafeDate(currentYear, currentMonth - 1, 5);
+    const prevMonth10 = getSafeDate(currentYear, currentMonth - 1, 10);
+    const prevMonth15 = getSafeDate(currentYear, currentMonth - 1, 15);
+    const prevMonth20 = getSafeDate(currentYear, currentMonth - 1, 20);
+    const prevMonth25 = getSafeDate(currentYear, currentMonth - 1, 25);
+    const prevMonth30 = getSafeDate(currentYear, currentMonth - 1, 30);
+    const prevMonth31 = getSafeDate(currentYear, currentMonth - 1, 31);
+    
+    const currentMonth5 = getSafeDate(currentYear, currentMonth, 5);
+    const currentMonth7 = getSafeDate(currentYear, currentMonth, 7);
+    const currentMonth10 = getSafeDate(currentYear, currentMonth, 10);
+    const currentMonth15 = getSafeDate(currentYear, currentMonth, 15);
+    const currentMonth20 = getSafeDate(currentYear, currentMonth, 20);
+    const currentMonth25 = getSafeDate(currentYear, currentMonth, 25);
+    const currentMonth28 = getSafeDate(currentYear, currentMonth, 28);
+    const currentMonth30 = getSafeDate(currentYear, currentMonth, 30);
+    const currentMonth31 = getSafeDate(currentYear, currentMonth, 31);
+    
+    const nextMonth5 = getSafeDate(currentYear, currentMonth + 1, 5);
+    const nextMonth10 = getSafeDate(currentYear, currentMonth + 1, 10);
+    const nextMonth15 = getSafeDate(currentYear, currentMonth + 1, 15);
+    const nextMonth20 = getSafeDate(currentYear, currentMonth + 1, 20);
+    const nextMonth25 = getSafeDate(currentYear, currentMonth + 1, 25);
+    const nextMonth30 = getSafeDate(currentYear, currentMonth + 1, 30);
     
     return [
-
       {
         id: 1,
         aplikasi: "SIPINA",
-        jenisLJK: "Asuransi Jiwa",
-        namaLaporan: "Laporan Keuangan Tahunan (Audited) Asuransi Jiwa",
-        periodeLaporan: "Tahunan",
-        batasWaktu: "31 Maret tahun berikutnya",
-        deadlineDate: "2026-03-31T23:59:59", 
-        submissionDate: "2026-03-25T14:20:00",
-        waktuSubmit: "2026-03-25T14:20:00",
-        waktuDeadline: "2026-03-31T23:59:59",
+        jenisLJK: "BU",
+        namaLaporan: "LCR Individual",
+        periodeLaporan: "Bulanan",
+        batasWaktu: "Tanggal 15 bulan berikutnya",
+        deadlineDate: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day).padStart(2, '0')}T23:59:59`,
+        submissionDate: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day - 5).padStart(2, '0')}T14:30:00`,
+        waktuSubmit: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day - 5).padStart(2, '0')}T14:30:00`,
+        waktuDeadline: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day).padStart(2, '0')}T23:59:59`,
         statusPengiriman: "Berhasil",
-        statusKetepatan: "Tepat Waktu"
-      }
-      
- 
-
-
+        statusKetepatan: "Tepat Waktu",
+        statusReview: "belum-review",
+        LJK: "Bank ABC",
+        bidangLJK: "Bank Umum Konvensional"
+      },
+      // {
+      //   id: 2,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "BU",
+      //   namaLaporan: "LCR Konsolidasi",
+      //   periodeLaporan: "Bulanan",
+      //   batasWaktu: "Akhir bulan berikutnya",
+      //   deadlineDate: `${prevMonth31.year}-${String(prevMonth31.month).padStart(2, '0')}-${String(prevMonth31.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: `${prevMonth31.year}-${String(prevMonth31.month).padStart(2, '0')}-${String(prevMonth31.day - 2).padStart(2, '0')}T10:15:00`,
+      //   waktuSubmit: `${prevMonth31.year}-${String(prevMonth31.month).padStart(2, '0')}-${String(prevMonth31.day - 2).padStart(2, '0')}T10:15:00`,
+      //   waktuDeadline: `${prevMonth31.year}-${String(prevMonth31.month).padStart(2, '0')}-${String(prevMonth31.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Berhasil",
+      //   statusKetepatan: "Tepat Waktu",
+      //   statusReview: "belum-review",
+      //   LJK: "Bank DEF",
+      //   bidangLJK: "Bank Umum Konvensional"
+      // },
+      // {
+      //   id: 3,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "BPR / BPRS",
+      //   namaLaporan: "Laporan Bulanan BPR/BPRS",
+      //   periodeLaporan: "Bulanan",
+      //   batasWaktu: "Tanggal 10 bulan berikutnya",
+      //   deadlineDate: `${currentMonth10.year}-${String(currentMonth10.month).padStart(2, '0')}-${String(currentMonth10.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: null,
+      //   waktuSubmit: null,
+      //   waktuDeadline: `${currentMonth10.year}-${String(currentMonth10.month).padStart(2, '0')}-${String(currentMonth10.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Belum Lapor",
+      //   statusKetepatan: "Belum Submit",
+      //   statusReview: null,
+      //   LJK: "PT ABC",
+      //   bidangLJK: "Konsultan Aktuaria"
+      // },
+      // {
+      //   id: 4,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "Biro Administrasi Efek",
+      //   namaLaporan: "Laporan Biro Administrasi Efek",
+      //   periodeLaporan: "Triwulanan",
+      //   batasWaktu: "Tanggal deadline sesuai ketentuan",
+      //   deadlineDate: `${currentMonth30.year}-${String(currentMonth30.month).padStart(2, '0')}-${String(currentMonth30.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: `${currentMonth30.year}-${String(currentMonth30.month).padStart(2, '0')}-${String(currentMonth30.day - 5).padStart(2, '0')}T11:45:00`,
+      //   waktuSubmit: `${currentMonth30.year}-${String(currentMonth30.month).padStart(2, '0')}-${String(currentMonth30.day - 5).padStart(2, '0')}T11:45:00`,
+      //   waktuDeadline: `${currentMonth30.year}-${String(currentMonth30.month).padStart(2, '0')}-${String(currentMonth30.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Berhasil",
+      //   statusKetepatan: "Tepat Waktu",
+      //   statusReview: "sedang-review",
+      //   LJK: "PT DEF",
+      //   bidangLJK: "Bank Umum Konvensional"
+      // },
+      // {
+      //   id: 5,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "Perusahaan Pemeringkat Efek",
+      //   namaLaporan: "Laporan Perusahaan Pemeringkat Efek",
+      //   periodeLaporan: "Tahunan",
+      //   batasWaktu: "Tanggal deadline sesuai ketentuan",
+      //   deadlineDate: `${nextMonth15.year}-${String(nextMonth15.month).padStart(2, '0')}-${String(nextMonth15.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: null,
+      //   waktuSubmit: null,
+      //   waktuDeadline: `${nextMonth15.year}-${String(nextMonth15.month).padStart(2, '0')}-${String(nextMonth15.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Belum Lapor",
+      //   statusKetepatan: "Belum Submit",
+      //   statusReview: null,
+      //   LJK: "PT BAIK",
+      //   bidangLJK: "Bank Umum Syariah"
+      // },
+      // // Data terlambat dengan status review
+      // {
+      //   id: 6,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "BU",
+      //   namaLaporan: "Laporan GWM Individual",
+      //   periodeLaporan: "Bulanan",
+      //   batasWaktu: "Tanggal 10 bulan berikutnya",
+      //   deadlineDate: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day + 3).padStart(2, '0')}T14:30:00`, // 3 hari terlambat
+      //   waktuSubmit: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day + 3).padStart(2, '0')}T14:30:00`,
+      //   waktuDeadline: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Berhasil",
+      //   statusKetepatan: "Terlambat",
+      //   statusReview: "sedang-review",
+      //   LJK: "BANK BSE",
+      //   bidangLJK: "Bank Umum Syariah"
+      // },
+      // {
+      //   id: 7,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "BU",
+      //   namaLaporan: "Laporan GWM Konsolidasi",
+      //   periodeLaporan: "Bulanan",
+      //   batasWaktu: "Tanggal 15 bulan berikutnya",
+      //   deadlineDate: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day + 5).padStart(2, '0')}T11:45:00`, // 5 hari terlambat
+      //   waktuSubmit: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day + 5).padStart(2, '0')}T11:45:00`,
+      //   waktuDeadline: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Berhasil",
+      //   statusKetepatan: "Terlambat",
+      //   statusReview: "sudah-review",
+      //   LJK: "PT BCC",
+      //   bidangLJK: "Bank Umum Syariah"
+      // },
+      // {
+      //   id: 8,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "BPR / BPRS",
+      //   namaLaporan: "Laporan Semesteran BPR/BPRS",
+      //   periodeLaporan: "Semesteran",
+      //   batasWaktu: "Tanggal 30 hari setelah semester",
+      //   deadlineDate: `${prevMonth30.year}-${String(prevMonth30.month).padStart(2, '0')}-${String(prevMonth30.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: `${prevMonth30.year}-${String(prevMonth30.month).padStart(2, '0')}-${String(prevMonth30.day + 7).padStart(2, '0')}T16:20:00`, // 7 hari terlambat
+      //   waktuSubmit: `${prevMonth30.year}-${String(prevMonth30.month).padStart(2, '0')}-${String(prevMonth30.day + 7).padStart(2, '0')}T16:20:00`,
+      //   waktuDeadline: `${prevMonth30.year}-${String(prevMonth30.month).padStart(2, '0')}-${String(prevMonth30.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Berhasil",
+      //   statusKetepatan: "Terlambat",
+      //   statusReview: "belum-review",
+      //   LJK: "PT BBB",
+      //   bidangLJK: "Bank Umum Konvensional"
+      // },
+      // {
+      //   id: 9,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "BPR / BPRS",
+      //   namaLaporan: "Laporan Triwulan BPR/BPRS",
+      //   periodeLaporan: "Triwulanan",
+      //   batasWaktu: "Tanggal 15 bulan berikutnya",
+      //   deadlineDate: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day + 1).padStart(2, '0')}T14:30:00`,
+      //   waktuSubmit: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day + 1).padStart(2, '0')}T14:30:00`,
+      //   waktuDeadline: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Berhasil",
+      //   statusKetepatan: "Terlambat",
+      //   statusReview: "sedang-review",
+      //   LJK: "BANK AAA",
+      //   bidangLJK: "Bank Umum Konvensional"
+      // },
+      // {
+      //   id: 10,
+      //   aplikasi: "SIPINA",
+      //   jenisLJK: "Bank Kustodian",
+      //   namaLaporan: "Laporan Hasil Pemeriksaan Operasional",
+      //   periodeLaporan: "Tahunan",
+      //   batasWaktu: "90 H setelah laporan tahunan berakhir",
+      //   deadlineDate: `${currentMonth15.year}-${String(currentMonth15.month).padStart(2, '0')}-${String(currentMonth15.day).padStart(2, '0')}T23:59:59`,
+      //   submissionDate: `${currentMonth15.year}-${String(currentMonth15.month).padStart(2, '0')}-${String(currentMonth15.day - 1).padStart(2, '0')}T09:30:00`,
+      //   waktuSubmit: `${currentMonth15.year}-${String(currentMonth15.month).padStart(2, '0')}-${String(currentMonth15.day - 1).padStart(2, '0')}T09:30:00`,
+      //   waktuDeadline: `${currentMonth15.year}-${String(currentMonth15.month).padStart(2, '0')}-${String(currentMonth15.day).padStart(2, '0')}T23:59:59`,
+      //   statusPengiriman: "Berhasil",
+      //   statusKetepatan: "Tepat Waktu",
+      //   statusReview: "sudah-review",
+      //   LJK: "BANK ZXC",
+      //   bidangLJK: "Bank Umum Syariah"
+      // }
     ];
   }, [currentDateTime]);
 
@@ -254,17 +421,14 @@ const SIPINA = () => {
           status = 'berhasil';
           statusPengiriman = 'Berhasil';
           
-          // Jika periode terlambat, tambahkan status review
-          if (periodeStatus === 'terlambat') {
-            // Tentukan status review berdasarkan ID
-            const reviewStatuses = ['belum-review', 'sedang-review', 'sudah-review'];
-            const reviewStatus = reviewStatuses[report.id % 3];
+          // Jika periode terlambat, tampilkan status review
+          if (periodeStatus === 'terlambat' && report.statusReview) {
             const reviewStatusMap = {
               'sedang-review': 'Sedang Direview',
               'sudah-review': 'Sudah Direview',
               'belum-review': 'Belum Direview'
             };
-            statusPengiriman = `Berhasil - ${reviewStatusMap[reviewStatus]}`;
+            statusPengiriman = `Berhasil - ${reviewStatusMap[report.statusReview]}`;
           }
           
           statusKetepatanWaktu = isSubmittedOnTime ? 'Tepat Waktu' : `${lateDays} Hari Terlambat`;
@@ -311,7 +475,8 @@ const SIPINA = () => {
         deadlineObj: deadlineDate,
         submitObj: submissionDate,
         waktuSubmit: safeDateToISO(submissionDate),
-        waktuDeadline: safeDateToISO(deadlineDate)
+        waktuDeadline: safeDateToISO(deadlineDate),
+        statusReview: report.statusReview
       };
     }).filter(report => report !== null);
     
@@ -408,11 +573,11 @@ const SIPINA = () => {
       if (filters.subFilters.statusDetail === 'sudah-lapor' && filters.subFilters.reviewStatus && filters.subFilters.reviewStatus !== 'all') {
         filtered = filtered.filter(report => {
           const reviewMap = {
-            'belum-direview': 'Berhasil - Belum Direview',
-            'sedang-direview': 'Berhasil - Sedang Direview',
-            'sudah-direview': 'Berhasil - Sudah Direview'
+            'belum-direview': 'Belum Direview',
+            'sedang-direview': 'Sedang Direview',
+            'sudah-direview': 'Sudah Direview'
           };
-          return report.statusPengiriman === reviewMap[filters.subFilters.reviewStatus];
+          return report.statusPengiriman === `Berhasil - ${reviewMap[filters.subFilters.reviewStatus]}`;
         });
       }
     }
@@ -429,11 +594,6 @@ const SIPINA = () => {
       });
     }
 
-    // Filter berdasarkan pengawas
-    if (filters.subFilters.pengawas !== 'all') {
-      filtered = filtered.filter(report => report.pengawas === filters.subFilters.pengawas);
-    }
-
     // Apply search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
@@ -443,8 +603,7 @@ const SIPINA = () => {
         report.periodeLaporan.toLowerCase().includes(term) ||
         report.batasWaktu.toLowerCase().includes(term) ||
         report.LJK.toLowerCase().includes(term) ||
-        report.bidangLJK.toLowerCase().includes(term) ||
-        report.pengawas.toLowerCase().includes(term)
+        report.bidangLJK.toLowerCase().includes(term)
       );
     }
 
@@ -469,10 +628,10 @@ const SIPINA = () => {
     }));
   }, [reportsWithPeriod]);
 
-  // Get unique pengawas
-  const uniquePengawas = useMemo(() => {
-    const pengawas = [...new Set(reportsWithPeriod.map(report => report.pengawas))];
-    return pengawas.map(p => ({
+  // Get unique LJK
+  const uniqueLJK = useMemo(() => {
+    const LJK = [...new Set(reportsWithPeriod.map(report => report.LJK))];
+    return LJK.map(p => ({
       value: p,
       label: p
     }));
@@ -528,7 +687,7 @@ const SIPINA = () => {
     const currentYear = currentDateTime.getFullYear();
     
     setDateRange({
-      startDate: `${currentYear - 1}-01-01`,
+      startDate: `${currentYear - 2}-01-01`,
       endDate: `${currentYear + 1}-12-31`
     });
     
@@ -538,7 +697,6 @@ const SIPINA = () => {
         statusDetail: 'all',
         jenisLJK: 'all',
         periode: 'all',
-        pengawas: 'all',
         searchTerm: '',
         reviewStatus: 'all'
       }
@@ -555,7 +713,6 @@ const SIPINA = () => {
         statusDetail: 'all',
         jenisLJK: 'all',
         periode: 'all',
-        pengawas: 'all',
         searchTerm: '',
         reviewStatus: 'all'
       }
@@ -640,14 +797,20 @@ const SIPINA = () => {
 
   const getJenisLKJBadge = (jenis) => {
     const colorMap = {
-      'Asuransi Jiwa': 'bg-red-100 text-red-800 border-red-200',
-      'Asuransi Umum': 'bg-blue-100 text-blue-800 border-blue-200',
-      'Reasuransi': 'bg-purple-100 text-purple-800 border-purple-200',
-      'Asuransi Jiwa Syariah': 'bg-indigo-100 text-indigo-800 border-indigo-200',
-      'Asuransi Umum Syariah': 'bg-pink-100 text-pink-800 border-pink-200',
-      'Asuransi Kredit': 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      'Asuransi Jiwa, Asuransi Umum': 'bg-green-100 text-green-800 border-green-200',
-      'Asuransi Jiwa, Asuransi Umum, Reasuransi': 'bg-teal-100 text-teal-800 border-teal-200',
+      'BU': 'bg-red-100 text-red-800 border-red-200',
+      'BPR / BPRS': 'bg-blue-100 text-blue-800 border-blue-200',
+      'Bank Kustodian': 'bg-purple-100 text-purple-800 border-purple-200',
+      'Biro Administrasi Efek': 'bg-indigo-100 text-indigo-800 border-indigo-200',
+      'Perusahaan Pemeringkat Efek': 'bg-pink-100 text-pink-800 border-pink-200',
+      'Lembaga Pembiayaan': 'bg-teal-100 text-teal-800 border-teal-200',
+      'Perusahaan Efek': 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      'Perusahaan Asuransi': 'bg-sky-100 text-sky-800 border-sky-200',
+      'Dana Pensiun': 'bg-violet-100 text-violet-800 border-violet-200',
+      'Perusahaan Gadai': 'bg-rose-100 text-rose-800 border-rose-200',
+      'Perusahaan Modal Ventura': 'bg-lime-100 text-lime-800 border-lime-200',
+      'Perusahaan Penjaminan': 'bg-fuchsia-100 text-fuchsia-800 border-fuchsia-200',
+      'Wali Amanat': 'bg-amber-100 text-amber-800 border-amber-200',
+      'Asuransi Jiwa': 'bg-cyan-100 text-cyan-800 border-cyan-200',
     };
 
     const defaultStyle = 'bg-gray-100 text-gray-800 border-gray-200';
@@ -659,12 +822,15 @@ const SIPINA = () => {
     );
   };
 
-  const getPengawasBadge = (pengawas) => {
+  const getLJKBadge = (LJK, bidang) => {
     return (
       <div className="space-y-1">
-        <div className="px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 border border-indigo-200">
+        <div className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
           <User className="w-3 h-3 inline mr-1" />
-          {pengawas}
+          {LJK}
+        </div>
+        <div className="text-xs text-gray-500 pl-1">
+          {bidang}
         </div>
       </div>
     );
@@ -761,13 +927,16 @@ const SIPINA = () => {
       'No': report.id,
       'Nama LJK': report.LJK,
       'Bidang LJK': report.bidangLJK,
-      'Pengawas': report.pengawas,
       'Nama Laporan': report.namaLaporan,
       'Deadline': report.displayDeadline,
       'Submit': report.displaySubmit,
       'Status Periode': report.periodeStatus === 'aktif' ? 'Periode Aktif' : 'Terlambat',
       'Status Pengiriman': report.statusPengiriman,
       'Status Ketepatan Waktu': report.statusKetepatanWaktu,
+      'Status Review': report.statusReview ? 
+        (report.statusReview === 'sedang-review' ? 'Sedang Direview' : 
+         report.statusReview === 'sudah-review' ? 'Sudah Direview' : 
+         report.statusReview === 'belum-review' ? 'Belum Direview' : '') : '',
       'Hari Terlambat': report.lateDays > 0 ? report.lateDays : 0
     }));
 
@@ -820,7 +989,44 @@ const SIPINA = () => {
     });
   };
 
-  // PERBAIKAN: Tambahkan kolom Pengawas ke tabel dan filter
+  // Get date suggestions
+  const getDateSuggestions = () => {
+    const currentYear = currentDateTime.getFullYear();
+    const currentMonth = currentDateTime.getMonth() + 1;
+    
+    const suggestions = [];
+    
+    // Tambahkan bulan-bulan dari 1 tahun kebelakang
+    for (let year = currentYear - 1; year <= currentYear; year++) {
+      const startMonth = year === currentYear - 1 ? 1 : 1;
+      const endMonth = year === currentYear - 1 ? 12 : currentMonth;
+      
+      for (let month = startMonth; month <= endMonth; month++) {
+        const monthNames = [
+          'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+        ];
+        
+        const lastDay = new Date(year, month, 0).getDate();
+        
+        suggestions.push({
+          label: `${monthNames[month - 1]} ${year}`,
+          start: `${year}-${String(month).padStart(2, '0')}-01`,
+          end: `${year}-${String(month).padStart(2, '0')}-${lastDay}`
+        });
+      }
+    }
+    
+    return suggestions;
+  };
+
+  const handleDateSuggestion = (suggestion) => {
+    setDateRange({
+      startDate: suggestion.start,
+      endDate: suggestion.end
+    });
+  };
+
   return (
     <div className="space-y-6 animate-fade-in bg-gradient-to-br from-blue-50/20 to-white min-h-screen">
       {/* Page Header */}
@@ -873,7 +1079,7 @@ const SIPINA = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-red-900">Filter Periode Laporan {currentDateTime.getFullYear()}</h3>
-                  <p className="text-sm text-gray-600">Pilih rentang tanggal deadline terlebih dahulu (Maksimal 1 Tahun: {currentDateTime.getFullYear() - 1} - {currentDateTime.getFullYear() + 1})</p>
+                  <p className="text-sm text-gray-600">Pilih rentang tanggal deadline terlebih dahulu (Maksimal 1 Tahun: 2025 - 2026)</p>
                 </div>
               </div>
               <button
@@ -889,21 +1095,23 @@ const SIPINA = () => {
             {/* Level 0: Periode Tanggal Filter */}
             <div className="mb-6">
               <h4 className="text-sm font-medium text-gray-700 mb-4">
-                Level 0: Pilih Rentang Tanggal Deadline ({currentDateTime.getFullYear() - 1} - {currentDateTime.getFullYear() + 1})
-              </h4>
+Level 0: Pilih Rentang Tanggal Deadline (2025 - 2026)              </h4>
+
+              {/* Quick Date Suggestions */}
+              
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     <Calendar className="w-4 h-4 inline mr-2" />
-                    Tanggal Mulai ({currentDateTime.getFullYear() - 1})
+                    Tanggal Mulai ({currentDateTime.getFullYear() - 2})
                   </label>
                   <input
                     type="date"
                     value={dateRange.startDate}
                     onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
-                    min={`${currentDateTime.getFullYear() - 1}-01-01`}
+                    min={`${currentDateTime.getFullYear() - 2}-01-01`}
                     max={`${currentDateTime.getFullYear() + 1}-12-31`}
                   />
                 </div>
@@ -918,7 +1126,7 @@ const SIPINA = () => {
                     value={dateRange.endDate}
                     onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
                     className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
-                    min={`${currentDateTime.getFullYear() - 1}-01-01`}
+                    min={`${currentDateTime.getFullYear() - 2}-01-01`}
                     max={`${currentDateTime.getFullYear() + 1}-12-31`}
                   />
                 </div>
@@ -936,7 +1144,7 @@ const SIPINA = () => {
                       {stats.total} laporan ditemukan • 
                       Aktif: {stats.aktif} • Terlambat: {stats.terlambat}
                     </div>
-                 
+                    
                   </div>
                 </div>
               </div>
@@ -1112,25 +1320,25 @@ const SIPINA = () => {
                     </div>
 
                     {/* Additional Filters */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           <User className="w-4 h-4 inline mr-2" />
-                          Pengawas
+                          Nama LJK
                           <span className="ml-1 text-xs text-gray-500">
-                            ({uniquePengawas.length} tersedia)
+                            ({uniqueLJK.length} tersedia)
                           </span>
                         </label>
                         <select
-                          value={filters.subFilters.pengawas}
-                          onChange={(e) => handleSubFilterChange('pengawas', e.target.value)}
+                          value={filters.subFilters.jenisLJK}
+                          onChange={(e) => handleSubFilterChange('jenisLJK', e.target.value)}
                           className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
-                          disabled={uniquePengawas.length === 0}
+                          disabled={uniqueLJK.length === 0}
                         >
                           <option value="all">
-                            {uniquePengawas.length === 0 ? 'Tidak tersedia' : 'Semua Pengawas'}
+                            {uniqueLJK.length === 0 ? 'Tidak tersedia' : 'Semua LJK'}
                           </option>
-                          {uniquePengawas.map((item) => (
+                          {uniqueLJK.map((item) => (
                             <option key={item.value} value={item.value}>
                               {item.label}
                             </option>
@@ -1188,10 +1396,10 @@ const SIPINA = () => {
                         </select>
                       </div>
 
-                      <div className="md:col-span-4">
+                      <div className="md:col-span-3">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           <Search className="w-4 h-4 inline mr-2" />
-                          Cari Laporan / LJK / Pengawas
+                          Cari Laporan / LJK
                         </label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -1199,7 +1407,7 @@ const SIPINA = () => {
                           </div>
                           <input
                             type="text"
-                            placeholder="Cari nama laporan, LJK, pengawas, atau bidang..."
+                            placeholder="Cari nama laporan, LJK, atau bidang..."
                             className="pl-10 pr-4 py-2.5 w-full border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -1258,17 +1466,6 @@ const SIPINA = () => {
                           Review: {getReviewStatusOptions().find(opt => opt.value === filters.subFilters.reviewStatus)?.label}
                           <button 
                             onClick={() => handleSubFilterChange('reviewStatus', 'all')}
-                            className="ml-2 text-indigo-600 hover:text-indigo-800"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      )}
-                      {filters.subFilters.pengawas !== 'all' && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 border border-indigo-200">
-                          Pengawas: {filters.subFilters.pengawas}
-                          <button 
-                            onClick={() => handleSubFilterChange('pengawas', 'all')}
                             className="ml-2 text-indigo-600 hover:text-indigo-800"
                           >
                             ×
@@ -1349,7 +1546,7 @@ const SIPINA = () => {
                     <span className="font-medium">Tanggal:</span> {getCurrentDateDisplay()}
                   </p>
                   <p className="text-xs text-gray-500">
-                    <span className="font-medium">Data:</span> {currentDateTime.getFullYear() - 1} - {currentDateTime.getFullYear() + 1}
+                    <span className="font-medium">Data:</span> {currentDateTime.getFullYear() - 1} - {currentDateTime.getFullYear()}
                   </p>
                   <p className="text-xs text-gray-500 font-medium">
                     {filteredReports.length} dari {stats.total} laporan
@@ -1370,7 +1567,6 @@ const SIPINA = () => {
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama LJK</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Pengawas</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status Periode</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jenis LJK</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Laporan</th>
@@ -1387,18 +1583,7 @@ const SIPINA = () => {
                   }`}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{report.id}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="space-y-1">
-                        <div className="px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200">
-                          <Building className="w-3 h-3 inline mr-1" />
-                          {report.LJK}
-                        </div>
-                        <div className="text-xs text-gray-500 pl-1">
-                          {report.bidangLJK}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getPengawasBadge(report.pengawas)}
+                      {getLJKBadge(report.LJK, report.bidangLJK)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getPeriodeStatusBadge(report.periodeStatus)}
@@ -1461,7 +1646,7 @@ const SIPINA = () => {
               <div className="text-sm text-gray-600">
                 Data diperbarui berdasarkan waktu real-time • 
                 Periode: {formatDateDisplay(dateRange.startDate)} - {formatDateDisplay(dateRange.endDate)} • 
-                {stats.totalLJK} LJK • {uniquePengawas.length} Pengawas
+                {stats.totalLJK} LJK
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">
@@ -1484,7 +1669,7 @@ const SIPINA = () => {
                     <FileText className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-blue-900">Detail Laporan LJK SIPINA {currentDateTime.getFullYear()}</h3>
+                    <h3 className="text-xl font-bold text-blue-900">Detail LJKan LJK SIPINA {currentDateTime.getFullYear()}</h3>
                     <div className="flex items-center space-x-2 mt-1">
                       {getPeriodeStatusBadge(selectedReport.periodeStatus)}
                       {selectedReport.statusPengiriman && selectedReport.statusPengiriman.includes('Direview') && (
@@ -1528,10 +1713,6 @@ const SIPINA = () => {
                       {selectedReport.bidangLJK}
                     </p>
                   </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Pengawas</h4>
-                  {getPengawasBadge(selectedReport.pengawas)}
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Jenis LJK</h4>
