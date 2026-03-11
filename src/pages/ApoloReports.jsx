@@ -78,16 +78,16 @@ const ApoloReports = () => {
 
   // Data LJK LJK
   const LJKData = [
-    { nama: "Zulhamdi", bidang: "Jasa Penilai" },
-    { nama: "Yuyu Wahyudin SE", bidang: "Jasa Penilai" },
-    { nama: "YUSI KRISMURTIASTUTI", bidang: "Konsultan Aktuaria" },
-    { nama: "Yunus Nego Purwono", bidang: "Jasa Penilai" },
-    { nama: "Yulizar Djamaluddin Sanrego", bidang: "Ahli Syariah Pasar Modal" },
-    { nama: "Yulhendri", bidang: "Ahli Syariah Pasar Modal" },
-    { nama: "Yuke Rahmawati", bidang: "Ahli Syariah Pasar Modal" },
-    { nama: "Yuhal", bidang: "Jasa Penilai" },
-    { nama: "Yudistira Ananda SE", bidang: "Jasa Penilai" },
-    { nama: "Yosa Gumelar", bidang: "Ahli Syariah Pasar Modal" },
+    { nama: "Bank ABC", bidang: "Jasa Penilai" },
+    { nama: "Bank DEF", bidang: "Jasa Penilai" },
+    { nama: "PT ABC", bidang: "Konsultan Aktuaria" },
+    { nama: "PT DEF", bidang: "Jasa Penilai" },
+    { nama: "PT BAIK", bidang: "Ahli Syariah Pasar Modal" },
+    { nama: "BANK BSE", bidang: "Ahli Syariah Pasar Modal" },
+    { nama: "PT BCC", bidang: "Ahli Syariah Pasar Modal" },
+    { nama: "PT BBB", bidang: "Jasa Penilai" },
+    { nama: "BANK AAA", bidang: "Jasa Penilai" },
+    { nama: "BANK ZXC", bidang: "Ahli Syariah Pasar Modal" },
   ];
 
   // Data reports APOLO dengan status review untuk periode terlambat
@@ -156,7 +156,7 @@ const ApoloReports = () => {
         statusPengiriman: "Berhasil",
         statusKetepatan: "Tepat Waktu",
         statusReview: "belum-review",
-        LJK: "Zulhamdi",
+        LJK: "Bank ABC",
         bidangLJK: "Jasa Penilai"
       },
       {
@@ -173,7 +173,7 @@ const ApoloReports = () => {
         statusPengiriman: "Berhasil",
         statusKetepatan: "Tepat Waktu",
         statusReview: "belum-review",
-        LJK: "Yuyu Wahyudin SE",
+        LJK: "Bank DEF",
         bidangLJK: "Jasa Penilai"
       },
       {
@@ -190,7 +190,7 @@ const ApoloReports = () => {
         statusPengiriman: "Belum Lapor",
         statusKetepatan: "Belum Submit",
         statusReview: null,
-        LJK: "YUSI KRISMURTIASTUTI",
+        LJK: "PT ABC",
         bidangLJK: "Konsultan Aktuaria"
       },
       {
@@ -207,7 +207,7 @@ const ApoloReports = () => {
         statusPengiriman: "Berhasil",
         statusKetepatan: "Tepat Waktu",
         statusReview: "sedang-review",
-        LJK: "Yunus Nego Purwono",
+        LJK: "PT DEF",
         bidangLJK: "Jasa Penilai"
       },
       {
@@ -224,7 +224,7 @@ const ApoloReports = () => {
         statusPengiriman: "Belum Lapor",
         statusKetepatan: "Belum Submit",
         statusReview: null,
-        LJK: "Yulizar Djamaluddin Sanrego",
+        LJK: "PT BAIK",
         bidangLJK: "Ahli Syariah Pasar Modal"
       },
       // Data terlambat dengan status review
@@ -242,7 +242,7 @@ const ApoloReports = () => {
         statusPengiriman: "Berhasil",
         statusKetepatan: "Terlambat",
         statusReview: "sedang-review",
-        LJK: "Yulhendri",
+        LJK: "BANK BSE",
         bidangLJK: "Ahli Syariah Pasar Modal"
       },
       {
@@ -259,7 +259,7 @@ const ApoloReports = () => {
         statusPengiriman: "Berhasil",
         statusKetepatan: "Terlambat",
         statusReview: "sudah-review",
-        LJK: "Yuke Rahmawati",
+        LJK: "PT BCC",
         bidangLJK: "Ahli Syariah Pasar Modal"
       },
       {
@@ -276,7 +276,7 @@ const ApoloReports = () => {
         statusPengiriman: "Berhasil",
         statusKetepatan: "Terlambat",
         statusReview: "belum-review",
-        LJK: "Yuhal",
+        LJK: "PT BBB",
         bidangLJK: "Jasa Penilai"
       },
       {
@@ -293,7 +293,7 @@ const ApoloReports = () => {
         statusPengiriman: "Berhasil",
         statusKetepatan: "Terlambat",
         statusReview: "sedang-review",
-        LJK: "Yudistira Ananda SE",
+        LJK: "BANK AAA",
         bidangLJK: "Jasa Penilai"
       },
       {
@@ -310,7 +310,7 @@ const ApoloReports = () => {
         statusPengiriman: "Berhasil",
         statusKetepatan: "Tepat Waktu",
         statusReview: "sudah-review",
-        LJK: "Yosa Gumelar",
+        LJK: "BANK ZXC",
         bidangLJK: "Ahli Syariah Pasar Modal"
       }
     ];
