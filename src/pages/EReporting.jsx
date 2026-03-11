@@ -79,24 +79,24 @@ const EReporting = () => {
 
   // Data LJK dengan pengawas
   const LJKData = [
-    { nama: "Dana Pensiun ASDP", industri: "Dana Pensiun Pemberi Kerja Program Pensiun Manfaat Pasti", pengawas: "Budi Santoso" },
-    { nama: "Dana Pensiun Apac Inti Corpora", industri: "Dana Pensiun Pemberi Kerja Program Pensiun Iuran Pasti", pengawas: "Siti Rahayu" },
-    { nama: "CHARLIE SIMANJUNTAK SH", industri: "Jasa Penilai", pengawas: "Ahmad Wijaya" },
-    { nama: "Capital Global Ventura", industri: "Perusahaan Modal Ventura", pengawas: "Rina Dewi" },
-    { nama: "BERLIANTO HARIS", industri: "Ahli Syariah Pasar Modal", pengawas: "Maya Sari" },
-    { nama: "Benedictus Laurentius Supriyanto", industri: "Jasa Penilai", pengawas: "Joko Susilo" },
-    { nama: "Basuki Achmad", industri: "Ahli Syariah Pasar Modal", pengawas: "Dewi Lestari" },
-    { nama: "Bank of China (Hongkong), Ltd. Jakarta Branch", industri: "Perantara Pedagang Efek - EBUS", pengawas: "Eko Prasetyo" },
-    { nama: "Bank of America, N.A", industri: "Perantara Pedagang Efek - EBUS", pengawas: "Fitriani" },
-    { nama: "BANK KALSEL KANTOR PUSAT (BPD Kalimantan Selatan)", industri: "Perantara Pedagang Efek - EBUS", pengawas: "Agus Setiawan" },
+    { nama: "Dana Pensiun ASDP", industri: "Dana Pensiun Pemberi Kerja Program Pensiun Manfaat Pasti", pengawas: "Dana Pensiun ASDP" },
+    { nama: "Dana Pensiun Apac Inti Corpora", industri: "Dana Pensiun Pemberi Kerja Program Pensiun Iuran Pasti", pengawas: "Dana Pensiun Apac Inti Corpora" },
+    { nama: "Dana Pensiun Apac Inti Corpora", industri: "Bank Umum Konvensional", pengawas: "Capital Global Ventura" },
+    { nama: "Capital Global Ventura", industri: "Perusahaan Modal Ventura", pengawas: "PT ABC" },
+    { nama: "PT ABC", industri: "Bank Umum Syariah", pengawas: "Bank aaa" },
+    { nama: "Bank aaa", industri: "Bank Umum Konvensional", pengawas: "Bank bbb" },
+    { nama: "Bank bbb", industri: "Bank Umum Syariah", pengawas: "Bank of China (Hongkong), Ltd. Jakarta Branch" },
+    { nama: "Bank of China (Hongkong), Ltd. Jakarta Branch", industri: "Perantara Pedagang Efek - EBUS", pengawas: "Bank of America, N.A" },
+    { nama: "Bank of America, N.A", industri: "Perantara Pedagang Efek - EBUS", pengawas: "BANK KALSEL KANTOR PUSAT (BPD Kalimantan Selatan)" },
+    { nama: "BANK KALSEL KANTOR PUSAT (BPD Kalimantan Selatan)", industri: "Perantara Pedagang Efek - EBUS", pengawas: "Bank Hibank Indonesia" },
     { nama: "Bank Hibank Indonesia", industri: "Perantara Pedagang Efek - EBUS", pengawas: "Linda Wati" }
   ];
 
   // Data pengawas untuk filter
   const pengawasList = [
-    "Budi Santoso", "Siti Rahayu", "Ahmad Wijaya", "Rina Dewi", 
-    "Maya Sari", "Joko Susilo", "Dewi Lestari", "Eko Prasetyo", 
-    "Fitriani", "Agus Setiawan", "Linda Wati"
+    "Dana Pensiun ASDP", "Dana Pensiun Apac Inti Corpora", "Capital Global Ventura", "PT ABC", 
+    "Bank aaa", "Bank bbb", "Bank of China (Hongkong), Ltd. Jakarta Branch", "Bank of America, N.A", 
+    "BANK KALSEL KANTOR PUSAT (BPD Kalimantan Selatan)", "Bank Hibank Indonesia", "Bank BCC"
   ];
 
   // Data reports EReporting dengan status review untuk periode terlambat
@@ -1408,7 +1408,7 @@ const EReporting = () => {
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           <User className="w-4 h-4 inline mr-2" />
-                          Pengawas
+                          Nama LJK
                           <span className="ml-1 text-xs text-gray-500">
                             ({uniquePengawas.length} tersedia)
                           </span>
@@ -1420,7 +1420,7 @@ const EReporting = () => {
                           disabled={uniquePengawas.length === 0}
                         >
                           <option value="all">
-                            {uniquePengawas.length === 0 ? 'Tidak tersedia' : 'Semua Pengawas'}
+                            {uniquePengawas.length === 0 ? 'Tidak tersedia' : 'Semua LJK'}
                           </option>
                           {uniquePengawas.map((item) => (
                             <option key={item.value} value={item.value}>
@@ -1662,7 +1662,6 @@ const EReporting = () => {
                 <tr>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama LJK</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Pengawas</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status Periode</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jenis LJK</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Laporan</th>
