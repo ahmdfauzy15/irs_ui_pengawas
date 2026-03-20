@@ -31,13 +31,16 @@ import {
   Cpu,
   BookOpen,
   ExternalLink,
-  MessageSquare
+  MessageSquare,
+  FileCheck,
+  AlertOctagon,
+  RefreshCw
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-// Komponen untuk konten detail pengumuman - DIPERBAIKI
+// Komponen untuk konten detail pengumuman - DIPERBAIKI (lebih sederhana)
 const AnnouncementDetailContent = ({ announcement }) => {
   if (!announcement) return null;
   
@@ -46,46 +49,19 @@ const AnnouncementDetailContent = ({ announcement }) => {
     1: {
       fullDescription: `Kementerian Keuangan secara resmi merilis Panduan Sistem e-Reporting Tahun 2024 yang merupakan pembaruan komprehensif dari versi sebelumnya. Panduan ini dikembangkan berdasarkan masukan dari pengguna selama setahun terakhir dan mengintegrasikan teknologi terbaru untuk meningkatkan efisiensi pelaporan keuangan negara.`,
       
-      sections: [
-        {
-          title: "📋 Latar Belakang Pembaruan",
-          content: "Panduan ini dikeluarkan sebagai respon terhadap perkembangan teknologi dan kebutuhan akan sistem pelaporan yang lebih cepat, akurat, dan terintegrasi. Update tahun 2024 fokus pada peningkatan user experience dan keamanan data.",
-          icon: <Info className="w-5 h-5 text-blue-600" />
-        },
-        {
-          title: "🎯 Tujuan Pembaruan",
-          content: "Mempercepat proses pelaporan hingga 40%, mengurangi kesalahan input data, meningkatkan keamanan informasi keuangan, dan menyediakan analitik data real-time untuk pengambilan keputusan.",
-          icon: <Target className="w-5 h-5 text-green-600" />
-        },
-        {
-          title: "⏰ Timeline Implementasi",
-          content: "Implementasi bertahap dimulai Januari 2024 dengan pelatihan nasional. Sistem penuh akan beroperasi mulai Maret 2024. Masa transisi diberikan hingga Juni 2024.",
-          icon: <Calendar className="w-5 h-5 text-purple-600" />
-        }
-      ],
-      
-      features: [
-        {
-          name: "Real-time Validation",
-          description: "Validasi data secara real-time dengan algoritma cerdas yang mendeteksi anomali dan ketidaksesuaian sebelum submit.",
-          benefit: "Mengurangi kesalahan hingga 95%"
-        },
-        {
-          name: "Auto-Save System",
-          description: "Sistem penyimpanan otomatis setiap 2 menit dengan version control yang memungkinkan recovery data hingga 30 hari ke belakang.",
-          benefit: "Mencegah kehilangan data"
-        },
-        {
-          name: "Enhanced Security",
-          description: "Enkripsi AES-256, two-factor authentication, audit trail lengkap, dan monitoring aktivitas real-time.",
-          benefit: "Sertifikasi keamanan ISO 27001"
-        },
-        {
-          name: "Mobile Optimization",
-          description: "Antarmuka responsif yang dioptimalkan untuk smartphone dan tablet dengan performa loading di bawah 3 detik.",
-          benefit: "Akses dari mana saja"
-        }
-      ]
+      detailedInfo: `
+        Panduan e-Reporting 2024 mencakup beberapa perubahan penting:
+        
+        1. Antarmuka pengguna yang lebih intuitif dan responsif
+        2. Sistem validasi data real-time untuk mengurangi kesalahan
+        3. Fitur auto-save untuk mencegah kehilangan data
+        4. Integrasi dengan sistem APOLO dan SIPINA
+        5. Dashboard analitik untuk monitoring kinerja pelaporan
+        
+        Panduan ini wajib dipelajari oleh seluruh pengguna sistem e-Reporting sebelum melakukan pelaporan periode berikutnya.
+        
+        Untuk informasi lebih lanjut, silakan hubungi helpdesk di 021-1234-5678 atau email ke helpdesk@kemenkeu.go.id.
+      `
     }
   };
 
@@ -94,129 +70,68 @@ const AnnouncementDetailContent = ({ announcement }) => {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Deskripsi Utama */}
-      <div className="prose prose-lg max-w-none">
-        <h3 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-3">
-          📋 Deskripsi Lengkap Pengumuman
-        </h3>
-        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-6">
-          <p className="text-gray-700 leading-relaxed text-lg">
-            {detail.fullDescription}
-          </p>
-        </div>
-
-        <h4 className="text-xl font-bold text-gray-900 mb-4">Detail Informasi:</h4>
-        
-        {/* Sections */}
-        <div className="grid md:grid-cols-3 gap-6">
-          {detail.sections?.map((section, index) => (
-            <div key={index} className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-              <div className="flex items-center mb-3">
-                <div className="p-2 bg-gray-100 rounded-lg mr-3">
-                  {section.icon}
-                </div>
-                <h4 className="font-bold text-gray-900">{section.title}</h4>
-              </div>
-              <p className="text-gray-700 text-sm">{section.content}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Features */}
-        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200 mt-6">
-          <h4 className="font-bold text-blue-900 mb-4 text-lg flex items-center">
-            <Zap className="w-5 h-5 mr-2" />
-            Fitur Utama e-Reporting 2024
-          </h4>
-          <div className="grid md:grid-cols-2 gap-4">
-            {detail.features?.map((feature, index) => (
-              <div key={index} className="bg-white p-4 rounded-lg">
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-bold text-blue-800">{feature.name}</h4>
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                    {feature.benefit}
-                  </span>
-                </div>
-                <p className="text-blue-700 text-sm">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Additional Info */}
-        <div className="grid md:grid-cols-2 gap-6 mt-6">
-          <div className="bg-green-50 p-5 rounded-xl border border-green-200">
-            <h4 className="font-bold text-green-900 mb-3 text-lg">📅 Timeline Implementasi</h4>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center p-3 bg-white rounded-lg">
-                <span className="text-green-800">Pelatihan Nasional</span>
-                <span className="font-bold text-green-900">Jan-Feb 2024</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-white rounded-lg">
-                <span className="text-green-800">Masa Transisi</span>
-                <span className="font-bold text-green-900">Mar-Jun 2024</span>
-              </div>
-              <div className="flex justify-between items-center p-3 bg-white rounded-lg">
-                <span className="text-green-800">Implementasi Penuh</span>
-                <span className="font-bold text-green-900">Jul 2024</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-purple-50 p-5 rounded-xl border border-purple-200">
-            <h4 className="font-bold text-purple-900 mb-3 text-lg">🎯 Target Pencapaian</h4>
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                <Check className="w-4 h-4 text-purple-600 mr-2" />
-                <span className="text-purple-800">100% instansi pemerintah terintegrasi</span>
-              </li>
-              <li className="flex items-center">
-                <Check className="w-4 h-4 text-purple-600 mr-2" />
-                <span className="text-purple-800">Waktu pelaporan berkurang 40%</span>
-              </li>
-              <li className="flex items-center">
-                <Check className="w-4 h-4 text-purple-600 mr-2" />
-                <span className="text-purple-800">Error rate di bawah 1%</span>
-              </li>
-              <li className="flex items-center">
-                <Check className="w-4 h-4 text-purple-600 mr-2" />
-                <span className="text-purple-800">Kepuasan pengguna di atas 90%</span>
-              </li>
-            </ul>
-          </div>
+    <div className="space-y-6">
+      {/* Judul Pengumuman */}
+      <div className="mb-4">
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">{announcement.title}</h2>
+        <div className="flex items-center text-sm text-gray-600">
+          <Calendar className="w-4 h-4 mr-1" />
+          <span>Dipublikasikan: {format(announcement.publishDate, 'dd MMMM yyyy', { locale: id })}</span>
+          <span className="mx-2">•</span>
+          <User className="w-4 h-4 mr-1" />
+          <span>{announcement.author}</span>
         </div>
       </div>
 
-      {/* Contact Information */}
-      <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-5 rounded-xl border border-gray-200 mt-8">
-        <h4 className="font-bold text-gray-900 mb-3 text-lg">📞 Kontak & Informasi Lanjutan</h4>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <p className="font-medium text-gray-800">Helpdesk Kemenkeu:</p>
-            <p className="text-gray-700">021-1234-5678 (ext. 1234)</p>
-          </div>
-          <div>
-            <p className="font-medium text-gray-800">Email Support:</p>
-            <a href="mailto:helpdesk@kemenkeu.go.id" className="text-gray-600 hover:underline">
-              helpdesk@kemenkeu.go.id
-            </a>
-          </div>
-          <div>
-            <p className="font-medium text-gray-800">Jam Operasional:</p>
-            <p className="text-gray-700">Senin-Jumat, 08:00-17:00 WIB</p>
-          </div>
-          <div>
-            <p className="font-medium text-gray-800">Website Resmi:</p>
-            <a href="#" className="text-gray-600 hover:underline">www.kemenkeu.go.id</a>
-          </div>
+      {/* Gambar */}
+      <div className="rounded-xl overflow-hidden mb-6">
+        <img 
+          src={announcement.image} 
+          alt={announcement.title}
+          className="w-full h-auto max-h-96 object-cover"
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%23fee2e2'/%3E%3Ctext x='400' y='200' text-anchor='middle' font-family='Arial' font-size='24' fill='%23dc2626'%3EE-REPORTING%3C/text%3E%3C/svg%3E";
+          }}
+        />
+      </div>
+
+      {/* Deskripsi Lengkap */}
+      <div className="bg-white p-6 rounded-xl border border-gray-200">
+        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+          <FileText className="w-5 h-5 mr-2 text-red-500" />
+          Deskripsi Lengkap
+        </h3>
+        <div className="prose max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
+          {detail.fullDescription}
         </div>
+      </div>
+
+      {/* Detail Pengumuman */}
+      <div className="bg-red-50 p-6 rounded-xl border border-red-200">
+        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
+          <Info className="w-5 h-5 mr-2 text-red-500" />
+          Detail Pengumuman
+        </h3>
+        <div className="prose max-w-none text-gray-700 leading-relaxed whitespace-pre-line">
+          {detail.detailedInfo || detail.fullDescription}
+        </div>
+      </div>
+
+      {/* Informasi Kontak (opsional, bisa dihapus jika tidak diperlukan) */}
+      <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+        <h4 className="font-medium text-gray-900 mb-2">Informasi Lebih Lanjut:</h4>
+        <p className="text-sm text-gray-600">
+          Untuk pertanyaan lebih lanjut mengenai pengumuman ini, silakan hubungi:<br />
+          📞 Helpdesk: 021-1234-5678<br />
+          ✉️ Email: helpdesk@kemenkeu.go.id
+        </p>
       </div>
     </div>
   );
 };
 
-const Korespondensi = () => {
+const Pemberitahuan = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [selectedAnnouncement, setSelectedAnnouncement] = useState(null);
@@ -225,25 +140,57 @@ const Korespondensi = () => {
   // Determine active tab from URL
   const activeTab = location.pathname.includes('pengumuman') ? 'pengumuman' : 'notifikasi';
   
-  // Sample data untuk notifikasi
+  // Sample data untuk notifikasi - dengan tipe notifikasi yang jelas
   const notifications = [
     {
       id: 1,
       title: "Laporan APOLO Berhasil Dikirim",
       message: "Laporan Keuangan Q1 2023 telah berhasil dikirim dan diverifikasi oleh sistem APOLO.",
-      type: "success",
+      type: "aktivitas_pelaporan",
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
       read: false,
-      category: "apolo"
+      category: "apolo",
+      notificationType: "aktivitas_pelaporan"
     },
     {
       id: 2,
-      title: "Deadline Laporan e-Reporting Mendekati",
-      message: "Deadline laporan e-Reporting triwulanan tinggal 3 hari lagi. Silakan segera selesaikan.",
-      type: "warning",
+      title: "Penyesuaian Hari Keterlambatan",
+      message: "Jumlah hari keterlambatan pelaporan e-Reporting telah disesuaikan berdasarkan kalender libur nasional.",
+      type: "adjust_hari",
       timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
+      read: false,
+      category: "ereporting",
+      notificationType: "adjust_hari"
+    },
+    {
+      id: 3,
+      title: "Konfirmasi Penerimaan Laporan",
+      message: "Laporan Triwulan II telah diterima dan sedang dalam proses verifikasi oleh tim auditor.",
+      type: "konfirmasi",
+      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
       read: true,
-      category: "ereporting"
+      category: "sipina",
+      notificationType: "konfirmasi"
+    },
+    {
+      id: 4,
+      title: "Panduan Baru e-Reporting 2024",
+      message: "Panduan lengkap untuk penggunaan sistem e-Reporting tahun 2024 telah tersedia untuk diunduh.",
+      type: "pengumuman",
+      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      read: false,
+      category: "ereporting",
+      notificationType: "pengumuman"
+    },
+    {
+      id: 5,
+      title: "Aktivitas Pelaporan: APOLO",
+      message: "Laporan APOLO bulanan telah berhasil diproses oleh sistem.",
+      type: "aktivitas_pelaporan",
+      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      read: true,
+      category: "apolo",
+      notificationType: "aktivitas_pelaporan"
     }
   ];
 
@@ -286,16 +233,20 @@ const Korespondensi = () => {
   });
 
   const unreadCount = notifications.filter(n => !n.read).length;
+  const readCount = notifications.filter(n => n.read).length;
   const importantAnnouncements = announcements.filter(a => a.important).length;
+  
+  // Total aktivitas pelaporan (notifikasi dengan tipe aktivitas_pelaporan)
+  const totalAktivitasPelaporan = notifications.filter(n => n.notificationType === 'aktivitas_pelaporan').length;
 
-  const getTypeIcon = (type) => {
+  const getNotificationTypeIcon = (notificationType) => {
     const icons = {
-      success: <CheckCircle className="w-5 h-5 text-green-500" />,
-      warning: <Clock className="w-5 h-5 text-yellow-500" />,
-      danger: <AlertCircle className="w-5 h-5 text-red-600" />,
-      info: <Info className="w-5 h-5 text-blue-500" />,
+      aktivitas_pelaporan: <FileCheck className="w-5 h-5 text-green-600" />,
+      pengumuman: <Megaphone className="w-5 h-5 text-blue-600" />,
+      adjust_hari: <RefreshCw className="w-5 h-5 text-orange-600" />,
+      konfirmasi: <CheckCircle className="w-5 h-5 text-purple-600" />,
     };
-    return icons[type] || <Bell className="w-5 h-5 text-gray-500" />;
+    return icons[notificationType] || <Bell className="w-5 h-5 text-gray-500" />;
   };
 
   const getCategoryBadge = (category) => {
@@ -320,24 +271,24 @@ const Korespondensi = () => {
     );
   };
 
-  const getTypeBadge = (type) => {
+  const getNotificationTypeBadge = (notificationType) => {
     const styles = {
-      success: 'bg-green-100 text-green-800 border border-green-200',
-      warning: 'bg-yellow-100 text-yellow-800 border border-yellow-200',
-      danger: 'bg-red-100 text-red-800 border border-red-200',
-      info: 'bg-blue-100 text-blue-800 border border-blue-200',
+      aktivitas_pelaporan: 'bg-green-100 text-green-800 border border-green-200',
+      pengumuman: 'bg-blue-100 text-blue-800 border border-blue-200',
+      adjust_hari: 'bg-orange-100 text-orange-800 border border-orange-200',
+      konfirmasi: 'bg-purple-100 text-purple-800 border border-purple-200',
     };
     
     const labels = {
-      success: 'Sukses',
-      warning: 'Peringatan',
-      danger: 'Penting',
-      info: 'Informasi',
+      aktivitas_pelaporan: 'Aktivitas Pelaporan',
+      pengumuman: 'Pengumuman',
+      adjust_hari: 'Penyesuaian Hari',
+      konfirmasi: 'Konfirmasi',
     };
 
     return (
-      <span className={`px-2 py-1 rounded text-xs font-medium ${styles[type]}`}>
-        {labels[type]}
+      <span className={`px-2 py-1 rounded text-xs font-medium ${styles[notificationType]}`}>
+        {labels[notificationType]}
       </span>
     );
   };
@@ -390,14 +341,14 @@ const Korespondensi = () => {
                 <Mail className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-red-900">Korespondensi</h1>
-                <p className="text-red-600 text-sm">Notifikasi dan pengumuman sistem</p>
+                <h1 className="text-2xl font-bold text-red-900">Pemberitahuan</h1>
+                <p className="text-red-600 text-sm">Notifikasi, pengumuman, dan aktivitas sistem</p>
               </div>
             </div>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
             <div className="bg-white rounded-xl border border-red-100 p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
@@ -426,6 +377,16 @@ const Korespondensi = () => {
             <div className="bg-white rounded-xl border border-red-100 p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
+                  <p className="text-2xl font-bold text-gray-900">{readCount}</p>
+                  <p className="text-sm text-gray-600 mt-1">Sudah Dibaca</p>
+                </div>
+                <CheckCircle className="w-8 h-8 text-green-500" />
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl border border-red-100 p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
                   <p className="text-2xl font-bold text-gray-900">{announcements.length}</p>
                   <p className="text-sm text-gray-600 mt-1">Total Pengumuman</p>
                 </div>
@@ -436,10 +397,10 @@ const Korespondensi = () => {
             <div className="bg-white rounded-xl border border-red-100 p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-2xl font-bold text-gray-900">{importantAnnouncements}</p>
-                  <p className="text-sm text-gray-600 mt-1">Pengumuman Penting</p>
+                  <p className="text-2xl font-bold text-gray-900">{totalAktivitasPelaporan}</p>
+                  <p className="text-sm text-gray-600 mt-1">Aktivitas Pelaporan</p>
                 </div>
-                <AlertCircle className="w-8 h-8 text-red-500" />
+                <FileCheck className="w-8 h-8 text-blue-500" />
               </div>
             </div>
           </div>
@@ -488,7 +449,7 @@ const Korespondensi = () => {
           {/* Content Area */}
           <div className="p-4 md:p-6">
             {activeTab === 'notifikasi' ? (
-              /* Notifikasi List - View Only */
+              /* Notifikasi List */
               <div className="space-y-4">
                 {filteredNotifications.length > 0 ? (
                   filteredNotifications.map((notification) => (
@@ -503,7 +464,7 @@ const Korespondensi = () => {
                         <div className={`p-2 rounded-lg ${
                           notification.read ? 'bg-red-50' : 'bg-red-100'
                         }`}>
-                          {getTypeIcon(notification.type)}
+                          {getNotificationTypeIcon(notification.notificationType)}
                         </div>
 
                         {/* Content */}
@@ -530,7 +491,7 @@ const Korespondensi = () => {
 
                           {/* Badges */}
                           <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t border-red-100">
-                            {getTypeBadge(notification.type)}
+                            {getNotificationTypeBadge(notification.notificationType)}
                             {getCategoryBadge(notification.category)}
                           </div>
                         </div>
@@ -651,10 +612,10 @@ const Korespondensi = () => {
         <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-xl shadow p-6 text-white">
           <div className="flex flex-col md:flex-row items-center justify-between">
             <div>
-              <h4 className="text-lg font-bold mb-1">Informasi Korespondensi</h4>
+              <h4 className="text-lg font-bold mb-1">Informasi Pemberitahuan</h4>
               <p className="text-red-100 text-sm">
                 {activeTab === 'notifikasi' 
-                  ? 'Notifikasi bersifat real-time dan otomatis dari sistem'
+                  ? 'Notifikasi mencakup aktivitas pelaporan, pengumuman, penyesuaian hari, dan konfirmasi'
                   : 'Klik pada pengumuman untuk melihat deskripsi lengkap'}
               </p>
             </div>
@@ -672,7 +633,7 @@ const Korespondensi = () => {
         </div>
       </div>
 
-      {/* Modal Detail Pengumuman */}
+      {/* Modal Detail Pengumuman - DIPERBAIKI dengan konten yang lebih sederhana */}
       {isModalOpen && selectedAnnouncement && (
         <div className="fixed inset-0 z-50 flex items-start justify-center p-4 overflow-y-auto">
           {/* Backdrop */}
@@ -682,148 +643,32 @@ const Korespondensi = () => {
           ></div>
 
           {/* Modal Container */}
-          <div className="relative bg-white rounded-2xl shadow-2xl max-w-5xl w-full my-8 z-10">
-            {/* Modal Header - Sticky */}
-            <div className="sticky top-0 z-20 bg-white border-b border-gray-200 p-6 rounded-t-2xl">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start space-x-3 flex-1">
-                  <div className="p-2 bg-red-100 rounded-lg flex-shrink-0">
-                    <Megaphone className="w-6 h-6 text-red-600" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">{selectedAnnouncement.title}</h2>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="text-sm text-gray-600 flex items-center">
-                        <User className="w-3 h-3 mr-1" />
-                        {selectedAnnouncement.author}
-                      </span>
-                      <span className="text-sm text-gray-600 flex items-center">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        {formatFullDate(selectedAnnouncement.publishDate)}
-                      </span>
-                      <span className="text-sm text-gray-600 flex items-center">
-                        <ClockIcon className="w-3 h-3 mr-1" />
-                        {selectedAnnouncement.readTime} membaca
-                      </span>
-                    </div>
-                  </div>
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-4xl w-full my-8 z-10">
+            {/* Modal Header - Sederhana */}
+            <div className="sticky top-0 z-20 bg-white border-b border-gray-200 p-4 rounded-t-2xl">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Megaphone className="w-5 h-5 text-red-600 mr-2" />
+                  <h2 className="text-lg font-bold text-gray-900">Detail Pengumuman</h2>
                 </div>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 ml-4"
+                  className="p-1 hover:bg-gray-100 rounded-full transition-colors"
                 >
                   <X className="w-5 h-5 text-gray-500" />
                 </button>
               </div>
             </div>
 
-            {/* Modal Content - Scrollable */}
-            <div className="p-6 max-h-[70vh] overflow-y-auto">
-              {/* Hero Image */}
-              <div className="relative rounded-xl overflow-hidden mb-6">
-                <div className="h-72 relative">
-                  <img 
-                    src={selectedAnnouncement.image} 
-                    alt={selectedAnnouncement.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 800 400'%3E%3Crect width='800' height='400' fill='%23fee2e2'/%3E%3Ctext x='400' y='200' text-anchor='middle' font-family='Arial' font-size='24' fill='%23dc2626'%3EE-REPORTING%3C/text%3E%3C/svg%3E";
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-6">
-                    <div className="flex items-center space-x-4">
-                      {getCategoryBadge(selectedAnnouncement.category)}
-                      {selectedAnnouncement.important && (
-                        <span className="px-3 py-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full flex items-center">
-                          <AlertCircle className="w-3 h-3 mr-1" />
-                          PENTING
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Metadata Stats */}
-              <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{selectedAnnouncement.views.toLocaleString()}</div>
-                  <div className="text-sm text-gray-600 flex items-center justify-center">
-                    <Eye className="w-3 h-3 mr-1" />
-                    Views
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{selectedAnnouncement.downloadCount.toLocaleString()}</div>
-                  <div className="text-sm text-gray-600 flex items-center justify-center">
-                    <Download className="w-3 h-3 mr-1" />
-                    Downloads
-                  </div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{selectedAnnouncement.attachments.length}</div>
-                  <div className="text-sm text-gray-600 flex items-center justify-center">
-                    <FileText className="w-3 h-3 mr-1" />
-                    Lampiran
-                  </div>
-                </div>
-              </div>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                {selectedAnnouncement.tags.map((tag, index) => (
-                  <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full flex items-center">
-                    <Tag className="w-3 h-3 mr-1" />
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Konten Detail Lengkap */}
+            {/* Modal Content - Scrollable dengan konten sederhana */}
+            <div className="p-6 max-h-[80vh] overflow-y-auto">
+              {/* Konten Detail Lengkap yang sudah disederhanakan */}
               <AnnouncementDetailContent announcement={selectedAnnouncement} />
-
-              {/* Attachments */}
-              {selectedAnnouncement.attachments.length > 0 && (
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-                    <FileText className="w-5 h-5 mr-2" />
-                    Lampiran ({selectedAnnouncement.attachments.length})
-                  </h3>
-                  <div className="space-y-2">
-                    {selectedAnnouncement.attachments.map((attachment, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                        <div className="flex items-center">
-                          <FileText className="w-5 h-5 text-red-500 mr-3" />
-                          <div>
-                            <p className="font-medium text-gray-900">{attachment.name}</p>
-                            <p className="text-sm text-gray-500">{attachment.size}</p>
-                          </div>
-                        </div>
-                        <button 
-                          className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-sm rounded-lg hover:from-red-600 hover:to-red-700 transition-all flex items-center"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            alert(`Mengunduh: ${attachment.name}`);
-                          }}
-                        >
-                          <Download className="w-4 h-4 mr-2" />
-                          Unduh
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
 
-            {/* Modal Footer - Sticky */}
-            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6 rounded-b-2xl">
-              <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">
-                  ID: {selectedAnnouncement.id} • Dipublikasikan: {formatTimeAgo(selectedAnnouncement.timestamp)}
-                </div>
+            {/* Modal Footer - Sederhana */}
+            <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4 rounded-b-2xl">
+              <div className="flex justify-end">
                 <button
                   onClick={() => setIsModalOpen(false)}
                   className="px-6 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all"
@@ -839,4 +684,4 @@ const Korespondensi = () => {
   );
 };
 
-export default Korespondensi;
+export default Pemberitahuan;
