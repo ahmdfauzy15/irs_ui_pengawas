@@ -163,7 +163,7 @@ const Dashboard = () => {
               <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                 <Clock className="w-5 h-5" />
               </div>
-              <h4 className="font-bold text-lg">Monitoring Real-time</h4>
+              <h4 className="font-bold text-lg">Monitoring Absensi</h4>
             </div>
             <p className="text-red-100 text-sm">
               Pantau status {processedData.activeReports} laporan aktif dalam sistem IRS OJK 24/7.
