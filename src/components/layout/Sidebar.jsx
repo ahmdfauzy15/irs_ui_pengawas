@@ -81,19 +81,26 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       label: 'Dashboard',
       exact: true 
     },
-    {
+    { 
       id: 'reports',
-      type: 'dropdown',
-      icon: FileText,
-      label: 'Laporan',
-      open: reportsOpen,
-      toggle: () => setReportsOpen(!reportsOpen),
-      subItems: [
-        { path: '/apolo', icon: BarChart3, label: 'APOLO' },
-        { path: '/ereporting', icon: FileSignature, label: 'e-Reporting' },
-        { path: '/sipina', icon: Gavel, label: 'SIPINA' },
-      ]
+      path: '/absensi', 
+      icon: BarChart3, 
+      label: 'Monitoring Absensi',
+      exact: true 
     },
+    // {
+    //   id: 'reports',
+    //   type: 'dropdown',
+    //   icon: FileText,
+    //   label: 'Laporan',
+    //   open: reportsOpen,
+    //   toggle: () => setReportsOpen(!reportsOpen),
+    //   subItems: [
+    //     { path: '/apolo', icon: BarChart3, label: 'APOLO' },
+    //     { path: '/ereporting', icon: FileSignature, label: 'e-Reporting' },
+    //     { path: '/sipina', icon: Gavel, label: 'SIPINA' },
+    //   ]
+    // },
     {
       id: 'correspondence',
       type: 'dropdown',
