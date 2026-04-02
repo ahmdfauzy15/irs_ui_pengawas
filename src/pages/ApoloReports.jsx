@@ -767,7 +767,7 @@ const ApoloReports = () => {
             <BarChart3 className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Monitoring Laporan APOLO, eReporting & SIPINA</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Monitoring Absensi</h1>
             <p className="text-gray-600 mt-1">Total {stats.total} Laporan • APOLO: {stats.apoloCount} • eReporting: {stats.eReportingCount} • SIPINA: {stats.sipinaCount}</p>
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
@@ -1043,7 +1043,7 @@ const ApoloReports = () => {
                   </h3>
                   <div className="mt-2 space-y-1">
                     <p className="text-sm text-gray-600 truncate">
-                      Data laporan dari berbagai aplikasi pengawasan
+                      Data Aplikasi Pelaporan
                     </p>
                     <div className="flex flex-wrap gap-x-3 gap-y-1">
                       <p className="text-xs text-gray-500">
