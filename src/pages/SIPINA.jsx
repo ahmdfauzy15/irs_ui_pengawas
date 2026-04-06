@@ -30,7 +30,6 @@ import {
 } from 'lucide-react';
 
 const SIPINA = () => {
-  // Fungsi untuk mendapatkan waktu saat ini di WIB
   const getCurrentWIBTime = () => {
     const now = new Date();
     return now;
@@ -40,7 +39,6 @@ const SIPINA = () => {
   const [currentDateTime, setCurrentDateTime] = useState(getCurrentWIBTime());
   const [reportsWithPeriod, setReportsWithPeriod] = useState([]);
   
-  // State untuk periode tanggal - default 2 tahun kebelakang hingga 1 tahun ke depan
   const [dateRange, setDateRange] = useState(() => {
     const currentDate = getCurrentWIBTime();
     const currentYear = currentDate.getFullYear();
@@ -996,7 +994,6 @@ const SIPINA = () => {
     
     const suggestions = [];
     
-    // Tambahkan bulan-bulan dari 1 tahun kebelakang
     for (let year = currentYear - 1; year <= currentYear; year++) {
       const startMonth = year === currentYear - 1 ? 1 : 1;
       const endMonth = year === currentYear - 1 ? 12 : currentMonth;

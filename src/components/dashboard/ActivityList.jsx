@@ -1,4 +1,3 @@
-// src/components/dashboard/ActivityList.jsx
 import React from 'react';
 import { 
   CheckCircle, 
@@ -17,7 +16,6 @@ import {
 
 const ActivityList = ({ activities, supervisorView = false, ljkActivities = [] }) => {
   
-  // Data aktivitas untuk pengawas (jika supervisorView true)
   const supervisorActivities = supervisorView ? [
     {
       id: 1,
@@ -327,7 +325,6 @@ const ActivityList = ({ activities, supervisorView = false, ljkActivities = [] }
     );
   }
 
-  // Tampilan default (untuk non-supervisor)
   return (
     <div className="space-y-4">
       {activities.length === 0 ? (

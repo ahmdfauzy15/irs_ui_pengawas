@@ -14,7 +14,7 @@ import Settings from './pages/Settings';
 import DownloadCenter from './components/dashboard/DownloadCenter';
 import AIAssistant from './components/common/AIAssistant';
 import Korespondensi from './pages/Korespondensi';
-import AntiGratificationBanner from './components/common/AntiGratificationBanner'; // Tambahkan import ini
+import AntiGratificationBanner from './components/common/AntiGratificationBanner'; 
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);

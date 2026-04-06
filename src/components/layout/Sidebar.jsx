@@ -166,7 +166,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     
     navigate(path);
     
-    // Close sidebar on mobile after clicking menu item
     if (windowWidth < 1024) {
       toggleSidebar();
     }
@@ -178,7 +177,6 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
     }
   };
 
-  // Modern active indicator - subtle dot
   const renderActiveIndicator = (isActive) => {
     if (!isActive) return null;
     

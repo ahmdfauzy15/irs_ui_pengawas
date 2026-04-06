@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import React, { useState } from 'react';
 import { 
   FileText, 

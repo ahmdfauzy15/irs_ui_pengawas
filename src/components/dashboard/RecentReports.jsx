@@ -1,4 +1,3 @@
-// src/components/dashboard/RecentReports.jsx
 import React, { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { 
@@ -186,7 +185,7 @@ const RecentReports = ({ reports, searchTerm, allReports }) => {
         name: name.length > 10 ? name.substring(0, 10) + '...' : name,
         fullName: name,
         value,
-        color: getSystemColor('APOLO') // Default color
+        color: getSystemColor('APOLO')
       }));
   }, [filteredData]);
 

@@ -1,9 +1,7 @@
-// src/components/dashboard/ComplianceChart.jsx
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const ComplianceChart = ({ data }) => {
-  // Data sample untuk compliance
   const chartData = [
     { month: 'Jan', tepatWaktu: 1780, terlambat: 52, bermasalah: 15 },
     { month: 'Feb', tepatWaktu: 1820, terlambat: 48, bermasalah: 12 },

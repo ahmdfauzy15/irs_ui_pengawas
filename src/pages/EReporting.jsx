@@ -90,7 +90,6 @@ const Ereporting = () => {
     { nama: "BANK ZXC", bidang: "Bank Umum Syariah" },
   ];
 
-  // Data reports Ereporting dengan status review untuk periode terlambat
   const initialReports = useMemo(() => {
     const currentYear = currentDateTime.getFullYear();
     const currentMonth = currentDateTime.getMonth() + 1;
