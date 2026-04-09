@@ -39,33 +39,26 @@ import {
   ThumbsUp,
   ThumbsDown,
   Send,
-  MessageCircle,
   History,
   Mail
 } from 'lucide-react';
 
 const ApoloReports = () => {
-  // Fungsi untuk mendapatkan waktu saat ini di WIB
   const getCurrentWIBTime = () => {
     const now = new Date();
     return now;
   };
 
-  // State untuk waktu real-time
   const [currentDateTime, setCurrentDateTime] = useState(getCurrentWIBTime());
   const [reportsWithPeriod, setReportsWithPeriod] = useState([]);
   const [expandedRows, setExpandedRows] = useState({});
   const [selectedReport, setSelectedReport] = useState(null);
-  const [showAcknowledgmentModal, setShowAcknowledgmentModal] = useState(false);
-  const [selectedAcknowledgment, setSelectedAcknowledgment] = useState(null);
   const [showDisputeModal, setShowDisputeModal] = useState(false);
   const [selectedDispute, setSelectedDispute] = useState(null);
   const [showDisputeActionModal, setShowDisputeActionModal] = useState(false);
   const [disputeAction, setDisputeAction] = useState(null);
-  const [disputeLateDays, setDisputeLateDays] = useState(0);
   const [disputeComment, setDisputeComment] = useState('');
   
-  // State untuk filter
   const [filters, setFilters] = useState({
     aplikasi: 'all',
     statusKeterlambatan: 'all'
@@ -73,7 +66,6 @@ const ApoloReports = () => {
   
   const [searchTerm, setSearchTerm] = useState('');
   
-  // State untuk filter tanggal
   const [dateRange, setDateRange] = useState(() => {
     const currentDate = getCurrentWIBTime();
     const currentYear = currentDate.getFullYear();
@@ -98,7 +90,6 @@ const ApoloReports = () => {
     localStorage.setItem('apoloReportsData', JSON.stringify(data));
   };
 
-  // Update waktu real-time WIB setiap detik
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentDateTime(getCurrentWIBTime());
@@ -107,7 +98,6 @@ const ApoloReports = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Fungsi untuk menghitung tanggal yang aman
   const getSafeDate = (year, month, day) => {
     let safeMonth = month;
     let safeYear = year;
@@ -132,7 +122,6 @@ const ApoloReports = () => {
     const currentMonth = currentDateTime.getMonth() + 1;
     const currentDay = currentDateTime.getDate();
     
-    // Hitung tanggal yang aman
     const prevMonth5 = getSafeDate(currentYear, currentMonth - 1, 5);
     const prevMonth10 = getSafeDate(currentYear, currentMonth - 1, 10);
     const prevMonth15 = getSafeDate(currentYear, currentMonth - 1, 15);
@@ -163,8 +152,6 @@ const ApoloReports = () => {
         jmlHariTerlambat: 0,
         LJK: "Bank ABC",
         bidangLJK: "Bank Umum Konvensional",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
         needFollowUp: false,
         followUpStatus: null,
         isDisputed: false,
@@ -173,7 +160,6 @@ const ApoloReports = () => {
         disputeStatus: null,
         disputeRejectionMessage: null,
         supervisorComment: null,
-        chatHistory: [],
         detailForms: [
           { id: 1, namaForm: "Form LCR Individual - Laporan Utama", fileUrl: "/reports/APO001_form1.pdf" },
           { id: 2, namaForm: "Form LCR Individual - Detail Aset", fileUrl: "/reports/APO001_form2.pdf" }
@@ -191,8 +177,6 @@ const ApoloReports = () => {
         jmlHariTerlambat: 0,
         LJK: "Bank DEF",
         bidangLJK: "Bank Umum Konvensional",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
         needFollowUp: false,
         followUpStatus: null,
         isDisputed: false,
@@ -201,7 +185,6 @@ const ApoloReports = () => {
         disputeStatus: null,
         disputeRejectionMessage: null,
         supervisorComment: null,
-        chatHistory: [],
         detailForms: [
           { id: 1, namaForm: "Form LCR Konsolidasi - Laporan Utama", fileUrl: "/reports/APO002_form1.pdf" },
           { id: 2, namaForm: "Form LCR Konsolidasi - Detail Liabilitas", fileUrl: "/reports/APO002_form2.pdf" }
@@ -219,8 +202,6 @@ const ApoloReports = () => {
         jmlHariTerlambat: 3,
         LJK: "BANK BSE",
         bidangLJK: "Bank Umum Syariah",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
         needFollowUp: true,
         followUpStatus: "pending",
         isDisputed: true,
@@ -229,7 +210,6 @@ const ApoloReports = () => {
         disputeStatus: "pending",
         disputeRejectionMessage: null,
         supervisorComment: null,
-        chatHistory: [],
         detailForms: [
           { id: 1, namaForm: "Form GWM Individual - Utama", fileUrl: "/reports/APO006_form1.pdf" }
         ]
@@ -250,8 +230,6 @@ const ApoloReports = () => {
         jmlHariTerlambat: 2,
         LJK: "Bank BNI",
         bidangLJK: "Bank Umum Konvensional",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
         needFollowUp: true,
         followUpStatus: "pending",
         isDisputed: true,
@@ -260,16 +238,14 @@ const ApoloReports = () => {
         disputeStatus: "pending",
         disputeRejectionMessage: null,
         supervisorComment: null,
-        chatHistory: [],
         detailForms: [
           { id: 1, namaForm: "Form GWM - Utama", fileUrl: "/reports/ERP003_form1.pdf" },
           { id: 2, namaForm: "Form GWM - Detail", fileUrl: "/reports/ERP003_form2.pdf" }
         ]
       }
-      
-      
     ];
-     // Data SIPINA
+
+    // Data SIPINA
     const sipinaData = [
       {
         id: "SIP001",
@@ -283,15 +259,12 @@ const ApoloReports = () => {
         jmlHariTerlambat: 0,
         LJK: "Bank CIMB Niaga",
         bidangLJK: "Bank Umum Konvensional",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
         needFollowUp: false,
         followUpStatus: null,
         isDisputed: false,
         disputeReason: null,
         disputeDocument: null,
         supervisorComment: null,
-        chatHistory: [],
         detailForms: [
           { id: 1, namaForm: "Form Pengawasan Internal", fileUrl: "/reports/SIP001_form1.pdf" },
           { id: 2, namaForm: "Form Audit Internal", fileUrl: "/reports/SIP001_form2.pdf" }
@@ -309,15 +282,12 @@ const ApoloReports = () => {
         jmlHariTerlambat: 0,
         LJK: "BPR Dana Mulia",
         bidangLJK: "Bank Perkreditan Rakyat",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
         needFollowUp: true,
         followUpStatus: "pending",
         isDisputed: false,
         disputeReason: null,
         disputeDocument: null,
         supervisorComment: null,
-        chatHistory: [],
         detailForms: [
           { id: 1, namaForm: "Form Laporan Kepatuhan", fileUrl: null }
         ]
@@ -334,72 +304,17 @@ const ApoloReports = () => {
         jmlHariTerlambat: 6,
         LJK: "Bank Muamalat",
         bidangLJK: "Bank Umum Syariah",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
         needFollowUp: true,
         followUpStatus: "pending",
         isDisputed: false,
         disputeReason: null,
         disputeDocument: null,
         supervisorComment: null,
-        chatHistory: [],
         detailForms: [
           { id: 1, namaForm: "Form Pengawasan Syariah", fileUrl: "/reports/SIP003_form1.pdf" }
         ]
-      },
-      {
-        id: "SIP004",
-        aplikasi: "SIPINA",
-        jenisLJK: "BU",
-        namaLaporan: "Laporan Manajemen Risiko",
-        periodeLaporan: "2026",
-        tglUpload: `${currentMonth25.year}-${String(currentMonth25.month).padStart(2, '0')}-${String(currentMonth25.day - 3).padStart(2, '0')}`,
-        tglBatas: `${currentMonth25.year}-${String(currentMonth25.month).padStart(2, '0')}-${String(currentMonth25.day).padStart(2, '0')}`,
-        statusKeterlambatan: "Tepat Waktu",
-        jmlHariTerlambat: 0,
-        LJK: "Bank Permata",
-        bidangLJK: "Bank Umum Konvensional",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
-        needFollowUp: false,
-        followUpStatus: null,
-        isDisputed: false,
-        disputeReason: null,
-        disputeDocument: null,
-        supervisorComment: null,
-        chatHistory: [],
-        detailForms: [
-          { id: 1, namaForm: "Form Manajemen Risiko", fileUrl: "/reports/SIP004_form1.pdf" }
-        ]
-      },
-      {
-        id: "SIP005",
-        aplikasi: "SIPINA",
-        jenisLJK: "BU",
-        namaLaporan: "Laporan GCG",
-        periodeLaporan: "2026",
-        tglUpload: `${currentMonth10.year}-${String(currentMonth10.month).padStart(2, '0')}-${String(currentMonth10.day + 8).padStart(2, '0')}`,
-        tglBatas: `${currentMonth10.year}-${String(currentMonth10.month).padStart(2, '0')}-${String(currentMonth10.day).padStart(2, '0')}`,
-        statusKeterlambatan: "Terlambat",
-        jmlHariTerlambat: 8,
-        LJK: "Bank Danamon",
-        bidangLJK: "Bank Umum Konvensional",
-        ljkAcknowledged: false,
-        acknowledgedLateDays: null,
-        needFollowUp: true,
-        followUpStatus: "pending",
-        isDisputed: false,
-        disputeReason: null,
-        disputeDocument: null,
-        supervisorComment: null,
-        chatHistory: [],
-        detailForms: [
-          { id: 1, namaForm: "Form GCG - Utama", fileUrl: "/reports/SIP005_form1.pdf" },
-          { id: 2, namaForm: "Form GCG - Detail", fileUrl: "/reports/SIP005_form2.pdf" }
-        ]
       }
     ];
-
 
     return [...apoloData, ...eReportingData, ...sipinaData];
   };
@@ -434,31 +349,30 @@ const ApoloReports = () => {
     }));
   };
 
-  // Fungsi untuk mengecek apakah aplikasi dapat diedit (APOLO atau eReporting)
-  const canEditAplikasi = (aplikasi) => {
+  // Fungsi untuk mengecek apakah aplikasi dapat memproses sanggahan (APOLO atau eReporting)
+  const canProcessDispute = (aplikasi) => {
     return aplikasi === "APOLO" || aplikasi === "eReporting";
   };
 
-  // Konfirmasi acknowledgment dari LJK (penyesuaian jumlah hari)
-  const confirmAcknowledgment = () => {
-    if (selectedAcknowledgment) {
+  const handleDisputeAction = (action) => {
+    setDisputeAction({ action, report: selectedDispute });
+    setDisputeComment('');
+    setShowDisputeActionModal(true);
+  };
+
+  const processDisputeAction = () => {
+    if (disputeAction.action === 'accept') {
       const updatedData = parentData.map(item => {
-        if (item.id === selectedAcknowledgment.id) {
+        if (item.id === disputeAction.report.id) {
           const updatedItem = {
             ...item,
-            jmlHariTerlambat: selectedAcknowledgment.newLateDays,
-            ljkAcknowledged: true,
-            acknowledgedLateDays: selectedAcknowledgment.newLateDays,
-            needFollowUp: selectedAcknowledgment.newLateDays > 0 ? true : false,
-            followUpStatus: selectedAcknowledgment.newLateDays > 0 ? "pending" : "completed",
-            statusKeterlambatan: selectedAcknowledgment.newLateDays === 0 ? "Tepat Waktu" : "Terlambat",
-            chatHistory: (item.chatHistory && Array.isArray(item.chatHistory) ? [...item.chatHistory] : []).concat([{
-              id: Date.now(),
-              type: 'system',
-              message: `Pengawas menyesuaikan jumlah hari terlambat menjadi ${selectedAcknowledgment.newLateDays} hari`,
-              timestamp: new Date().toISOString(),
-              user: 'Pengawas'
-            }])
+            jmlHariTerlambat: 0,
+            statusKeterlambatan: "Tepat Waktu",
+            needFollowUp: false,
+            followUpStatus: "completed",
+            isDisputed: false,
+            disputeStatus: "accepted",
+            supervisorComment: disputeComment,
           };
           return updatedItem;
         }
@@ -468,84 +382,31 @@ const ApoloReports = () => {
       setReportsWithPeriod(updatedData);
       saveDataToLocalStorage(updatedData);
       
-      setShowAcknowledgmentModal(false);
-      setSelectedAcknowledgment(null);
+    } else if (disputeAction.action === 'reject') {
+      const updatedData = parentData.map(item => {
+        if (item.id === disputeAction.report.id) {
+          return {
+            ...item,
+            isDisputed: false,
+            disputeStatus: "rejected",
+            disputeRejectionMessage: disputeComment,
+            needFollowUp: true,
+            followUpStatus: "pending",
+            supervisorComment: disputeComment,
+          };
+        }
+        return item;
+      });
+      
+      setReportsWithPeriod(updatedData);
+      saveDataToLocalStorage(updatedData);
     }
-  };
-
-  // Fungsi untuk membuka modal aksi sanggahan
-  const handleDisputeAction = (action) => {
-    setDisputeAction({ action, report: selectedDispute });
+    
+    setShowDisputeActionModal(false);
+    setShowDisputeModal(false);
+    setSelectedDispute(null);
+    setDisputeAction(null);
     setDisputeComment('');
-    setShowDisputeActionModal(true);
-  };
-
-  // Fungsi untuk memproses aksi sanggahan
-  const processDisputeAction = () => {
-  if (disputeAction.action === 'accept') {
-    // Accept dispute - LANGSUNG SET 0 HARI (Tepat Waktu)
-    const updatedData = parentData.map(item => {
-      if (item.id === disputeAction.report.id) {
-        const updatedItem = {
-          ...item,
-          jmlHariTerlambat: 0,
-          statusKeterlambatan: "Tepat Waktu",
-          ljkAcknowledged: true,
-          acknowledgedLateDays: 0,
-          needFollowUp: false,
-          followUpStatus: "completed",
-          isDisputed: false,
-          disputeStatus: "accepted",
-          supervisorComment: disputeComment,
-          chatHistory: (item.chatHistory && Array.isArray(item.chatHistory) ? [...item.chatHistory] : []).concat([{
-            id: Date.now(),
-            type: 'supervisor',
-            message: `Sanggahan diterima. Status menjadi Tepat Waktu (0 hari terlambat). ${disputeComment ? 'Catatan: ' + disputeComment : ''}`,
-            timestamp: new Date().toISOString(),
-            user: 'Pengawas'
-          }])
-        };
-        return updatedItem;
-      }
-      return item;
-    });
-    
-    setReportsWithPeriod(updatedData);
-    saveDataToLocalStorage(updatedData);
-    
-  } else if (disputeAction.action === 'reject') {
-    // Reject dispute - tetap dengan jumlah hari terlambat awal
-    const updatedData = parentData.map(item => {
-      if (item.id === disputeAction.report.id) {
-        return {
-          ...item,
-          isDisputed: false,
-          disputeStatus: "rejected",
-          disputeRejectionMessage: disputeComment,
-          needFollowUp: true,
-          followUpStatus: "pending",
-          supervisorComment: disputeComment,
-          chatHistory: (item.chatHistory && Array.isArray(item.chatHistory) ? [...item.chatHistory] : []).concat([{
-            id: Date.now(),
-            type: 'supervisor',
-            message: `Sanggahan ditolak. Jumlah hari terlambat tetap ${item.jmlHariTerlambat} hari. ${disputeComment ? 'Alasan: ' + disputeComment : ''}`,
-            timestamp: new Date().toISOString(),
-            user: 'Pengawas'
-          }])
-        };
-      }
-      return item;
-    });
-    
-    setReportsWithPeriod(updatedData);
-    saveDataToLocalStorage(updatedData);
-  }
-  
-  setShowDisputeActionModal(false);
-  setShowDisputeModal(false);
-  setSelectedDispute(null);
-  setDisputeAction(null);
-  setDisputeComment('');
   };
 
   // Fungsi untuk download file
@@ -693,9 +554,9 @@ const ApoloReports = () => {
       'Status Keterlambatan': parent.statusKeterlambatan,
       'Jumlah Hari Terlambat': parent.jmlHariTerlambat,
       'Jumlah Form': parent.detailForms.length,
-      'Dikonfirmasi LJK': parent.ljkAcknowledged ? 'Ya' : 'Tidak',
       'Perlu Tindak Lanjut': parent.needFollowUp ? 'Ya' : 'Tidak',
-      'Menyanggah': parent.isDisputed ? 'Ya' : 'Tidak'
+      'Menyanggah': parent.isDisputed ? 'Ya' : 'Tidak',
+      'Status Sanggahan': parent.disputeStatus || '-'
     }));
 
     const csv = convertToCSV(exportData);
@@ -746,16 +607,6 @@ const ApoloReports = () => {
       minute: '2-digit',
       second: '2-digit'
     });
-  };
-
-  // Handle konfirmasi LJK (penyesuaian jumlah hari)
-  const handleConfirmLJK = (report) => {
-    setSelectedAcknowledgment({
-      id: report.id,
-      oldLateDays: report.jmlHariTerlambat,
-      newLateDays: report.jmlHariTerlambat
-    });
-    setShowAcknowledgmentModal(true);
   };
 
   return (
@@ -1076,7 +927,7 @@ const ApoloReports = () => {
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Tgl Batas Akhir</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jml Hari Terlambat</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Konfirmasi LJK</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Sanggahan</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Aksi</th>
                 </tr>
               </thead>
@@ -1140,23 +991,8 @@ const ApoloReports = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
-                          {/* STEP 1: Konfirmasi LJK - Hanya untuk APOLO/eReporting yang TERLAMBAT dan BELUM dikonfirmasi */}
-                          {canEditAplikasi(parent.aplikasi) && 
-                           !parent.ljkAcknowledged && 
-                           parent.statusKeterlambatan === "Terlambat" && (
-                            <button
-                              onClick={() => handleConfirmLJK(parent)}
-                              className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-100 text-blue-700 border border-blue-200 hover:bg-blue-200 transition-colors"
-                              title="Konfirmasi penyesuaian jumlah hari terlambat"
-                            >
-                              <CheckCircle className="w-3 h-3 mr-1" />
-                              Konfirmasi LJK
-                            </button>
-                          )}
-                          
-                          {/* STEP 2: Setelah konfirmasi LJK selesai, tampilkan tombol untuk memproses sanggahan */}
-                          {canEditAplikasi(parent.aplikasi) && 
-                           parent.ljkAcknowledged && 
+                          {/* Tombol untuk memproses sanggahan - Hanya untuk APOLO/eReporting yang memiliki sanggahan pending */}
+                          {canProcessDispute(parent.aplikasi) && 
                            parent.isDisputed && 
                            parent.disputeStatus === "pending" && (
                             <button
@@ -1164,10 +1000,10 @@ const ApoloReports = () => {
                                 setSelectedDispute(parent);
                                 setShowDisputeModal(true);
                               }}
-                              className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-green-100 text-green-700 border border-green-200 hover:bg-green-200 transition-colors"
-                              title="Proses sanggahan"
+                              className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-100 text-indigo-700 border border-indigo-200 hover:bg-indigo-200 transition-colors"
+                              title="Tanggapi sanggahan"
                             >
-                              <ThumbsUp className="w-3 h-3 mr-1" />
+                              <MessageSquare className="w-3 h-3 mr-1" />
                               Proses Sanggahan
                             </button>
                           )}
@@ -1176,36 +1012,26 @@ const ApoloReports = () => {
                           {parent.disputeStatus === "accepted" && (
                             <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-green-100 text-green-700 border border-green-200">
                               <CheckCircle className="w-3 h-3 mr-1" />
-                              Sanggahan Diterima
+                              Diterima
                             </span>
                           )}
                           
                           {parent.disputeStatus === "rejected" && (
                             <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-red-100 text-red-700 border border-red-200">
                               <XCircle className="w-3 h-3 mr-1" />
-                              Sanggahan Ditolak
+                              Ditolak
                             </span>
                           )}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() => handleViewDetails(parent)}
-                            className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
-                            title="Lihat detail"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          {parent.chatHistory && parent.chatHistory.length > 0 && (
-                            <div className="relative">
-                              <MessageCircle className="w-4 h-4 text-gray-400" />
-                              <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-[8px] text-white flex items-center justify-center">
-                                {parent.chatHistory.length}
-                              </span>
-                            </div>
-                          )}
-                        </div>
+                        <button
+                          onClick={() => handleViewDetails(parent)}
+                          className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+                          title="Lihat detail"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                     
@@ -1279,11 +1105,11 @@ const ApoloReports = () => {
         </div>
       </div>
 
-      {/* Detail Modal - Sama seperti sebelumnya */}
+      {/* Detail Modal */}
       {selectedReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
+            <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white sticky top-0 bg-white z-10">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-gradient-to-r from-blue-100 to-blue-200 rounded-lg">
@@ -1358,17 +1184,9 @@ const ApoloReports = () => {
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Jumlah Hari Terlambat</h4>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-lg font-medium text-gray-900">
-                      {selectedReport.jmlHariTerlambat > 0 ? `${selectedReport.jmlHariTerlambat} Hari` : '0 Hari'}
-                    </p>
-                  </div>
-                  {selectedReport.ljkAcknowledged && (
-                    <p className="text-xs text-blue-600 mt-1">
-                      <Info className="w-3 h-3 inline mr-1" />
-                      Jumlah hari terlambat telah dikonfirmasi oleh LJK
-                    </p>
-                  )}
+                  <p className="text-lg font-medium text-gray-900">
+                    {selectedReport.jmlHariTerlambat > 0 ? `${selectedReport.jmlHariTerlambat} Hari` : '0 Hari'}
+                  </p>
                 </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Jumlah Form</h4>
@@ -1376,61 +1194,26 @@ const ApoloReports = () => {
                 </div>
               </div>
 
-              {/* Chat History Section */}
-              {selectedReport.chatHistory && selectedReport.chatHistory.length > 0 && (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 p-4">
-                  <div className="flex items-center space-x-2 mb-3">
-                    <MessageCircle className="w-5 h-5 text-blue-600" />
-                    <h4 className="font-semibold text-blue-900">Riwayat Konfirmasi LJK</h4>
+              {/* Status Sanggahan */}
+              {selectedReport.disputeStatus && (
+                <div className={`p-4 rounded-lg border ${
+                  selectedReport.disputeStatus === 'accepted' 
+                    ? 'bg-green-50 border-green-200' 
+                    : selectedReport.disputeStatus === 'rejected'
+                    ? 'bg-red-50 border-red-200'
+                    : 'bg-yellow-50 border-yellow-200'
+                }`}>
+                  <div className="flex items-center space-x-2 mb-2">
+                    {selectedReport.disputeStatus === 'accepted' && <CheckCircle className="w-5 h-5 text-green-600" />}
+                    {selectedReport.disputeStatus === 'rejected' && <XCircle className="w-5 h-5 text-red-600" />}
+                    {selectedReport.disputeStatus === 'pending' && <Clock className="w-5 h-5 text-yellow-600" />}
+                    <h4 className="font-semibold">
+                      Status Sanggahan: {selectedReport.disputeStatus === 'accepted' ? 'Diterima' : selectedReport.disputeStatus === 'rejected' ? 'Ditolak' : 'Pending'}
+                    </h4>
                   </div>
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
-                    {selectedReport.chatHistory.map((chat) => (
-                      <div key={chat.id} className={`p-3 rounded-lg ${
-                        chat.type === 'system' ? 'bg-gray-100 border-l-4 border-gray-400' :
-                        chat.type === 'supervisor' ? 'bg-blue-100 border-l-4 border-blue-500' :
-                        'bg-white border border-gray-200'
-                      }`}>
-                        <div className="flex justify-between items-start mb-1">
-                          <span className="text-xs font-medium text-gray-600">{chat.user}</span>
-                          <span className="text-xs text-gray-400">{new Date(chat.timestamp).toLocaleString('id-ID')}</span>
-                        </div>
-                        <p className="text-sm text-gray-700">{chat.message}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {selectedReport.isDisputed && selectedReport.disputeStatus === "pending" && canEditAplikasi(selectedReport.aplikasi) && (
-                <div className="bg-indigo-50 rounded-lg border border-indigo-200 p-4">
-                  <div className="flex items-start space-x-3">
-                    <FileWarning className="w-5 h-5 text-indigo-600 mt-0.5" />
-                    <div className="flex-1">
-                      <h4 className="font-medium text-indigo-900 mb-2">Informasi Sanggahan LJK</h4>
-                      <p className="text-sm text-indigo-800 mb-3">{selectedReport.disputeReason}</p>
-                      {selectedReport.disputeDocument && (
-                        <button
-                          onClick={() => handleDownloadFile(selectedReport.disputeDocument, `Sanggahan_${selectedReport.id}`)}
-                          className="inline-flex items-center space-x-2 px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors text-sm"
-                        >
-                          <DownloadIcon className="w-4 h-4" />
-                          <span>Download Surat Sanggahan</span>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {selectedReport.supervisorComment && (
-                <div className="bg-green-50 rounded-lg border border-green-200 p-4">
-                  <div className="flex items-start space-x-3">
-                    <Info className="w-5 h-5 text-green-600 mt-0.5" />
-                    <div className="flex-1">
-                      <h4 className="font-medium text-green-900 mb-2">Komentar Pengawas</h4>
-                      <p className="text-sm text-green-800">{selectedReport.supervisorComment}</p>
-                    </div>
-                  </div>
+                  {selectedReport.supervisorComment && (
+                    <p className="text-sm text-gray-700">{selectedReport.supervisorComment}</p>
+                  )}
                 </div>
               )}
 
@@ -1456,7 +1239,7 @@ const ApoloReports = () => {
                 </div>
               </div>
               
-              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200 sticky bottom-0 bg-white py-4">
                 <button
                   onClick={() => setSelectedReport(null)}
                   className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
@@ -1469,96 +1252,21 @@ const ApoloReports = () => {
         </div>
       )}
 
-      {/* Acknowledgment Modal */}
-      {showAcknowledgmentModal && selectedAcknowledgment && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Info className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="text-lg font-bold text-gray-900">Konfirmasi</h3>
-              </div>
-            </div>
-            
-            <div className="p-6 space-y-4">
-              <p className="text-gray-700">
-                Atur jumlah hari keterlambatan berdasarkan hari kerja:
-              </p>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-gray-700">Jumlah Hari Terlambat Sebelum:</span>
-                    <span className="font-medium text-red-600">{selectedAcknowledgment.oldLateDays} Hari</span>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Jumlah Hari Terlambat Sesudah:
-                    </label>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="number"
-                        value={selectedAcknowledgment.newLateDays}
-                        onChange={(e) => setSelectedAcknowledgment({
-                          ...selectedAcknowledgment,
-                          newLateDays: Math.max(0, parseInt(e.target.value) || 0)
-                        })}
-                        min="0"
-                        className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                      <span className="text-sm text-gray-600">Hari</span>
-                    </div>
-                    {selectedAcknowledgment.newLateDays === 0 && (
-                      <p className="text-xs text-green-600 mt-1">
-                        * Jika diatur 0 hari, status akan berubah menjadi Tepat Waktu
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <p className="text-xs text-gray-500">
-                * Konfirmasi ini akan mengubah status keterlambatan dan memperbarui data form
-              </p>
-            </div>
-            
-            <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
-              <button
-                onClick={() => {
-                  setShowAcknowledgmentModal(false);
-                  setSelectedAcknowledgment(null);
-                }}
-                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                Batal
-              </button>
-              <button
-                onClick={confirmAcknowledgment}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
-              >
-                <CheckCircle className="w-4 h-4" />
-                <span>Konfirmasi LJK</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Dispute Detail Modal */}
+      {/* Dispute Detail Modal - Responsive Layout */}
       {showDisputeModal && selectedDispute && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-white">
-              <div className="flex items-center justify-between">
+            <div className="p-4 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-indigo-50 to-white sticky top-0 bg-white z-10">
+              <div className="flex items-center justify-between flex-wrap gap-3">
                 <div className="flex items-center space-x-3">
                   <div className="p-2 bg-gradient-to-r from-indigo-100 to-indigo-200 rounded-lg">
-                    <FileWarning className="w-6 h-6 text-indigo-600" />
+                    <FileWarning className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-indigo-900">Detail Sanggahan LJK</h3>
-                    <div className="flex items-center space-x-2 mt-1">
+                    <h3 className="text-lg sm:text-xl font-bold text-indigo-900">Detail Sanggahan LJK</h3>
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1">
                       {getAplikasiBadge(selectedDispute.aplikasi)}
-                      <span className="text-gray-600">• ID: {selectedDispute.id}</span>
+                      <span className="text-gray-600 text-sm">• ID: {selectedDispute.id}</span>
                     </div>
                   </div>
                 </div>
@@ -1566,52 +1274,52 @@ const ApoloReports = () => {
                   onClick={() => setShowDisputeModal(false)}
                   className="p-2 text-gray-500 hover:text-gray-700 rounded-lg hover:bg-gray-100"
                 >
-                  <XCircle className="w-6 h-6" />
+                  <XCircle className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
             </div>
             
-            <div className="p-6 space-y-6">
-              {/* Informasi LJK */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-5 border border-indigo-200">
-                <div className="flex items-center space-x-3 mb-4">
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+              {/* Informasi LJK - Responsive Grid */}
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-5 border border-indigo-200">
+                <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                   <Building className="w-5 h-5 text-indigo-600" />
-                  <h4 className="text-lg font-semibold text-indigo-900">Informasi LJK</h4>
+                  <h4 className="text-base sm:text-lg font-semibold text-indigo-900">Informasi LJK</h4>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Nama LJK</p>
-                    <p className="font-medium text-gray-900">{selectedDispute.LJK}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-1">Nama LJK</p>
+                    <p className="font-medium text-gray-900 text-sm sm:text-base break-words">{selectedDispute.LJK}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Bidang LJK</p>
-                    <p className="font-medium text-gray-900">{selectedDispute.bidangLJK}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-1">Bidang LJK</p>
+                    <p className="font-medium text-gray-900 text-sm sm:text-base break-words">{selectedDispute.bidangLJK}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Informasi Laporan */}
-              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 border border-green-200">
-                <div className="flex items-center space-x-3 mb-4">
+              {/* Informasi Laporan - Responsive Grid */}
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 sm:p-5 border border-green-200">
+                <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                   <FileText className="w-5 h-5 text-green-600" />
-                  <h4 className="text-lg font-semibold text-green-900">Informasi Laporan</h4>
+                  <h4 className="text-base sm:text-lg font-semibold text-green-900">Informasi Laporan</h4>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Jenis Laporan</p>
-                    <p className="font-medium text-gray-900">{selectedDispute.namaLaporan}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-1">Jenis Laporan</p>
+                    <p className="font-medium text-gray-900 text-sm sm:text-base break-words">{selectedDispute.namaLaporan}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Periode Data</p>
-                    <p className="font-medium text-gray-900">{selectedDispute.periodeLaporan}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-1">Periode Data</p>
+                    <p className="font-medium text-gray-900 text-sm sm:text-base">{selectedDispute.periodeLaporan}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Tanggal Batas</p>
-                    <p className="font-medium text-gray-900">{formatDateDisplay(selectedDispute.tglBatas)}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-1">Tanggal Batas</p>
+                    <p className="font-medium text-gray-900 text-sm sm:text-base">{formatDateDisplay(selectedDispute.tglBatas)}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-1">Status Saat Ini</p>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                    <p className="text-xs sm:text-sm text-gray-600 mb-1">Status Saat Ini</p>
+                    <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${
                       selectedDispute.statusKeterlambatan === 'Terlambat' 
                         ? 'bg-red-100 text-red-800 border-red-200'
                         : selectedDispute.statusKeterlambatan === 'Tepat Waktu'
@@ -1621,57 +1329,61 @@ const ApoloReports = () => {
                       {selectedDispute.statusKeterlambatan}
                     </span>
                   </div>
+                  <div>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-1">Jumlah Hari Terlambat</p>
+                    <p className="font-medium text-red-600 text-sm sm:text-base">{selectedDispute.jmlHariTerlambat} Hari</p>
+                  </div>
                 </div>
               </div>
 
               {/* Alasan Sanggahan */}
-              <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-5 border border-orange-200">
-                <div className="flex items-center space-x-3 mb-4">
+              <div className="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-xl p-4 sm:p-5 border border-orange-200">
+                <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                   <MessageSquare className="w-5 h-5 text-orange-600" />
-                  <h4 className="text-lg font-semibold text-orange-900">Alasan Sanggahan</h4>
+                  <h4 className="text-base sm:text-lg font-semibold text-orange-900">Alasan Sanggahan</h4>
                 </div>
-                <p className="text-gray-800 leading-relaxed">{selectedDispute.disputeReason}</p>
+                <p className="text-gray-800 leading-relaxed text-sm sm:text-base break-words">{selectedDispute.disputeReason}</p>
               </div>
 
               {/* Dokumen Pendukung */}
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-5 border border-purple-200">
-                <div className="flex items-center space-x-3 mb-4">
+              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-4 sm:p-5 border border-purple-200">
+                <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                   <FileWarning className="w-5 h-5 text-purple-600" />
-                  <h4 className="text-lg font-semibold text-purple-900">Dokumen Pendukung</h4>
+                  <h4 className="text-base sm:text-lg font-semibold text-purple-900">Dokumen Pendukung</h4>
                 </div>
                 {selectedDispute.disputeDocument ? (
                   <div className="space-y-2">
                     <button
                       onClick={() => handleDownloadFile(selectedDispute.disputeDocument, `Sanggahan_${selectedDispute.id}`)}
-                      className="inline-flex items-center space-x-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors"
+                      className="inline-flex items-center space-x-2 px-3 sm:px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors text-sm sm:text-base"
                     >
                       <DownloadIcon className="w-4 h-4" />
                       <span>Download Surat Sanggahan</span>
                     </button>
                   </div>
                 ) : (
-                  <p className="text-gray-500">Tidak ada dokumen pendukung</p>
+                  <p className="text-gray-500 text-sm sm:text-base">Tidak ada dokumen pendukung</p>
                 )}
               </div>
 
-              {/* Actions */}
-              <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+              {/* Actions - Responsive Button Layout */}
+              <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4 sm:pt-6 border-t border-gray-200 sticky bottom-0 bg-white py-4">
                 <button
                   onClick={() => setShowDisputeModal(false)}
-                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors order-2 sm:order-1"
                 >
                   Tutup
                 </button>
                 <button
                   onClick={() => handleDisputeAction('accept')}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center space-x-2"
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 order-1 sm:order-2"
                 >
                   <ThumbsUp className="w-4 h-4" />
-                  <span>Proses Sanggahan</span>
+                  <span>Terima Sanggahan</span>
                 </button>
                 <button
                   onClick={() => handleDisputeAction('reject')}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center space-x-2"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center space-x-2 order-3"
                 >
                   <ThumbsDown className="w-4 h-4" />
                   <span>Tolak Sanggahan</span>
@@ -1682,116 +1394,82 @@ const ApoloReports = () => {
         </div>
       )}
 
-      {/* Dispute Action Modal */}
-      {/* Dispute Action Modal - LINE 1900-1950 */}
-{showDisputeActionModal && disputeAction && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full">
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
-          <div className={`p-2 rounded-lg ${
-            disputeAction.action === 'accept' ? 'bg-green-100' : 'bg-red-100'
-          }`}>
-            {disputeAction.action === 'accept' ? (
-              <ThumbsUp className="w-6 h-6 text-green-600" />
-            ) : (
-              <ThumbsDown className="w-6 h-6 text-red-600" />
-            )}
-          </div>
-          <h3 className="text-lg font-bold text-gray-900">
-            {disputeAction.action === 'accept' ? 'Terima Sanggahan' : 'Tolak Sanggahan'}
-          </h3>
-        </div>
-      </div>
-      
-      <div className="p-6 space-y-4">
-        {disputeAction.action === 'accept' ? (
-          <div>
-            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-              <div className="space-y-2">
-                <p className="text-sm text-green-800 font-medium">
-                  Dengan menerima sanggahan ini, status laporan akan menjadi:
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-700">Status Saat Ini:</span>
-                  <span className="font-medium text-red-600">{disputeAction.report.statusKeterlambatan}</span>
+      {/* Dispute Action Modal - Responsive */}
+      {showDisputeActionModal && disputeAction && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+            <div className="p-4 sm:p-6 border-b border-gray-200">
+              <div className="flex items-center space-x-3">
+                <div className={`p-2 rounded-lg ${
+                  disputeAction.action === 'accept' ? 'bg-green-100' : 'bg-red-100'
+                }`}>
+                  {disputeAction.action === 'accept' ? (
+                    <ThumbsUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+                  ) : (
+                    <ThumbsDown className="w-5 h-5 sm:w-6 sm:h-6 text-red-600" />
+                  )}
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-700">Jumlah Hari Terlambat Saat Ini:</span>
-                  <span className="font-medium text-red-600">{disputeAction.report.jmlHariTerlambat} Hari</span>
-                </div>
-                <div className="border-t border-green-200 my-2"></div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-700">Status Setelah:</span>
-                  <span className="font-medium text-green-600">Tepat Waktu</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-700">Jumlah Hari Terlambat Setelah:</span>
-                  <span className="font-medium text-green-600">0 Hari</span>
-                </div>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                  {disputeAction.action === 'accept' ? 'Terima Sanggahan' : 'Tolak Sanggahan'}
+                </h3>
               </div>
             </div>
-          </div>
-        ) : (
-          <div>
-            <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-              <div className="space-y-2">
-                <p className="text-sm text-red-800 font-medium">
-                  Dengan menolak sanggahan ini, status laporan akan tetap:
-                </p>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-700">Status:</span>
-                  <span className="font-medium text-red-600">{disputeAction.report.statusKeterlambatan}</span>
+            
+            <div className="p-4 sm:p-6 space-y-4">
+              {disputeAction.action === 'accept' ? (
+                <div className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
+                  <p className="text-sm text-green-800">
+                    Dengan menerima sanggahan ini, status laporan akan berubah menjadi <strong>Tepat Waktu</strong> dan jumlah hari terlambat menjadi <strong>0 Hari</strong>.
+                  </p>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-700">Jumlah Hari Terlambat:</span>
-                  <span className="font-medium text-red-600">{disputeAction.report.jmlHariTerlambat} Hari</span>
+              ) : (
+                <div className="bg-red-50 p-3 sm:p-4 rounded-lg border border-red-200">
+                  <p className="text-sm text-red-800">
+                    Dengan menolak sanggahan ini, status laporan akan tetap <strong>Terlambat</strong> dengan jumlah hari terlambat <strong>{disputeAction.report.jmlHariTerlambat} Hari</strong>.
+                  </p>
                 </div>
+              )}
+              
+              {/* Comment Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Komentar (Opsional):
+                </label>
+                <textarea
+                  value={disputeComment}
+                  onChange={(e) => setDisputeComment(e.target.value)}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                  placeholder="Tulis komentar..."
+                />
               </div>
             </div>
+            
+            <div className="p-4 sm:p-6 border-t border-gray-200 flex flex-col sm:flex-row justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowDisputeActionModal(false);
+                  setDisputeAction(null);
+                }}
+                className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors order-2 sm:order-1"
+              >
+                Batal
+              </button>
+              <button
+                onClick={processDisputeAction}
+                className={`px-4 py-2 rounded-lg transition-colors flex items-center justify-center space-x-2 order-1 sm:order-2 ${
+                  disputeAction.action === 'accept'
+                    ? 'bg-green-600 text-white hover:bg-green-700'
+                    : 'bg-red-600 text-white hover:bg-red-700'
+                }`}
+              >
+                <CheckCircle className="w-4 h-4" />
+                <span>Konfirmasi</span>
+              </button>
+            </div>
           </div>
-        )}
-        
-        {/* Comment Input */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Komentar (Opsional):
-          </label>
-          <textarea
-            value={disputeComment}
-            onChange={(e) => setDisputeComment(e.target.value)}
-            rows="3"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Tulis komentar untuk LJK..."
-          />
         </div>
-      </div>
-      
-      <div className="p-6 border-t border-gray-200 flex justify-end space-x-3">
-        <button
-          onClick={() => {
-            setShowDisputeActionModal(false);
-            setDisputeAction(null);
-          }}
-          className="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-        >
-          Batal
-        </button>
-        <button
-          onClick={processDisputeAction}
-          className={`px-4 py-2 rounded-lg transition-colors flex items-center space-x-2 ${
-            disputeAction.action === 'accept'
-              ? 'bg-green-600 text-white hover:bg-green-700'
-              : 'bg-red-600 text-white hover:bg-red-700'
-          }`}
-        >
-          <CheckCircle className="w-4 h-4" />
-          <span>Konfirmasi</span>
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      )}
     </div>
   );
 };

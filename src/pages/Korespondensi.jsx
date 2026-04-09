@@ -194,7 +194,6 @@ const Pemberitahuan = () => {
     }
   ];
 
-   HANYA SATU PENGUMUMAN
   const announcements = [
     {
       id: 1,
