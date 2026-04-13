@@ -7,7 +7,7 @@ const WelcomeBanner = () => {
       <div className="p-6 md:p-8">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="text-white mb-6 md:mb-0 md:mr-8 flex-1">
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">Selamat datang di Sistem Pelaporan Terpusat</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-3">Selamat datang di Gerbang Tunggal Integrated Reporting System</h2>
             <p className="text-blue-100 mb-6">
               Kelola dan pantau semua laporan APOLO, E-Reporting, dan SIPINA dalam satu dashboard yang terintegrasi
             </p>

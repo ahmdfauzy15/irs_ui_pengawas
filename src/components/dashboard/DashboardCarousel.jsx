@@ -14,8 +14,8 @@ const DashboardCarousel = () => {
   const slides = [
     {
       id: 1,
-      title: 'Deadline Pelaporan Q1 2024',
-      description: 'Batas waktu pengiriman laporan keuangan Q1 2024 adalah 30 April 2024.',
+      title: 'Deadline Pelaporan Q1 2026',
+      description: 'Batas waktu pengiriman laporan keuangan Q1 2026 adalah 30 April 2026.',
       icon: AlertTriangle,
       color: 'bg-gradient-to-r from-red-600 to-red-700',
       link: '/apolo'
@@ -35,15 +35,15 @@ const DashboardCarousel = () => {
       icon: Shield,
       color: 'bg-gradient-to-r from-red-700 to-red-800',
       link: '/about'
-    },
-    {
-      id: 4,
-      title: 'Notifikasi Penting',
-      description: 'Ada 3 laporan yang memerlukan perhatian segera.',
-      icon: Bell,
-      color: 'bg-gradient-to-r from-red-600 to-red-700',
-      link: '/notifications'
     }
+    // {
+    //   id: 4,
+    //   title: 'Notifikasi Penting',
+    //   description: 'Ada 3 laporan yang memerlukan perhatian segera.',
+    //   icon: Bell,
+    //   color: 'bg-gradient-to-r from-red-600 to-red-700',
+    //   link: '/notifications'
+    // }
   ];
 
   useEffect(() => {

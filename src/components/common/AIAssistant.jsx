@@ -198,7 +198,7 @@ const AntiGratificationBanner = ({ onClose }) => {
                 </li>
                 <li className="flex items-start">
                   <span className="text-red-500 mr-2">•</span>
-                  <span>Email: <strong className="text-red-600">upg@ojk.go.id</strong></span>
+                  <span>Email: <strong className="text-red-600">email@ojk.go.id</strong></span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-red-500 mr-2">•</span>
@@ -217,9 +217,6 @@ const AntiGratificationBanner = ({ onClose }) => {
                 Sanksi
               </h3>
               <p className="text-sm text-gray-700">
-                Berdasarkan Undang-Undang Nomor 20 Tahun 2001 tentang Pemberantasan Tindak Pidana Korupsi, 
-                penerima gratifikasi dapat dipidana dengan pidana penjara seumur hidup atau pidana penjara 
-                minimal 4 tahun dan maksimal 20 tahun, serta denda minimal Rp200 juta dan maksimal Rp1 miliar.
               </p>
             </div>
 

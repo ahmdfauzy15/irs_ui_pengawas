@@ -115,7 +115,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-red-900">Analisis Hari Ini</h3>
-                  <p className="text-sm text-red-600/80">Visualisasi data dari {processedData.totalReports} laporan</p>
+                  <p className="text-sm text-red-600/80">Visualisasi data dari laporan hari ini</p>
                 </div>
               </div>
               <div className="relative">

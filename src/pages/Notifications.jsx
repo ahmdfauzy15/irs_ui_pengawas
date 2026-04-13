@@ -434,7 +434,7 @@ const Notifications = () => {
           <div>
             <h4 className="text-lg font-bold">Ingatkan Saya</h4>
             <p className="text-red-100 text-sm mt-1">
-              Aktifkan notifikasi browser untuk mendapatkan update real-time
+              Aktifkan notifikasi browser untuk mendapatkan update
             </p>
           </div>
           <button className="mt-4 md:mt-0 px-6 py-3 bg-white text-red-700 font-medium rounded-lg hover:bg-red-50 transition-colors shadow-md">

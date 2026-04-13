@@ -1038,7 +1038,7 @@ const SIPINA = () => {
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Clock className="w-3 h-3 inline mr-1" />
-                Waktu Real-time: {getCurrentTimeDisplay()}
+                Waktu : {getCurrentTimeDisplay()}
               </p>
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Calendar className="w-3 h-3 inline mr-1" />
@@ -1641,7 +1641,7 @@ Level 0: Pilih Rentang Tanggal Deadline (2025 - 2026)              </h4>
           <div className="px-6 py-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-600">
-                Data diperbarui berdasarkan waktu real-time • 
+                Data diperbarui  • 
                 Periode: {formatDateDisplay(dateRange.startDate)} - {formatDateDisplay(dateRange.endDate)} • 
                 {stats.totalLJK} LJK
               </div>

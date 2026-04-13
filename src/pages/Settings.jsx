@@ -136,7 +136,7 @@ const Settings = () => {
     <div className="space-y-4">
       {[
         { key: 'emailNotifications', label: 'Notifikasi Email', description: 'Kirim notifikasi ke email Anda', icon: Mail },
-        { key: 'pushNotifications', label: 'Notifikasi Push', description: 'Notifikasi real-time di browser', icon: Smartphone },
+        { key: 'pushNotifications', label: 'Notifikasi Push', description: 'Notifikasi di browser', icon: Smartphone },
         { key: 'soundEnabled', label: 'Suara Notifikasi', description: 'Mainkan suara saat ada notifikasi', icon: Volume2 },
         { key: 'reportReminders', label: 'Pengingat Laporan', description: 'Pengingat untuk laporan yang belum dikirim', icon: Bell },
         { key: 'deadlineAlerts', label: 'Alert Deadline', description: 'Alert untuk deadline yang mendekati', icon: Calendar },

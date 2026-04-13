@@ -17,8 +17,8 @@ const About = () => {
   const features = [
     { icon: Shield, title: 'Keamanan Terjamin', description: 'Enkripsi end-to-end dan autentikasi multi-faktor untuk perlindungan data.' },
     { icon: RefreshCw, title: 'Integrasi Lengkap', description: 'Terhubung dengan APOLO, E-Reporting, dan SIPINA dalam satu platform.' },
-    { icon: BarChart, title: 'Analitik Real-time', description: 'Dashboard dengan visualisasi data untuk pengambilan keputusan yang cepat.' },
-    { icon: Globe, title: 'Akses Global', description: 'Akses dari mana saja dengan dukungan multi-bahasa dan timezone.' },
+    { icon: BarChart, title: 'Analitik', description: 'Dashboard dengan visualisasi data untuk pengambilan keputusan yang cepat.' },
+    { icon: Users, title: 'Akses Responsif', description: 'Akses melalui perangkat apa saja dengan tampilan yang disesuaikan.' },
   ];
 
   return (
@@ -34,13 +34,11 @@ const About = () => {
                     <Info className="w-8 h-8 text-white" />
                   </div>
                   <h1 className="text-3xl md:text-4xl font-bold text-white">
-                    Tentang IRS OJK
+                    Tentang IRS
                   </h1>
                 </div>
                 <p className="text-red-100 text-lg mb-8">
-                  Sistem Pelaporan Terpusat yang dirancang untuk menyederhanakan dan mengotomatisasi 
-                  proses pelaporan keuangan dan operasional Anda. Platform yang intuitif, aman, 
-                  dan efisien untuk semua kebutuhan pelaporan.
+                  Gerbang Tunggal Integrated Reporting System (IRS) merupakan bagian dari roadmap Arsitektur Pelaporan Terintegrasi atau Integrated Reporting Architecture (IRA) untuk mengintegrasikan sistem pelaporan.
                 </p>
               </div>
               

@@ -47,20 +47,11 @@ const AnnouncementDetailContent = ({ announcement }) => {
   // Data deskripsi lengkap untuk pengumuman
   const announcementDetails = {
     1: {
-      fullDescription: `Kementerian Keuangan secara resmi merilis Panduan Sistem e-Reporting Tahun 2024 yang merupakan pembaruan komprehensif dari versi sebelumnya. Panduan ini dikembangkan berdasarkan masukan dari pengguna selama setahun terakhir dan mengintegrasikan teknologi terbaru untuk meningkatkan efisiensi pelaporan keuangan negara.`,
+      fullDescription: `Kementerian Keuangan secara resmi merilis Panduan Sistem e-Reporting Tahun 2026 yang merupakan pembaruan komprehensif dari versi sebelumnya. Panduan ini dikembangkan berdasarkan masukan dari pengguna selama setahun terakhir dan mengintegrasikan teknologi terbaru untuk meningkatkan efisiensi pelaporan keuangan negara.`,
       
       detailedInfo: `
-        Panduan e-Reporting 2024 mencakup beberapa perubahan penting:
-        
-        1. Antarmuka pengguna yang lebih intuitif dan responsif
-        2. Sistem validasi data real-time untuk mengurangi kesalahan
-        3. Fitur auto-save untuk mencegah kehilangan data
-        4. Integrasi dengan sistem APOLO dan SIPINA
-        5. Dashboard analitik untuk monitoring kinerja pelaporan
-        
+        Panduan e-Reporting 2026 mencakup beberapa perubahan penting:
         Panduan ini wajib dipelajari oleh seluruh pengguna sistem e-Reporting sebelum melakukan pelaporan periode berikutnya.
-        
-        Untuk informasi lebih lanjut, silakan hubungi helpdesk di 021-1234-5678 atau email ke helpdesk@kemenkeu.go.id.
       `
     }
   };
@@ -124,7 +115,7 @@ const AnnouncementDetailContent = ({ announcement }) => {
         <p className="text-sm text-gray-600">
           Untuk pertanyaan lebih lanjut mengenai pengumuman ini, silakan hubungi:<br />
           📞 Helpdesk: 021-1234-5678<br />
-          ✉️ Email: helpdesk@kemenkeu.go.id
+          ✉️ Email: helpdesk@ojk.go.id
         </p>
       </div>
     </div>
@@ -142,50 +133,50 @@ const Pemberitahuan = () => {
   
   // Sample data untuk notifikasi - dengan tipe notifikasi yang jelas
   const notifications = [
-    {
-      id: 1,
-      title: "Laporan APOLO Berhasil Dikirim",
-      message: "Laporan Keuangan Q1 2023 telah berhasil dikirim dan diverifikasi oleh sistem APOLO.",
-      type: "aktivitas_pelaporan",
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      read: false,
-      category: "apolo",
-      notificationType: "aktivitas_pelaporan"
-    },
-    {
-      id: 2,
-      title: "Penyesuaian Hari Keterlambatan",
-      message: "Jumlah hari keterlambatan pelaporan e-Reporting telah disesuaikan berdasarkan kalender libur nasional.",
-      type: "adjust_hari",
-      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
-      read: false,
-      category: "ereporting",
-      notificationType: "adjust_hari"
-    },
-    {
-      id: 3,
-      title: "Konfirmasi Penerimaan Laporan",
-      message: "Laporan Triwulan II telah diterima dan sedang dalam proses verifikasi oleh tim auditor.",
-      type: "konfirmasi",
-      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      read: true,
-      category: "sipina",
-      notificationType: "konfirmasi"
-    },
-    {
-      id: 4,
-      title: "Panduan Baru e-Reporting 2024",
-      message: "Panduan lengkap untuk penggunaan sistem e-Reporting tahun 2024 telah tersedia untuk diunduh.",
-      type: "pengumuman",
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
-      read: false,
-      category: "ereporting",
-      notificationType: "pengumuman"
-    },
+    // {
+    //   id: 1,
+    //   title: "Laporan APOLO Berhasil Dikirim",
+    //   message: "Laporan Keuangan Q1 2023 telah berhasil dikirim dan diverifikasi oleh sistem APOLO.",
+    //   type: "aktivitas_pelaporan",
+    //   timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
+    //   read: false,
+    //   category: "apolo",
+    //   notificationType: "aktivitas_pelaporan"
+    // },
+    // {
+    //   id: 2,
+    //   title: "Penyesuaian Hari Keterlambatan",
+    //   message: "Jumlah hari keterlambatan pelaporan e-Reporting telah disesuaikan berdasarkan kalender libur nasional.",
+    //   type: "adjust_hari",
+    //   timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
+    //   read: false,
+    //   category: "ereporting",
+    //   notificationType: "adjust_hari"
+    // },
+    // {
+    //   id: 3,
+    //   title: "Konfirmasi Penerimaan Laporan",
+    //   message: "Laporan Triwulan II telah diterima dan sedang dalam proses verifikasi oleh tim auditor.",
+    //   type: "konfirmasi",
+    //   timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+    //   read: true,
+    //   category: "sipina",
+    //   notificationType: "konfirmasi"
+    // },
+    // {
+    //   id: 4,
+    //   title: "Panduan Baru e-Reporting 2026",
+    //   message: "Panduan lengkap untuk penggunaan sistem e-Reporting tahun 2026 telah tersedia untuk diunduh.",
+    //   type: "pengumuman",
+    //   timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+    //   read: false,
+    //   category: "ereporting",
+    //   notificationType: "pengumuman"
+    // },
     {
       id: 5,
       title: "Aktivitas Pelaporan: APOLO",
-      message: "Laporan APOLO bulanan telah berhasil diproses oleh sistem.",
+      message: "Laporan APOLO bulanan telah berhasil diproses.",
       type: "aktivitas_pelaporan",
       timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
       read: true,
@@ -194,27 +185,28 @@ const Pemberitahuan = () => {
     }
   ];
 
+  // HANYA SATU PENGUMUMAN
   const announcements = [
     {
       id: 1,
-      title: "Panduan Baru e-Reporting 2024",
-      shortMessage: "Panduan lengkap untuk penggunaan sistem e-Reporting tahun 2024 telah tersedia untuk diunduh.",
+      title: "Panduan Baru e-Reporting 2026",
+      shortMessage: "Panduan lengkap untuk penggunaan sistem e-Reporting tahun 2026 telah tersedia untuk diunduh.",
       category: "ereporting",
       timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      publishDate: new Date('2024-01-10'),
+      publishDate: new Date('2026-01-10'),
       author: "Tim Pengembangan e-Reporting",
-      tags: ["Panduan", "Update Sistem", "2024"],
+      tags: ["Panduan", "Update Sistem", "2026"],
       attachments: [
-        { name: "Panduan Lengkap e-Reporting 2024.pdf", size: "2.4 MB" },
+        { name: "Panduan Lengkap e-Reporting 2026.pdf", size: "2.4 MB" },
         { name: "Template Laporan.xlsx", size: "1.2 MB" },
-        { name: "FAQ e-Reporting 2024.pdf", size: "1.8 MB" }
+        { name: "FAQ e-Reporting 2026.pdf", size: "1.8 MB" }
       ],
       image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h-400&fit=crop",
       important: true,
       views: 1250,
       downloadCount: 842,
       readTime: "8 menit",
-      lastUpdated: new Date('2024-01-09'),
+      lastUpdated: new Date('2026-01-09'),
       version: "v1.2"
     }
   ];
