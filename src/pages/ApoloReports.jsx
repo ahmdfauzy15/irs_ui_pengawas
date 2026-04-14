@@ -697,7 +697,7 @@ const ApoloReports = () => {
               <Building className="w-8 h-8 text-purple-500 opacity-50" />
             </div>
           </div>
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 shadow-sm border border-orange-200">
+          {/* <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 shadow-sm border border-orange-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-orange-600 font-medium">Sanggahan Pending</p>
@@ -705,7 +705,7 @@ const ApoloReports = () => {
               </div>
               <MessageSquare className="w-8 h-8 text-orange-500 opacity-50" />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -926,8 +926,8 @@ const ApoloReports = () => {
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Tgl Upload/Penyampaian</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Tgl Batas Akhir</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jml Hari Terlambat</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Sanggahan</th>
+                  {/* <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jml Hari Terlambat</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Sanggahan</th> */}
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Aksi</th>
                 </tr>
               </thead>
@@ -984,14 +984,13 @@ const ApoloReports = () => {
                           {parent.statusKeterlambatan}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      {/* <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm font-medium text-gray-900">
                           {parent.jmlHariTerlambat > 0 ? `${parent.jmlHariTerlambat} Hari` : '0 Hari'}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      </td> */}
+                      {/* <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
-                          {/* Tombol untuk memproses sanggahan - Hanya untuk APOLO/eReporting yang memiliki sanggahan pending */}
                           {canProcessDispute(parent.aplikasi) && 
                            parent.isDisputed && 
                            parent.disputeStatus === "pending" && (
@@ -1006,10 +1005,10 @@ const ApoloReports = () => {
                               <MessageSquare className="w-3 h-3 mr-1" />
                               Proses Sanggahan
                             </button>
-                          )}
+                          )} */}
                           
                           {/* Status setelah diproses */}
-                          {parent.disputeStatus === "accepted" && (
+                          {/* {parent.disputeStatus === "accepted" && (
                             <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-green-100 text-green-700 border border-green-200">
                               <CheckCircle className="w-3 h-3 mr-1" />
                               Diterima
@@ -1023,7 +1022,7 @@ const ApoloReports = () => {
                             </span>
                           )}
                         </div>
-                      </td>
+                      </td> */}
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={() => handleViewDetails(parent)}
@@ -1182,12 +1181,12 @@ const ApoloReports = () => {
                     {selectedReport.statusKeterlambatan}
                   </span>
                 </div>
-                <div>
+                {/* <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Jumlah Hari Terlambat</h4>
                   <p className="text-lg font-medium text-gray-900">
                     {selectedReport.jmlHariTerlambat > 0 ? `${selectedReport.jmlHariTerlambat} Hari` : '0 Hari'}
                   </p>
-                </div>
+                </div> */}
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Jumlah Form</h4>
                   <p className="text-lg font-medium text-gray-900">{selectedReport.detailForms.length}</p>

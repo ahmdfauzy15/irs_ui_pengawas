@@ -40,7 +40,6 @@ import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-// Komponen untuk konten detail pengumuman - DIPERBAIKI (lebih sederhana)
 const AnnouncementDetailContent = ({ announcement }) => {
   if (!announcement) return null;
   
@@ -131,7 +130,6 @@ const Pemberitahuan = () => {
   // Determine active tab from URL
   const activeTab = location.pathname.includes('pengumuman') ? 'pengumuman' : 'notifikasi';
   
-  // Sample data untuk notifikasi - dengan tipe notifikasi yang jelas
   const notifications = [
     // {
     //   id: 1,
@@ -305,14 +303,7 @@ const Pemberitahuan = () => {
     return format(date, 'dd MMM yyyy HH:mm', { locale: id });
   };
 
-  // Handler untuk mengganti tab
-  const handleTabChange = (tab) => {
-    if (tab === 'notifikasi') {
-      navigate('/korespondensi/notifikasi');
-    } else {
-      navigate('/korespondensi/pengumuman');
-    }
-  };
+ 
 
   // Handler untuk melihat detail pengumuman
   const handleViewDetail = (announcement) => {
@@ -340,7 +331,7 @@ const Pemberitahuan = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-            <div className="bg-white rounded-xl border border-red-100 p-4 shadow-sm">
+            {/* <div className="bg-white rounded-xl border border-red-100 p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-2xl font-bold text-gray-900">{notifications.length}</p>
@@ -348,7 +339,7 @@ const Pemberitahuan = () => {
                 </div>
                 <Bell className="w-8 h-8 text-red-500" />
               </div>
-            </div>
+            </div> */}
 
             <div className="bg-white rounded-xl border border-red-100 p-4 shadow-sm">
               <div className="flex items-center justify-between">
@@ -401,41 +392,7 @@ const Pemberitahuan = () => {
         <div className="bg-white rounded-2xl border border-red-100 shadow-sm overflow-hidden mb-8">
           
           {/* Tab Navigation */}
-          <div className="flex border-b border-red-100">
-            <button
-              onClick={() => handleTabChange('notifikasi')}
-              className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 font-medium transition-all duration-200 ${
-                activeTab === 'notifikasi'
-                  ? 'bg-gradient-to-r from-red-500 to-red-600 text-white'
-                  : 'text-red-700 hover:bg-red-50'
-              }`}
-            >
-              <Bell className="w-5 h-5" />
-              <span>Notifikasi</span>
-              {unreadCount > 0 && activeTab !== 'notifikasi' && (
-                <span className="w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-            
-            <button
-              onClick={() => handleTabChange('pengumuman')}
-              className={`flex-1 flex items-center justify-center space-x-2 px-6 py-4 font-medium transition-all duration-200 ${
-                activeTab === 'pengumuman'
-                  ? 'bg-gradient-to-r from-red-500 to-red-600 text-white'
-                  : 'text-red-700 hover:bg-red-50'
-              }`}
-            >
-              <Megaphone className="w-5 h-5" />
-              <span>Pengumuman</span>
-              {importantAnnouncements > 0 && activeTab !== 'pengumuman' && (
-                <span className="w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
-                  {importantAnnouncements}
-                </span>
-              )}
-            </button>
-          </div>
+       
 
           {/* Content Area */}
           <div className="p-4 md:p-6">
