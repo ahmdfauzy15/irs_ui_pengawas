@@ -114,8 +114,8 @@ const Dashboard = () => {
                   <FileText className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-red-900">Analisis Hari Ini</h3>
-                  <p className="text-sm text-red-600/80">Visualisasi data dari laporan hari ini</p>
+                  <h3 className="text-lg font-bold text-red-900">Analisis Laporan</h3>
+                  <p className="text-sm text-red-600/80">Visualisasi data LJK</p>
                 </div>
               </div>
               <div className="relative">

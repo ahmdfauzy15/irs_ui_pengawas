@@ -228,7 +228,7 @@ const RecentReports = ({ reports, searchTerm, allReports }) => {
         <div className="bg-gradient-to-br from-green-50 to-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-green-100 shadow-xs sm:shadow-sm">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5 sm:space-y-1">
-              <p className="text-xs sm:text-sm text-green-600 font-medium truncate">Keterangan LJK Tepat Waktu</p>
+              <p className="text-xs sm:text-sm text-green-600 font-medium truncate">Lapor</p>
               <p className="text-xl sm:text-2xl font-bold text-green-900">
                 {filteredData.filter(r => r.ketepatan === 'Tepat Waktu').length}
               </p>
@@ -242,7 +242,7 @@ const RecentReports = ({ reports, searchTerm, allReports }) => {
         <div className="bg-gradient-to-br from-red-50 to-white rounded-lg sm:rounded-xl p-3 sm:p-4 border border-red-100 shadow-xs sm:shadow-sm">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5 sm:space-y-1">
-              <p className="text-xs sm:text-sm text-red-600 font-medium truncate">Perhatian</p>
+              <p className="text-xs sm:text-sm text-red-600 font-medium truncate">Tidak Lapor</p>
               <p className="text-xl sm:text-2xl font-bold text-red-900">
                 {filteredData.filter(r => r.ketepatan === 'Terlambat' || r.status === 'tidak-berhasil').length}
               </p>
