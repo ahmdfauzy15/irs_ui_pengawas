@@ -58,6 +58,7 @@ const ApoloReports = () => {
   const [showDisputeActionModal, setShowDisputeActionModal] = useState(false);
   const [disputeAction, setDisputeAction] = useState(null);
   const [disputeComment, setDisputeComment] = useState('');
+  const [adjustedLateDays, setAdjustedLateDays] = useState(0);
   
   const [filters, setFilters] = useState({
     aplikasi: 'all',
@@ -130,25 +131,18 @@ const ApoloReports = () => {
     const prevMonth30 = getSafeDate(currentYear, currentMonth - 1, 30);
     const prevMonth31 = getSafeDate(currentYear, currentMonth - 1, 31);
     
-    const currentMonth10 = getSafeDate(currentYear, currentMonth, 10);
-    const currentMonth15 = getSafeDate(currentYear, currentMonth, 15);
-    const currentMonth20 = getSafeDate(currentYear, currentMonth, 20);
-    const currentMonth25 = getSafeDate(currentYear, currentMonth, 25);
     const currentMonth30 = getSafeDate(currentYear, currentMonth, 30);
-    
-    const nextMonth15 = getSafeDate(currentYear, currentMonth + 1, 15);
 
-    // Data APOLO
+    // Data APOLO (Hanya APOLO yang memiliki proses sanggah)
     const apoloData = [
       {
         id: "APO001",
         aplikasi: "APOLO",
         jenisLJK: "BU",
         namaLaporan: "LCR Individual",
-        periodeLaporan: "Maret 2026",
         tglUpload: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day - 5).padStart(2, '0')}`,
         tglBatas: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day).padStart(2, '0')}`,
-        statusKeterlambatan: "Tepat Waktu",
+        statusKeterlambatan: "Lapor",
         jmlHariTerlambat: 0,
         LJK: "Bank ABC",
         bidangLJK: "Bank Umum Konvensional",
@@ -170,10 +164,9 @@ const ApoloReports = () => {
         aplikasi: "APOLO",
         jenisLJK: "BU",
         namaLaporan: "LCR Konsolidasi",
-        periodeLaporan: "Maret 2026",
         tglUpload: `${prevMonth31.year}-${String(prevMonth31.month).padStart(2, '0')}-${String(prevMonth31.day - 2).padStart(2, '0')}`,
         tglBatas: `${prevMonth31.year}-${String(prevMonth31.month).padStart(2, '0')}-${String(prevMonth31.day).padStart(2, '0')}`,
-        statusKeterlambatan: "Tepat Waktu",
+        statusKeterlambatan: "Lapor",
         jmlHariTerlambat: 0,
         LJK: "Bank DEF",
         bidangLJK: "Bank Umum Konvensional",
@@ -195,7 +188,6 @@ const ApoloReports = () => {
         aplikasi: "APOLO",
         jenisLJK: "BU",
         namaLaporan: "Laporan GWM Individual",
-        periodeLaporan: "Maret 2026",
         tglUpload: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day + 3).padStart(2, '0')}`,
         tglBatas: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day).padStart(2, '0')}`,
         statusKeterlambatan: "Terlambat",
@@ -213,29 +205,51 @@ const ApoloReports = () => {
         detailForms: [
           { id: 1, namaForm: "Form GWM Individual - Utama", fileUrl: "/reports/APO006_form1.pdf" }
         ]
+      },
+      {
+        id: "APO010",
+        aplikasi: "APOLO",
+        jenisLJK: "BU",
+        namaLaporan: "Laporan GWM Konsolidasi",
+        tglUpload: `${prevMonth20.year}-${String(prevMonth20.month).padStart(2, '0')}-${String(prevMonth20.day + 5).padStart(2, '0')}`,
+        tglBatas: `${prevMonth20.year}-${String(prevMonth20.month).padStart(2, '0')}-${String(prevMonth20.day).padStart(2, '0')}`,
+        statusKeterlambatan: "Terlambat",
+        jmlHariTerlambat: 5,
+        LJK: "Bank Mega",
+        bidangLJK: "Bank Umum Konvensional",
+        needFollowUp: true,
+        followUpStatus: "pending",
+        isDisputed: true,
+        disputeReason: "Terjadi kesalahan input data sehingga perlu perbaikan.",
+        disputeDocument: "/disputes/APO010_dispute_letter.pdf",
+        disputeStatus: "pending",
+        disputeRejectionMessage: null,
+        supervisorComment: null,
+        detailForms: [
+          { id: 1, namaForm: "Form GWM Konsolidasi", fileUrl: "/reports/APO010_form1.pdf" }
+        ]
       }
     ];
 
-    // Data eReporting
+    // Data Ereporting (TIDAK ADA PROSES SANGGAH)
     const eReportingData = [
       {
         id: "ERP003",
         aplikasi: "eReporting",
         jenisLJK: "BU",
         namaLaporan: "Laporan GWM",
-        periodeLaporan: "-",
         tglUpload: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day + 2).padStart(2, '0')}`,
         tglBatas: `${prevMonth10.year}-${String(prevMonth10.month).padStart(2, '0')}-${String(prevMonth10.day).padStart(2, '0')}`,
         statusKeterlambatan: "Terlambat",
         jmlHariTerlambat: 2,
         LJK: "Bank BNI",
         bidangLJK: "Bank Umum Konvensional",
-        needFollowUp: true,
-        followUpStatus: "pending",
-        isDisputed: true,
-        disputeReason: "Petugas yang bertanggung jawab sedang sakit, laporan akan segera diupload dalam 1-2 hari ke depan.",
-        disputeDocument: "/disputes/ERP003_dispute_letter.pdf",
-        disputeStatus: "pending",
+        needFollowUp: false,
+        followUpStatus: null,
+        isDisputed: false,
+        disputeReason: null,
+        disputeDocument: null,
+        disputeStatus: null,
         disputeRejectionMessage: null,
         supervisorComment: null,
         detailForms: [
@@ -245,17 +259,16 @@ const ApoloReports = () => {
       }
     ];
 
-    // Data SIPINA
+    // Data SIPINA (TIDAK ADA PROSES SANGGAH)
     const sipinaData = [
       {
         id: "SIP001",
         aplikasi: "SIPINA",
         jenisLJK: "BU",
         namaLaporan: "Laporan Pengawasan Internal",
-        periodeLaporan: "2026",
         tglUpload: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day - 4).padStart(2, '0')}`,
         tglBatas: `${prevMonth15.year}-${String(prevMonth15.month).padStart(2, '0')}-${String(prevMonth15.day).padStart(2, '0')}`,
-        statusKeterlambatan: "Tepat Waktu",
+        statusKeterlambatan: "Lapor",
         jmlHariTerlambat: 0,
         LJK: "Bank CIMB Niaga",
         bidangLJK: "Bank Umum Konvensional",
@@ -264,6 +277,8 @@ const ApoloReports = () => {
         isDisputed: false,
         disputeReason: null,
         disputeDocument: null,
+        disputeStatus: null,
+        disputeRejectionMessage: null,
         supervisorComment: null,
         detailForms: [
           { id: 1, namaForm: "Form Pengawasan Internal", fileUrl: "/reports/SIP001_form1.pdf" },
@@ -275,18 +290,19 @@ const ApoloReports = () => {
         aplikasi: "SIPINA",
         jenisLJK: "BPR / BPRS",
         namaLaporan: "Laporan Kepatuhan BPR",
-        periodeLaporan: "2026",
         tglUpload: "Belum Upload",
         tglBatas: `${currentMonth30.year}-${String(currentMonth30.month).padStart(2, '0')}-${String(currentMonth30.day).padStart(2, '0')}`,
         statusKeterlambatan: "Belum Lapor",
         jmlHariTerlambat: 0,
         LJK: "BPR Dana Mulia",
         bidangLJK: "Bank Perkreditan Rakyat",
-        needFollowUp: true,
-        followUpStatus: "pending",
+        needFollowUp: false,
+        followUpStatus: null,
         isDisputed: false,
         disputeReason: null,
         disputeDocument: null,
+        disputeStatus: null,
+        disputeRejectionMessage: null,
         supervisorComment: null,
         detailForms: [
           { id: 1, namaForm: "Form Laporan Kepatuhan", fileUrl: null }
@@ -297,18 +313,19 @@ const ApoloReports = () => {
         aplikasi: "SIPINA",
         jenisLJK: "Bank Syariah",
         namaLaporan: "Laporan Pengawasan Syariah",
-        periodeLaporan: "2026",
         tglUpload: `${prevMonth20.year}-${String(prevMonth20.month).padStart(2, '0')}-${String(prevMonth20.day + 6).padStart(2, '0')}`,
         tglBatas: `${prevMonth20.year}-${String(prevMonth20.month).padStart(2, '0')}-${String(prevMonth20.day).padStart(2, '0')}`,
         statusKeterlambatan: "Terlambat",
         jmlHariTerlambat: 6,
         LJK: "Bank Muamalat",
         bidangLJK: "Bank Umum Syariah",
-        needFollowUp: true,
-        followUpStatus: "pending",
+        needFollowUp: false,
+        followUpStatus: null,
         isDisputed: false,
         disputeReason: null,
         disputeDocument: null,
+        disputeStatus: null,
+        disputeRejectionMessage: null,
         supervisorComment: null,
         detailForms: [
           { id: 1, namaForm: "Form Pengawasan Syariah", fileUrl: "/reports/SIP003_form1.pdf" }
@@ -341,33 +358,34 @@ const ApoloReports = () => {
     });
   };
 
-  // Fungsi untuk menangani ekspansi baris
-  const toggleRowExpand = (id) => {
-    setExpandedRows(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }));
-  };
-
-  // Fungsi untuk mengecek apakah aplikasi dapat memproses sanggahan (APOLO atau eReporting)
+  // Fungsi untuk mengecek apakah aplikasi dapat memproses sanggahan (HANYA APOLO)
   const canProcessDispute = (aplikasi) => {
-    return aplikasi === "APOLO" || aplikasi === "eReporting";
+    return aplikasi === "APOLO";
   };
 
   const handleDisputeAction = (action) => {
     setDisputeAction({ action, report: selectedDispute });
     setDisputeComment('');
+    setAdjustedLateDays(selectedDispute.jmlHariTerlambat);
     setShowDisputeActionModal(true);
   };
 
   const processDisputeAction = () => {
     if (disputeAction.action === 'accept') {
+      let newStatus = "Terlambat";
+      let newLateDays = adjustedLateDays;
+      
+      // Jika adjustedLateDays = 0, status menjadi Lapor
+      if (adjustedLateDays === 0) {
+        newStatus = "Lapor";
+      }
+      
       const updatedData = parentData.map(item => {
         if (item.id === disputeAction.report.id) {
           const updatedItem = {
             ...item,
-            jmlHariTerlambat: 0,
-            statusKeterlambatan: "Tepat Waktu",
+            jmlHariTerlambat: newLateDays,
+            statusKeterlambatan: newStatus,
             needFollowUp: false,
             followUpStatus: "completed",
             isDisputed: false,
@@ -407,6 +425,7 @@ const ApoloReports = () => {
     setSelectedDispute(null);
     setDisputeAction(null);
     setDisputeComment('');
+    setAdjustedLateDays(0);
   };
 
   // Fungsi untuk download file
@@ -485,9 +504,10 @@ const ApoloReports = () => {
     const apoloCount = parentData.filter(p => p.aplikasi === "APOLO").length;
     const eReportingCount = parentData.filter(p => p.aplikasi === "eReporting").length;
     const sipinaCount = parentData.filter(p => p.aplikasi === "SIPINA").length;
-    const tepatWaktu = parentData.filter(p => p.statusKeterlambatan === "Tepat Waktu").length;
+    const tepatWaktu = parentData.filter(p => p.statusKeterlambatan === "Lapor").length;
     const terlambat = parentData.filter(p => p.statusKeterlambatan === "Terlambat").length;
     const belumLapor = parentData.filter(p => p.statusKeterlambatan === "Belum Lapor").length;
+
     const totalLJK = [...new Set(parentData.map(p => p.LJK))].length;
     const needFollowUp = parentData.filter(p => p.needFollowUp === true).length;
     const disputedCount = parentData.filter(p => p.isDisputed === true && p.disputeStatus === "pending").length;
@@ -548,13 +568,11 @@ const ApoloReports = () => {
       'Nama Laporan': parent.namaLaporan,
       'LJK': parent.LJK,
       'Bidang LJK': parent.bidangLJK,
-      'Periode Laporan': parent.periodeLaporan,
       'Tanggal Upload': parent.tglUpload,
       'Tanggal Batas': parent.tglBatas,
       'Status Keterlambatan': parent.statusKeterlambatan,
       'Jumlah Hari Terlambat': parent.jmlHariTerlambat,
       'Jumlah Form': parent.detailForms.length,
-      'Perlu Tindak Lanjut': parent.needFollowUp ? 'Ya' : 'Tidak',
       'Menyanggah': parent.isDisputed ? 'Ya' : 'Tidak',
       'Status Sanggahan': parent.disputeStatus || '-'
     }));
@@ -609,6 +627,13 @@ const ApoloReports = () => {
     });
   };
 
+  const toggleRowExpand = (id) => {
+    setExpandedRows(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
   return (
     <div className="space-y-6 animate-fade-in bg-gradient-to-br from-blue-50/20 to-white min-h-screen">
       {/* Page Header */}
@@ -619,11 +644,11 @@ const ApoloReports = () => {
           </div>
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Monitoring Absensi</h1>
-            <p className="text-gray-600 mt-1">Total {stats.total} Laporan • APOLO: {stats.apoloCount} • eReporting: {stats.eReportingCount} • SIPINA: {stats.sipinaCount}</p>
+            <p className="text-gray-600 mt-1">Total {stats.total} Laporan </p>
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Clock className="w-3 h-3 inline mr-1" />
-                Waktu : {getCurrentTimeDisplay()}
+                Waktu Real-time: {getCurrentTimeDisplay()}
               </p>
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Calendar className="w-3 h-3 inline mr-1" />
@@ -664,7 +689,7 @@ const ApoloReports = () => {
           <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 shadow-sm border border-green-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-green-600 font-medium">Tepat Waktu</p>
+                <p className="text-sm text-green-600 font-medium">Lapor</p>
                 <p className="text-2xl font-bold text-green-900">{stats.tepatWaktu}</p>
               </div>
               <CheckCircle className="w-8 h-8 text-green-500 opacity-50" />
@@ -697,15 +722,15 @@ const ApoloReports = () => {
               <Building className="w-8 h-8 text-purple-500 opacity-50" />
             </div>
           </div>
-          {/* <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 shadow-sm border border-orange-200">
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-4 shadow-sm border border-orange-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-orange-600 font-medium">Sanggahan Pending</p>
+                <p className="text-sm text-orange-600 font-medium">Tidak Lapor</p>
                 <p className="text-2xl font-bold text-orange-900">{stats.disputedCount}</p>
               </div>
               <MessageSquare className="w-8 h-8 text-orange-500 opacity-50" />
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
 
@@ -737,7 +762,7 @@ const ApoloReports = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <Calendar className="w-4 h-4 inline mr-2" />
-                  Tanggal Mulai (Min: {currentDateTime.getFullYear() - 1})
+                  Awal Batas Akhir ({currentDateTime.getFullYear() - 1})
                 </label>
                 <input
                   type="date"
@@ -751,7 +776,7 @@ const ApoloReports = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <Calendar className="w-4 h-4 inline mr-2" />
-                  Tanggal Akhir (Max: {currentDateTime.getFullYear() + 1})
+                  Batas Akhir ({currentDateTime.getFullYear() + 1})
                 </label>
                 <input
                   type="date"
@@ -890,7 +915,7 @@ const ApoloReports = () => {
                 </div>
                 <div className="min-w-0 flex-1">
                   <h3 className="text-lg font-bold text-red-900 truncate">
-                    Daftar Laporan APOLO, eReporting & SIPINA
+                    Daftar Laporan APOLO, Ereporting & SIPINA
                   </h3>
                   <div className="mt-2 space-y-1">
                     <p className="text-sm text-gray-600 truncate">
@@ -921,13 +946,12 @@ const ApoloReports = () => {
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Aplikasi</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Sandi LJK</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama LJK</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Periode Data</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jml Form</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Tgl Upload/Penyampaian</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Tgl Batas Akhir</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Status</th>
-                  {/* <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jml Hari Terlambat</th>
-                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Sanggahan</th> */}
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Jml Hari Terlambat</th>
+                  <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Sanggahan</th>
                   <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Aksi</th>
                 </tr>
               </thead>
@@ -961,9 +985,6 @@ const ApoloReports = () => {
                           <div className="text-xs text-gray-500">{parent.bidangLJK}</div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                        {parent.periodeLaporan}
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-center">
                         {parent.detailForms.length}
                       </td>
@@ -977,20 +998,21 @@ const ApoloReports = () => {
                         <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
                           parent.statusKeterlambatan === 'Terlambat' 
                             ? 'bg-red-100 text-red-800 border-red-200'
-                            : parent.statusKeterlambatan === 'Tepat Waktu'
+                            : parent.statusKeterlambatan === 'Lapor'
                             ? 'bg-green-100 text-green-800 border-green-200'
                             : 'bg-yellow-100 text-yellow-800 border-yellow-200'
                         }`}>
                           {parent.statusKeterlambatan}
                         </span>
                       </td>
-                      {/* <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm font-medium text-gray-900">
                           {parent.jmlHariTerlambat > 0 ? `${parent.jmlHariTerlambat} Hari` : '0 Hari'}
                         </span>
-                      </td> */}
-                      {/* <td className="px-6 py-4 whitespace-nowrap">
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
+                          {/* Tombol untuk memproses sanggahan - HANYA untuk APOLO yang memiliki sanggahan pending */}
                           {canProcessDispute(parent.aplikasi) && 
                            parent.isDisputed && 
                            parent.disputeStatus === "pending" && (
@@ -1005,10 +1027,10 @@ const ApoloReports = () => {
                               <MessageSquare className="w-3 h-3 mr-1" />
                               Proses Sanggahan
                             </button>
-                          )} */}
+                          )}
                           
                           {/* Status setelah diproses */}
-                          {/* {parent.disputeStatus === "accepted" && (
+                          {parent.disputeStatus === "accepted" && (
                             <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-green-100 text-green-700 border border-green-200">
                               <CheckCircle className="w-3 h-3 mr-1" />
                               Diterima
@@ -1022,7 +1044,7 @@ const ApoloReports = () => {
                             </span>
                           )}
                         </div>
-                      </td> */}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <button
                           onClick={() => handleViewDetails(parent)}
@@ -1037,7 +1059,7 @@ const ApoloReports = () => {
                     {/* Child Rows - Detail Forms */}
                     {expandedRows[parent.id] && (
                       <tr className="bg-gray-50">
-                        <td colSpan="12" className="px-6 py-4">
+                        <td colSpan="11" className="px-6 py-4">
                           <div className="ml-8">
                             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
                               <div className="px-4 py-3 bg-gray-100 border-b border-gray-200">
@@ -1090,13 +1112,13 @@ const ApoloReports = () => {
           <div className="px-6 py-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-600">
-                Data diperbarui • 
+                Data diperbarui berdasarkan waktu real-time • 
                 Periode: {formatDateDisplay(dateRange.startDate)} - {formatDateDisplay(dateRange.endDate)} • 
                 Total LJK: {stats.totalLJK}
               </div>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">
-                  Halaman 1 dari {Math.ceil(filteredData.length / 10)}
+                  Halaman 1 dari {Math.ceil(filteredData.length / 10) || 1}
                 </span>
               </div>
             </div>
@@ -1158,10 +1180,6 @@ const ApoloReports = () => {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Periode Data</h4>
-                  <p className="text-gray-900">{selectedReport.periodeLaporan}</p>
-                </div>
-                <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Tanggal Upload</h4>
                   <p className="text-gray-900">{formatDateDisplay(selectedReport.tglUpload)}</p>
                 </div>
@@ -1174,19 +1192,19 @@ const ApoloReports = () => {
                   <span className={`px-3 py-1 rounded-full text-xs font-medium border ${
                     selectedReport.statusKeterlambatan === 'Terlambat' 
                       ? 'bg-red-100 text-red-800 border-red-200'
-                      : selectedReport.statusKeterlambatan === 'Tepat Waktu'
+                      : selectedReport.statusKeterlambatan === 'Lapor'
                       ? 'bg-green-100 text-green-800 border-green-200'
                       : 'bg-yellow-100 text-yellow-800 border-yellow-200'
                   }`}>
                     {selectedReport.statusKeterlambatan}
                   </span>
                 </div>
-                {/* <div>
+                <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Jumlah Hari Terlambat</h4>
                   <p className="text-lg font-medium text-gray-900">
                     {selectedReport.jmlHariTerlambat > 0 ? `${selectedReport.jmlHariTerlambat} Hari` : '0 Hari'}
                   </p>
-                </div> */}
+                </div>
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Jumlah Form</h4>
                   <p className="text-lg font-medium text-gray-900">{selectedReport.detailForms.length}</p>
@@ -1251,7 +1269,7 @@ const ApoloReports = () => {
         </div>
       )}
 
-      {/* Dispute Detail Modal - Responsive Layout */}
+      {/* Dispute Detail Modal - Responsive Layout (HANYA UNTUK APOLO) */}
       {showDisputeModal && selectedDispute && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -1297,7 +1315,7 @@ const ApoloReports = () => {
                 </div>
               </div>
 
-              {/* Informasi Laporan - Responsive Grid */}
+              {/* Informasi Laporan - Responsive Grid (Tanpa Periode Data) */}
               <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 sm:p-5 border border-green-200">
                 <div className="flex items-center space-x-3 mb-3 sm:mb-4">
                   <FileText className="w-5 h-5 text-green-600" />
@@ -1309,10 +1327,6 @@ const ApoloReports = () => {
                     <p className="font-medium text-gray-900 text-sm sm:text-base break-words">{selectedDispute.namaLaporan}</p>
                   </div>
                   <div>
-                    <p className="text-xs sm:text-sm text-gray-600 mb-1">Periode Data</p>
-                    <p className="font-medium text-gray-900 text-sm sm:text-base">{selectedDispute.periodeLaporan}</p>
-                  </div>
-                  <div>
                     <p className="text-xs sm:text-sm text-gray-600 mb-1">Tanggal Batas</p>
                     <p className="font-medium text-gray-900 text-sm sm:text-base">{formatDateDisplay(selectedDispute.tglBatas)}</p>
                   </div>
@@ -1321,7 +1335,7 @@ const ApoloReports = () => {
                     <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${
                       selectedDispute.statusKeterlambatan === 'Terlambat' 
                         ? 'bg-red-100 text-red-800 border-red-200'
-                        : selectedDispute.statusKeterlambatan === 'Tepat Waktu'
+                        : selectedDispute.statusKeterlambatan === 'Lapor'
                         ? 'bg-green-100 text-green-800 border-green-200'
                         : 'bg-yellow-100 text-yellow-800 border-yellow-200'
                     }`}>
@@ -1393,7 +1407,7 @@ const ApoloReports = () => {
         </div>
       )}
 
-      {/* Dispute Action Modal - Responsive */}
+      {/* Dispute Action Modal - Responsive dengan Adjustment Jumlah Hari */}
       {showDisputeActionModal && disputeAction && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
@@ -1416,11 +1430,43 @@ const ApoloReports = () => {
             
             <div className="p-4 sm:p-6 space-y-4">
               {disputeAction.action === 'accept' ? (
-                <div className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
-                  <p className="text-sm text-green-800">
-                    Dengan menerima sanggahan ini, status laporan akan berubah menjadi <strong>Tepat Waktu</strong> dan jumlah hari terlambat menjadi <strong>0 Hari</strong>.
-                  </p>
-                </div>
+                <>
+                  <div className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
+                    <p className="text-sm text-green-800">
+                      Dengan menerima sanggahan ini, Anda dapat melakukan adjustment jumlah hari terlambat.
+                    </p>
+                  </div>
+                  
+                  {/* Adjustment Jumlah Hari Terlambat */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Adjustment Jumlah Hari Terlambat:
+                    </label>
+                    <div className="flex items-center space-x-3">
+                      <input
+                        type="number"
+                        min="0"
+                        max={disputeAction.report.jmlHariTerlambat}
+                        value={adjustedLateDays}
+                        onChange={(e) => setAdjustedLateDays(parseInt(e.target.value) || 0)}
+                        className="w-32 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                      />
+                      <span className="text-sm text-gray-600">
+                        ({disputeAction.report.jmlHariTerlambat} Hari)
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      *Sesuaikan Jumlah Hari Keterlambatan
+                    </p>
+                  </div>
+                  
+                  <div className="bg-yellow-50 p-3 rounded-lg border border-yellow-200">
+                    <p className="text-xs text-yellow-800">
+                      <Info className="w-3 h-3 inline mr-1" />
+                      Status baru: <strong>{adjustedLateDays === 0 ? 'Lapor' : 'Terlambat'}</strong> dengan jumlah hari terlambat: <strong>{adjustedLateDays} Hari</strong>
+                    </p>
+                  </div>
+                </>
               ) : (
                 <div className="bg-red-50 p-3 sm:p-4 rounded-lg border border-red-200">
                   <p className="text-sm text-red-800">
