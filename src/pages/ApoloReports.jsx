@@ -762,7 +762,7 @@ const ApoloReports = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <Calendar className="w-4 h-4 inline mr-2" />
-                  Awal Batas Akhir ({currentDateTime.getFullYear() - 1})
+                  Tanggal Mulai (Batas Akhir)
                 </label>
                 <input
                   type="date"
@@ -776,7 +776,7 @@ const ApoloReports = () => {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <Calendar className="w-4 h-4 inline mr-2" />
-                  Batas Akhir ({currentDateTime.getFullYear() + 1})
+                  Tanggal Akhir (Batas Akhir)
                 </label>
                 <input
                   type="date"
