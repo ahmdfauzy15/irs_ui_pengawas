@@ -684,8 +684,8 @@ const MonitoringSanggahan = () => {
             <BarChart3 className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Monitoring Sanggahan LJK</h1>
-            <p className="text-gray-600 mt-1">Monitoring Proses Sanggahan Laporan APOLO</p>
+            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Proses Sanggahan</h1>
+            <p className="text-gray-600 mt-1">Monitoring Proses Sanggahan Laporan Rutin</p>
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Clock className="w-3 h-3 inline mr-1" />
@@ -715,39 +715,7 @@ const MonitoringSanggahan = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 shadow-sm border border-blue-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-blue-600 font-medium">Total LJK</p>
-                <p className="text-2xl font-bold text-blue-900">{stats.totalLJK}</p>
-              </div>
-              <Building className="w-8 h-8 text-blue-500 opacity-50" />
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 shadow-sm border border-green-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-green-600 font-medium">Total Laporan</p>
-                <p className="text-2xl font-bold text-green-900">{stats.totalLaporan}</p>
-              </div>
-              <FileText className="w-8 h-8 text-green-500 opacity-50" />
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 shadow-sm border border-purple-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-purple-600 font-medium">Total Sanggahan</p>
-                <p className="text-2xl font-bold text-purple-900">{stats.totalSanggahan}</p>
-              </div>
-              <MessageSquare className="w-8 h-8 text-purple-500 opacity-50" />
-            </div>
-          </div>
-        </div>
-      </div>
-
+      
       {/* Filter Section */}
       <div className="px-6">
         <div className="bg-gradient-to-br from-white to-red-50/30 rounded-xl shadow-lg border border-red-100 overflow-hidden">
@@ -894,6 +862,40 @@ const MonitoringSanggahan = () => {
         </div>
       </div>
 
+      {/* Stats Cards */}
+      <div className="px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 shadow-sm border border-blue-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-blue-600 font-medium">Total LJK</p>
+                <p className="text-2xl font-bold text-blue-900">{stats.totalLJK}</p>
+              </div>
+              <Building className="w-8 h-8 text-blue-500 opacity-50" />
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-4 shadow-sm border border-green-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-green-600 font-medium">Total Laporan</p>
+                <p className="text-2xl font-bold text-green-900">{stats.totalLaporan}</p>
+              </div>
+              <FileText className="w-8 h-8 text-green-500 opacity-50" />
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 shadow-sm border border-purple-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-purple-600 font-medium">Total Sanggahan</p>
+                <p className="text-2xl font-bold text-purple-900">{stats.totalSanggahan}</p>
+              </div>
+              <MessageSquare className="w-8 h-8 text-purple-500 opacity-50" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       {/* Reports Table */}
       <div className="px-6 pb-6">
         <div className="bg-gradient-to-br from-white to-red-50/30 rounded-xl shadow-lg border border-red-100 overflow-hidden">
@@ -904,8 +906,8 @@ const MonitoringSanggahan = () => {
                   <FileText className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-red-900">Daftar Sanggahan Laporan APOLO</h3>
-                  <p className="text-sm text-gray-600 mt-1">Monitoring semua proses sanggahan dari LJK</p>
+                  <h3 className="text-lg font-bold text-red-900">Daftar Sanggahan Laporan</h3>
+                  <p className="text-sm text-gray-600 mt-1">Monitoring semua proses sanggahan APOLO (PMDK)</p>
                 </div>
               </div>
               <div className="text-sm text-gray-600 font-medium">

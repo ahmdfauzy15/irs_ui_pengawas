@@ -575,8 +575,8 @@ const MonitoringPengawas = () => {
             <BarChart3 className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Monitoring Laporan Pengawas</h1>
-            <p className="text-gray-600 mt-1">Monitoring Laporan APOLO, e-Reporting & SIPINA</p>
+            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Monitoring Absensi Pengawas</h1>
+            <p className="text-gray-600 mt-1">Monitoring Laporan</p>
             <div className="flex items-center space-x-4 mt-1 flex-wrap">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Clock className="w-3 h-3 inline mr-1" />
@@ -606,65 +606,7 @@ const MonitoringPengawas = () => {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="px-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-3 md:p-4 shadow-sm border border-blue-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs md:text-sm text-blue-600 font-medium">Total Laporan</p>
-                <p className="text-xl md:text-2xl font-bold text-blue-900">{stats.totalLaporan}</p>
-              </div>
-              <FileText className="w-6 h-6 md:w-8 md:h-8 text-blue-500 opacity-50" />
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-3 md:p-4 shadow-sm border border-indigo-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs md:text-sm text-indigo-600 font-medium">Total LJK</p>
-                <p className="text-xl md:text-2xl font-bold text-indigo-900">{stats.totalLJK}</p>
-              </div>
-              <Building className="w-6 h-6 md:w-8 md:h-8 text-indigo-500 opacity-50" />
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-3 md:p-4 shadow-sm border border-green-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs md:text-sm text-green-600 font-medium">Lapor</p>
-                <p className="text-xl md:text-2xl font-bold text-green-900">{stats.lapor}</p>
-              </div>
-              <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-green-500 opacity-50" />
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-3 md:p-4 shadow-sm border border-red-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs md:text-sm text-red-600 font-medium">Terlambat</p>
-                <p className="text-xl md:text-2xl font-bold text-red-900">{stats.terlambat}</p>
-              </div>
-              <AlertCircle className="w-6 h-6 md:w-8 md:h-8 text-red-500 opacity-50" />
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-3 md:p-4 shadow-sm border border-yellow-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs md:text-sm text-yellow-600 font-medium">Belum Lapor</p>
-                <p className="text-xl md:text-2xl font-bold text-yellow-900">{stats.belumLapor}</p>
-              </div>
-              <Clock className="w-6 h-6 md:w-8 md:h-8 text-yellow-500 opacity-50" />
-            </div>
-          </div>
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-3 md:p-4 shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs md:text-sm text-gray-600 font-medium">Tidak Lapor</p>
-                <p className="text-xl md:text-2xl font-bold text-gray-900">{stats.tidakLapor}</p>
-              </div>
-              <XCircle className="w-6 h-6 md:w-8 md:h-8 text-gray-500 opacity-50" />
-            </div>
-          </div>
-        </div>
-      </div>
+     
 
       {/* Filter Section */}
       <div className="px-6">
@@ -880,6 +822,65 @@ const MonitoringPengawas = () => {
           </div>
         </div>
       </div>
+       {/* Stats Cards */}
+      <div className="px-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-3 md:p-4 shadow-sm border border-blue-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs md:text-sm text-blue-600 font-medium">Total Laporan</p>
+                <p className="text-xl md:text-2xl font-bold text-blue-900">{stats.totalLaporan}</p>
+              </div>
+              <FileText className="w-6 h-6 md:w-8 md:h-8 text-blue-500 opacity-50" />
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-3 md:p-4 shadow-sm border border-indigo-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs md:text-sm text-indigo-600 font-medium">Total LJK</p>
+                <p className="text-xl md:text-2xl font-bold text-indigo-900">{stats.totalLJK}</p>
+              </div>
+              <Building className="w-6 h-6 md:w-8 md:h-8 text-indigo-500 opacity-50" />
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-3 md:p-4 shadow-sm border border-green-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs md:text-sm text-green-600 font-medium">Lapor</p>
+                <p className="text-xl md:text-2xl font-bold text-green-900">{stats.lapor}</p>
+              </div>
+              <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-green-500 opacity-50" />
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-xl p-3 md:p-4 shadow-sm border border-red-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs md:text-sm text-red-600 font-medium">Terlambat</p>
+                <p className="text-xl md:text-2xl font-bold text-red-900">{stats.terlambat}</p>
+              </div>
+              <AlertCircle className="w-6 h-6 md:w-8 md:h-8 text-red-500 opacity-50" />
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl p-3 md:p-4 shadow-sm border border-yellow-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs md:text-sm text-yellow-600 font-medium">Belum Lapor</p>
+                <p className="text-xl md:text-2xl font-bold text-yellow-900">{stats.belumLapor}</p>
+              </div>
+              <Clock className="w-6 h-6 md:w-8 md:h-8 text-yellow-500 opacity-50" />
+            </div>
+          </div>
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-3 md:p-4 shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs md:text-sm text-gray-600 font-medium">Tidak Lapor</p>
+                <p className="text-xl md:text-2xl font-bold text-gray-900">{stats.tidakLapor}</p>
+              </div>
+              <XCircle className="w-6 h-6 md:w-8 md:h-8 text-gray-500 opacity-50" />
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Reports Table */}
       <div className="px-6 pb-6">
@@ -891,8 +892,8 @@ const MonitoringPengawas = () => {
                   <FileText className="w-5 h-5 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="text-base md:text-lg font-bold text-red-900">Daftar Laporan APOLO, e-Reporting & SIPINA</h3>
-                  <p className="text-xs md:text-sm text-gray-600 mt-0.5">Monitoring laporan dari berbagai aplikasi</p>
+                  <h3 className="text-base md:text-lg font-bold text-red-900">Daftar Laporan</h3>
+                  <p className="text-xs md:text-sm text-gray-600 mt-0.5">Monitoring laporan dari berbagai aplikasi (APOLO, e-Reporting, SIPINA)</p>
                 </div>
               </div>
               <div className="text-sm text-gray-600 font-medium">
