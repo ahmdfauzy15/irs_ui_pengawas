@@ -14,8 +14,8 @@ const DashboardCarousel = () => {
   const slides = [
     {
       id: 1,
-      title: 'Deadline Pelaporan Q1 2026',
-      description: 'Batas waktu pengiriman laporan keuangan Q1 2026 adalah 30 April 2026.',
+      title: 'Informasi Penting',
+      description: 'APOLO mengalami gangguan (Down System).',
       icon: AlertTriangle,
       color: 'bg-gradient-to-r from-red-600 to-red-700',
       link: '/apolo'
