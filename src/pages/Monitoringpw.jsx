@@ -906,7 +906,7 @@ const MonitoringPengawas = () => {
             <table className="min-w-[1000px] lg:min-w-full divide-y divide-gray-200">
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Show/Hide</th>
+                  {/* <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Show/Hide</th> */}
                   <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Aplikasi</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Sandi LJK</th>
@@ -926,7 +926,7 @@ const MonitoringPengawas = () => {
                       item.statusKeterlambatan === 'Belum Lapor' ? 'bg-yellow-50/30' :
                       item.statusKeterlambatan === 'Tidak Lapor' ? 'bg-gray-50/30' : ''
                     }`}>
-                      <td className="px-4 py-3 whitespace-nowrap">
+                      {/* <td className="px-4 py-3 whitespace-nowrap">
                         <button
                           onClick={() => toggleRowExpand(item.id)}
                           className="p-1 hover:bg-gray-100 rounded transition-colors"
@@ -936,7 +936,7 @@ const MonitoringPengawas = () => {
                             <ChevronRight className="w-4 h-4 text-gray-500" />
                           }
                         </button>
-                      </td>
+                      </td> */}
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
                         {index + 1}
                       </td>
