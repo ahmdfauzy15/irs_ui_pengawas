@@ -1,5 +1,5 @@
 // MonitoringPengawas.jsx
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Download, 
   Search, 
@@ -23,8 +23,104 @@ import {
   History,
   User,
   Filter,
-  ChevronRight
+  ChevronRight,
+  ClipboardList
 } from 'lucide-react';
+
+// Daftar nama form laporan (sama seperti di MonitoringSanggahan)
+const FORM_LIST = [
+  { no: 1, namaForm: "Form Laporan Rencana Bisnis Bank", kodeForm: "FRBB-01", jenis: "Tahunan" },
+  { no: 2, namaForm: "Form Laporan Rutin Bulanan", kodeForm: "FLRB-02", jenis: "Bulanan" },
+  // { no: 3, namaForm: "Form Laporan Keuangan Konsolidasi", kodeForm: "FLKK-03", jenis: "Tahunan" },
+  // { no: 4, namaForm: "Form Laporan GWM Individual", kodeForm: "FGWM-04", jenis: "Bulanan" },
+  // { no: 5, namaForm: "Form Laporan Risiko Likuiditas", kodeForm: "FLRL-05", jenis: "Bulanan" },
+  // { no: 6, namaForm: "Form Laporan GWM Konsolidasi", kodeForm: "FGWM-06", jenis: "Bulanan" },
+  // { no: 7, namaForm: "Form Laporan Posisi Devisa Neto", kodeForm: "FLPD-07", jenis: "Harian" },
+  // { no: 8, namaForm: "Form Laporan Kewajiban Penyediaan Modal Minimum", kodeForm: "FLKP-08", jenis: "Triwulan" },
+];
+
+// Custom Date Input DD/MM/YYYY dengan calendar picker (sama seperti di MonitoringSanggahan)
+const DateInputDDMMYYYY = ({ value, onChange, label, required, placeholder = "DD/MM/YYYY" }) => {
+  const inputRef = useRef(null);
+  const hiddenRef = useRef(null);
+
+  // value = string "DD/MM/YYYY"
+  // convert to YYYY-MM-DD for hidden input
+  const toISO = (ddmmyyyy) => {
+    if (!ddmmyyyy || ddmmyyyy.length !== 10) return '';
+    const [dd, mm, yyyy] = ddmmyyyy.split('/');
+    if (!dd || !mm || !yyyy) return '';
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
+  const fromISO = (iso) => {
+    if (!iso || iso.length !== 10) return '';
+    const [yyyy, mm, dd] = iso.split('-');
+    return `${dd}/${mm}/${yyyy}`;
+  };
+
+  const handleTextChange = (e) => {
+    let raw = e.target.value.replace(/[^0-9]/g, '');
+    let formatted = '';
+    if (raw.length <= 2) {
+      formatted = raw;
+    } else if (raw.length <= 4) {
+      formatted = raw.slice(0, 2) + '/' + raw.slice(2);
+    } else {
+      formatted = raw.slice(0, 2) + '/' + raw.slice(2, 4) + '/' + raw.slice(4, 8);
+    }
+    onChange(formatted);
+  };
+
+  const handleCalendarChange = (e) => {
+    const iso = e.target.value; // YYYY-MM-DD
+    onChange(fromISO(iso));
+  };
+
+  const openCalendar = () => {
+    if (hiddenRef.current) {
+      hiddenRef.current.showPicker && hiddenRef.current.showPicker();
+    }
+  };
+
+  return (
+    <div>
+      {label && (
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          <Calendar className="w-4 h-4 inline mr-2" />
+          {label} {required && <span className="text-red-500">*</span>}
+        </label>
+      )}
+      <div className="relative">
+        <input
+          ref={inputRef}
+          type="text"
+          maxLength={10}
+          placeholder={placeholder}
+          value={value}
+          onChange={handleTextChange}
+          className="w-full px-4 py-2.5 pr-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
+        />
+        {/* Hidden native date input for calendar popup */}
+        <input
+          ref={hiddenRef}
+          type="date"
+          value={toISO(value)}
+          onChange={handleCalendarChange}
+          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+          tabIndex={-1}
+        />
+        <button
+          type="button"
+          onClick={openCalendar}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+        >
+          <Calendar className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const MonitoringPengawas = () => {
   const getCurrentWIBTime = () => {
@@ -70,6 +166,14 @@ const MonitoringPengawas = () => {
     const safeDay = Math.min(day, lastDayOfMonth);
     
     return { year: safeYear, month: safeMonth, day: safeDay };
+  };
+
+  // Parse "DD/MM/YYYY" -> Date object
+  const parseDDMMYYYY = (str) => {
+    if (!str || str.length !== 10) return null;
+    const [dd, mm, yyyy] = str.split('/');
+    const d = new Date(+yyyy, +mm - 1, +dd);
+    return isNaN(d.getTime()) ? null : d;
   };
 
   // Generate data untuk semua aplikasi
@@ -262,15 +366,16 @@ const MonitoringPengawas = () => {
     return generateData();
   }, [currentDateTime]);
 
-  // Fungsi untuk filter berdasarkan periode data
+  // Fungsi untuk filter berdasarkan periode data (menggunakan parseDDMMYYYY)
   const filterByDateRange = (data) => {
-    if (!dateRange.startDate || !dateRange.endDate) {
+    const startDate = parseDDMMYYYY(dateRange.startDate);
+    const endDate = parseDDMMYYYY(dateRange.endDate);
+    
+    if (!startDate || !endDate) {
       return [];
     }
     
-    const startDate = new Date(dateRange.startDate);
     startDate.setHours(0, 0, 0, 0);
-    const endDate = new Date(dateRange.endDate);
     endDate.setHours(23, 59, 59, 999);
 
     return data.filter(item => {
@@ -289,7 +394,6 @@ const MonitoringPengawas = () => {
         return { ...prev, aplikasi: [...currentValues, value] };
       }
     });
-    // Keep dropdown open for better UX on mobile
     if (window.innerWidth < 768) {
       setShowAplikasiDropdown(true);
     }
@@ -304,7 +408,6 @@ const MonitoringPengawas = () => {
         return { ...prev, status: [...currentValues, value] };
       }
     });
-    // Keep dropdown open for better UX on mobile
     if (window.innerWidth < 768) {
       setShowStatusDropdown(true);
     }
@@ -386,14 +489,17 @@ const MonitoringPengawas = () => {
     if (!dateString) return "-";
     const d = new Date(dateString);
     if (isNaN(d.getTime())) return "-";
-    return d.toISOString().split('T')[0];
+    return d.toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
   };
 
-  const formatDateDisplay = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "-";
-    return date.toLocaleDateString('id-ID', {
+  const formatDateDisplay = (ddmmyyyy) => {
+    const d = parseDDMMYYYY(ddmmyyyy);
+    if (!d) return ddmmyyyy || "-";
+    return d.toLocaleDateString('id-ID', {
       day: '2-digit',
       month: 'long',
       year: 'numeric'
@@ -482,6 +588,8 @@ const MonitoringPengawas = () => {
     ].join('\n');
     return csv;
   };
+
+  const hasValidDates = parseDDMMYYYY(dateRange.startDate) && parseDDMMYYYY(dateRange.endDate);
 
   // Status badge dengan tampilan teks biasa (bukan button)
   const getStatusBadge = (item) => {
@@ -606,8 +714,6 @@ const MonitoringPengawas = () => {
         </div>
       </div>
 
-     
-
       {/* Filter Section */}
       <div className="px-6">
         <div className="bg-gradient-to-br from-white to-red-50/30 rounded-xl shadow-lg border border-red-100 overflow-hidden">
@@ -634,37 +740,23 @@ const MonitoringPengawas = () => {
           <div className="p-4 md:p-6">
             <div className="mb-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Calendar className="w-4 h-4 inline mr-2" />
-                    Tanggal Mulai Periode Laporan <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={dateRange.startDate}
-                    onChange={(e) => setDateRange(prev => ({ ...prev, startDate: e.target.value }))}
-                    className="w-full px-3 py-2 md:px-4 md:py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    <Calendar className="w-4 h-4 inline mr-2" />
-                    Tanggal Akhir Periode Laporan <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    value={dateRange.endDate}
-                    onChange={(e) => setDateRange(prev => ({ ...prev, endDate: e.target.value }))}
-                    className="w-full px-3 py-2 md:px-4 md:py-2.5 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
-                    required
-                  />
-                </div>
+                <DateInputDDMMYYYY
+                  label="Tanggal Mulai Periode Laporan"
+                  required
+                  value={dateRange.startDate}
+                  onChange={(val) => setDateRange(prev => ({ ...prev, startDate: val }))}
+                />
+                <DateInputDDMMYYYY
+                  label="Tanggal Akhir Periode Laporan"
+                  required
+                  value={dateRange.endDate}
+                  onChange={(val) => setDateRange(prev => ({ ...prev, endDate: val }))}
+                />
               </div>
-              {(!dateRange.startDate || !dateRange.endDate) && (
+              {!hasValidDates && (
                 <p className="text-sm text-red-500 mt-2">
                   <AlertCircle className="w-4 h-4 inline mr-1" />
-                  Harap pilih tanggal mulai dan tanggal akhir periode laporan untuk menampilkan data
+                  Harap isi tanggal mulai dan akhir periode laporan
                 </p>
               )}
             </div>
@@ -773,7 +865,7 @@ const MonitoringPengawas = () => {
                   <div className="flex-1 min-w-0">
                     <h5 className="font-medium text-blue-900 text-sm">Filter Aktif:</h5>
                     <div className="flex flex-wrap gap-2 mt-1">
-                      {dateRange.startDate && dateRange.endDate && (
+                      {hasValidDates && (
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                           Periode: {formatDateDisplay(dateRange.startDate)} - {formatDateDisplay(dateRange.endDate)}
                         </span>
@@ -822,7 +914,8 @@ const MonitoringPengawas = () => {
           </div>
         </div>
       </div>
-       {/* Stats Cards */}
+      
+      {/* Stats Cards */}
       <div className="px-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-3 md:p-4 shadow-sm border border-blue-200">
@@ -906,7 +999,6 @@ const MonitoringPengawas = () => {
             <table className="min-w-[1000px] lg:min-w-full divide-y divide-gray-200">
               <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
                 <tr>
-                  {/* <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Show/Hide</th> */}
                   <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">No</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Nama Aplikasi</th>
                   <th className="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Sandi LJK</th>
@@ -926,17 +1018,6 @@ const MonitoringPengawas = () => {
                       item.statusKeterlambatan === 'Belum Lapor' ? 'bg-yellow-50/30' :
                       item.statusKeterlambatan === 'Tidak Lapor' ? 'bg-gray-50/30' : ''
                     }`}>
-                      {/* <td className="px-4 py-3 whitespace-nowrap">
-                        <button
-                          onClick={() => toggleRowExpand(item.id)}
-                          className="p-1 hover:bg-gray-100 rounded transition-colors"
-                        >
-                          {expandedRows[item.id] ? 
-                            <ChevronDown className="w-4 h-4 text-gray-500" /> : 
-                            <ChevronRight className="w-4 h-4 text-gray-500" />
-                          }
-                        </button>
-                      </td> */}
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-600">
                         {index + 1}
                       </td>
@@ -972,66 +1053,21 @@ const MonitoringPengawas = () => {
                         >
                           <Eye className="w-4 h-4" />
                         </button>
-                       </td>
+                      </td>
                     </tr>
-                    
-                    {/* Child Rows - Detail Forms */}
-                    {expandedRows[item.id] && (
-                      <tr className="bg-gray-50">
-                        <td colSpan="10" className="px-4 py-4">
-                          <div className="ml-0 md:ml-8">
-                            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                              <div className="px-3 py-2 md:px-4 md:py-3 bg-gray-100 border-b border-gray-200">
-                                <h4 className="text-sm font-bold text-gray-700">Detail Form Laporan</h4>
-                              </div>
-                              <div className="overflow-x-auto">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                  <thead className="bg-gray-50">
-                                    <tr>
-                                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">No.</th>
-                                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Nama Form</th>
-                                      <th className="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody className="divide-y divide-gray-200">
-                                    {item.detailForms.map((form, idx) => (
-                                      <tr key={form.id} className="hover:bg-gray-50">
-                                        <td className="px-3 py-2 text-sm text-gray-600">{idx + 1}</td>
-                                        <td className="px-3 py-2 text-sm font-medium text-gray-900">{form.namaForm}</td>
-                                        <td className="px-3 py-2">
-                                          {form.fileUrl && (
-                                            <button
-                                              onClick={() => handleDownloadForm(form.fileUrl, form.namaForm)}
-                                              className="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
-                                            >
-                                              <DownloadIcon className="w-3 h-3 mr-1" />
-                                              Download
-                                            </button>
-                                          )}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
                   </React.Fragment>
                 ))}
               </tbody>
             </table>
           </div>
 
-          {(!dateRange.startDate || !dateRange.endDate) && (
+          {!hasValidDates && (
             <div className="p-8 md:p-12 text-center">
               <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertCircle className="w-8 h-8 text-blue-400" />
               </div>
               <h3 className="text-base md:text-lg font-bold text-gray-900 mb-2">Pilih Periode Tanggal Terlebih Dahulu</h3>
-              <p className="text-sm text-gray-600">Silakan pilih tanggal mulai dan tanggal akhir periode laporan untuk menampilkan data</p>
+              <p className="text-sm text-gray-600">Silakan isi tanggal mulai dan akhir periode laporan (format DD/MM/YYYY)</p>
               <button
                 onClick={resetFilters}
                 className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
@@ -1041,7 +1077,7 @@ const MonitoringPengawas = () => {
             </div>
           )}
 
-          {dateRange.startDate && dateRange.endDate && filteredData.length === 0 && (
+          {hasValidDates && filteredData.length === 0 && (
             <div className="p-8 md:p-12 text-center">
               <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertCircle className="w-8 h-8 text-blue-400" />
@@ -1057,7 +1093,7 @@ const MonitoringPengawas = () => {
             </div>
           )}
 
-          {dateRange.startDate && dateRange.endDate && filteredData.length > 0 && (
+          {hasValidDates && filteredData.length > 0 && (
             <div className="px-4 md:px-6 py-4 border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="text-xs md:text-sm text-gray-600">
@@ -1076,7 +1112,7 @@ const MonitoringPengawas = () => {
         </div>
       </div>
 
-      {/* Detail Modal - Tanpa Detail Form Laporan */}
+      {/* Detail Modal - Dengan LIST NAMA FORM */}
       {selectedReport && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -1147,7 +1183,33 @@ const MonitoringPengawas = () => {
                 </div>
               </div>
 
-              {/* Alasan Sanggahan (khusus APOLO yang memiliki sanggahan) */}
+              {/* ===== TABEL DAFTAR NAMA FORM (SESUAI DENGAN MONITORINGSANGGHAN) ===== */}
+              <div className="bg-green-50 rounded-xl p-4 md:p-5 border border-green-200">
+                <div className="flex items-center space-x-3 mb-4">
+                  <ClipboardList className="w-5 h-5 text-green-600" />
+                  <h4 className="text-base font-semibold text-green-900">Daftar Nama Form</h4>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-green-200">
+                    <thead className="bg-green-100">
+                      <tr>
+                        <th className="px-4 py-2 text-left text-xs font-bold text-green-800 uppercase tracking-wider w-12">No</th>
+                        <th className="px-4 py-2 text-left text-xs font-bold text-green-800 uppercase tracking-wider">Nama Form</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-green-100">
+                      {FORM_LIST.map((form) => (
+                        <tr key={form.no} className="hover:bg-green-50/50 transition-colors">
+                          <td className="px-4 py-2 text-sm text-gray-500 text-center">{form.no}</td>
+                          <td className="px-4 py-2 text-sm font-medium text-gray-900">{form.namaForm}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Alasan Sanggahan (khusus APOLO yang memiliki sanggahan) - TETAP DIPERTAHANKAN */}
               {selectedReport.disputeReason && (
                 <div className="bg-orange-50 rounded-xl p-4 md:p-5 border border-orange-200">
                   <div className="flex items-center space-x-3 mb-3">
