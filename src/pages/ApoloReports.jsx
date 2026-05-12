@@ -540,7 +540,7 @@ const MonitoringSanggahan = () => {
         onClick={() => { setSelectedDispute(item); setShowDisputeModal(true); }}
         className="px-3 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 text-white hover:bg-indigo-700 transition-colors"
       >
-        Proses Sanggahan
+        Tindak Lanjut Sanggah
       </button>
     );
     if (item.disputeStatus === "accepted") return (
@@ -576,7 +576,7 @@ const MonitoringSanggahan = () => {
           </div>
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Proses Sanggahan</h1>
-            <p className="text-gray-600 mt-1">Monitoring Proses Sanggahan Laporan Rutin</p>
+            <p className="text-gray-600 mt-1">Monitoring Tindak Lanjut Sanggah Laporan Rutin</p>
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
                 <Clock className="w-3 h-3 inline mr-1" />Waktu Real-time: {getCurrentTimeDisplay()}
@@ -735,7 +735,7 @@ const MonitoringSanggahan = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-red-900">Daftar Sanggahan Laporan</h3>
-                  <p className="text-sm text-gray-600 mt-1">Monitoring semua proses sanggahan APOLO (PMDK)</p>
+                  <p className="text-sm text-gray-600 mt-1">Monitoring semua Tindak Lanjut Sanggah APOLO (PMDK)</p>
                 </div>
               </div>
               <div className="text-sm text-gray-600 font-medium">Menampilkan {filteredData.length} dari {stats.totalSanggahan} sanggahan</div>

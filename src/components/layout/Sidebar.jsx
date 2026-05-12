@@ -97,7 +97,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
       toggle: () => setReportsOpen(!reportsOpen),
       subItems: [
         { path: '/monitoringpw', icon: FileSignature, label: 'Monitoring Absensi' },
-        { path: '/absensi', icon: BarChart3, label: 'Proses Sanggahan' },
+        { path: '/absensi', icon: BarChart3, label: 'Tindak Lanjut Sanggah' },
       ]
     },
     // {
