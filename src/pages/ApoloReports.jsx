@@ -575,7 +575,7 @@ const MonitoringSanggahan = () => {
             <BarChart3 className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Proses Sanggahan</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-red-900">Tindak Lanjut Sanggah</h1>
             <p className="text-gray-600 mt-1">Monitoring Tindak Lanjut Sanggah Laporan Rutin</p>
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-sm font-medium text-gray-700 bg-white px-3 py-1 rounded-lg shadow-sm border border-gray-200">
